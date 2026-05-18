@@ -268,70 +268,41 @@ div[data-baseweb="select"] > div {
     min-height: 44px !important;
 }
 
-/* Selectbox: permitir quebra de linha para opções longas (dor do aluno).
-   Sem isso, no mobile o texto fica cortado por "..." e o aluno não enxerga
-   a opção inteira nem no campo selecionado nem no dropdown.
-   O BaseWeb aplica text-overflow:ellipsis nos descendentes do <li>, então
-   precisamos forçar override em todos os filhos também. */
-
-/* Campo selecionado (controle fechado) */
+/* Campo selecionado (controle fechado) — permite quebra de linha quando
+   a opção tem texto longo. Não toca em ul/li do dropdown porque o BaseWeb
+   virtualiza a lista e mexer no posicionamento quebra scroll dos selects
+   de listas longas (Estado tem 27 UFs). */
 div[data-baseweb="select"] > div,
 div[data-baseweb="select"] > div > div,
-div[data-baseweb="select"] [data-baseweb="tag"],
-div[data-baseweb="select"] input {
+div[data-baseweb="select"] [data-baseweb="tag"] {
     height: auto !important;
     min-height: 44px !important;
     white-space: normal !important;
     word-break: break-word !important;
-    overflow: visible !important;
-    text-overflow: clip !important;
     line-height: 1.35 !important;
-    padding-top: 8px !important;
-    padding-bottom: 8px !important;
 }
 
-/* Dropdown aberto (popover renderiza fora do form, no body) — atinge
-   também TODOS os descendentes da option, porque é num <div> interno
-   que o BaseWeb coloca o ellipsis. */
-div[data-baseweb="popover"] li,
-div[data-baseweb="popover"] li *,
-ul[role="listbox"] li,
-ul[role="listbox"] li *,
-li[role="option"],
-li[role="option"] *,
-div[role="option"],
-div[role="option"] * {
+/* Radio buttons (etapa 4 — prioridades): texto longo precisa quebrar e
+   cada opção deve ter área clicável grande pra mobile (tap target ≥44px). */
+div[role="radiogroup"] label {
+    align-items: flex-start !important;
+    padding: 10px 6px !important;
+    border-bottom: 0.5px solid #ECE7DC !important;
+    cursor: pointer !important;
+    gap: 10px !important;
+}
+div[role="radiogroup"] label:last-child {
+    border-bottom: none !important;
+}
+div[role="radiogroup"] label p,
+div[role="radiogroup"] label div {
     white-space: normal !important;
     word-break: break-word !important;
-    overflow: visible !important;
-    text-overflow: clip !important;
-    max-height: none !important;
-    height: auto !important;
-    line-height: 1.4 !important;
+    line-height: 1.45 !important;
 }
-
-/* O BaseWeb virtualiza a lista: cada <li> fica com position:absolute e
-   top:0/40/80px. Como agora cada opção tem altura variável (texto longo
-   quebra em N linhas), o posicionamento fixo causa sobreposição. Forçar
-   flow natural: ul ganha altura automática, items voltam a ser relativos. */
-ul[role="listbox"],
-div[data-baseweb="popover"] ul,
-div[data-baseweb="menu"] ul {
-    position: relative !important;
-    height: auto !important;
-    max-height: 60vh !important;
-    overflow-y: auto !important;
-}
-ul[role="listbox"] li,
-ul[role="listbox"] > div,
-li[role="option"],
-div[role="option"] {
-    position: relative !important;
-    top: auto !important;
-    left: auto !important;
-    transform: none !important;
-    padding-top: 10px !important;
-    padding-bottom: 10px !important;
+div[role="radiogroup"] label:hover {
+    background: #FBF6ED !important;
+    border-radius: 6px !important;
 }
 div[data-testid="stTextInput"] input:focus,
 div[data-testid="stSelectbox"] select:focus,

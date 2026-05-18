@@ -344,25 +344,28 @@ with st.container():
             )
 
             with st.form("form_prio"):
-                opcoes_base = ["— Selecione —"] + DORES
-
-                p1 = st.selectbox(
+                p1 = st.radio(
                     "🥇 1ª prioridade — mais urgente hoje na sua fazenda",
-                    opcoes_base,
-                    index=opcoes_base.index(st.session_state.p1)
-                    if st.session_state.p1 in opcoes_base else 0,
+                    DORES,
+                    index=DORES.index(st.session_state.p1)
+                    if st.session_state.p1 in DORES else None,
+                    key="radio_p1",
                 )
-                p2 = st.selectbox(
+                st.divider()
+                p2 = st.radio(
                     "🥈 2ª prioridade",
-                    opcoes_base,
-                    index=opcoes_base.index(st.session_state.p2)
-                    if st.session_state.p2 in opcoes_base else 0,
+                    DORES,
+                    index=DORES.index(st.session_state.p2)
+                    if st.session_state.p2 in DORES else None,
+                    key="radio_p2",
                 )
-                p3 = st.selectbox(
+                st.divider()
+                p3 = st.radio(
                     "🥉 3ª prioridade",
-                    opcoes_base,
-                    index=opcoes_base.index(st.session_state.p3)
-                    if st.session_state.p3 in opcoes_base else 0,
+                    DORES,
+                    index=DORES.index(st.session_state.p3)
+                    if st.session_state.p3 in DORES else None,
+                    key="radio_p3",
                 )
 
                 st.divider()
@@ -387,10 +390,10 @@ with st.container():
                     selecionadas = [p1, p2, p3]
 
                     for i, p in enumerate(selecionadas, 1):
-                        if p == "— Selecione —":
+                        if p is None:
                             erros.append(f"Selecione a {i}ª prioridade.")
 
-                    sel_validas = [p for p in selecionadas if p != "— Selecione —"]
+                    sel_validas = [p for p in selecionadas if p is not None]
                     if len(sel_validas) != len(set(sel_validas)):
                         erros.append("As 3 prioridades devem ser diferentes entre si.")
 
