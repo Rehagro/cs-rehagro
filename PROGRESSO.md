@@ -1,6 +1,6 @@
 # Progresso e próximos passos — CS Rehagro
 
-Último marco: **MVP deployado no Streamlit Cloud em 2026-05-15.**
+Último marco: **Ajustes pós-lançamento (mobile, dores, plano de aula) em 2026-05-18.**
 
 ## ✅ O que está pronto
 
@@ -36,14 +36,11 @@ SQLite local é **efêmero** no Streamlit Cloud — toda reinicialização do ap
 
 Arquivos afetados: `core/database.py` (todas as funções), `requirements.txt` (adicionar `psycopg2-binary` ou `supabase-py`).
 
-### 2. Senha em produção
-O usuário esqueceu de configurar `CS_PASSWORD` em Secrets no primeiro deploy. Verificar se já foi corrigido em **Streamlit Cloud → Settings → Secrets**:
-```toml
-CS_PASSWORD = "valor-aqui"
-```
+### 2. Senha em produção ✅ resolvido em 2026-05-18
+Configurada em **Streamlit Cloud → Settings → Secrets** como `CS_PASSWORD = "rehagro"`. Para trocar: editar lá + reboot manual do app (o Streamlit não recarrega secrets automaticamente sempre — em alguns casos exige reboot via "Manage app → Reboot app").
 
-### 3. Link de "Boas-vindas"
-Em `core/mapeamento.py:108`, `MODULO_BOASVINDAS["link"]` ainda é placeholder (`CL GPL T1 - Boas-vindas`). Precisa da URL real do Instructure pra virar hyperlink clicável.
+### 3. Link de "Boas-vindas" ✅ resolvido em 2026-05-18
+`MODULO_BOASVINDAS["link"]` agora aponta para `https://rehagro.instructure.com/courses/2850` (extraído do `Plano de aula - Mensagem de envio.docx`), renderizado como hyperlink clicável no `.docx` gerado.
 
 ## 🚀 Ideias para próximas iterações
 
@@ -59,6 +56,23 @@ Em `core/mapeamento.py:108`, `MODULO_BOASVINDAS["link"]` ainda é placeholder (`
 - **ImportError ao adicionar funções no `database.py`**: Streamlit cacheia o módulo. Solução: kill do processo, `rm -rf __pycache__ core/__pycache__ pages/__pycache__`, restart.
 - **CSS do Streamlit muda entre versões**: o seletor do botão de expand da sidebar é específico da 1.57 (`stExpandSidebarButton`). Em upgrades, validar visualmente.
 - **`pip` não está no PATH no Windows do usuário**: usar `python -m pip install ...`.
+
+## 📚 Aprendizados de UX/mobile (2026-05-18)
+
+### `st.selectbox` com texto longo NÃO funciona bem no mobile
+O Streamlit usa BaseWeb (Uber) por baixo do `st.selectbox`. Características que aprendemos na marra:
+1. **Trunca com `...`** quando o texto da opção não cabe na largura (típico em mobile).
+2. **Virtualiza a lista do dropdown** com `position: absolute` e `top: Npx` baseado em altura fixa. Forçar `white-space: normal` via CSS faz cada `<li>` ficar com altura variável, mas o `top` continua fixo → **opções sobrepostas**.
+3. **Forçar `position: relative` no `<ul role="listbox">` e `max-height: 60vh`** parece arrumar a sobreposição, mas **quebra o scroll de listas longas** (ex: select de Estado com 27 UFs vira "infinito" e sem como rolar).
+
+**Conclusão prática:** quando as opções têm texto longo (ex: dores do aluno, com 80–150 caracteres), **trocar `st.selectbox` por `st.radio`**. O radio renderiza nativamente sem dropdown, mostra todas as opções inline com texto completo wrappado, e funciona em qualquer tela. Foi o que fizemos na etapa 4 do `pages/1_Formulario.py`.
+
+**Quando manter selectbox:** quando as opções são curtas (UF, cargo, status etc.) — sem necessidade de wrap.
+
+### Cache do Streamlit Cloud
+- `Ctrl+Shift+R` no browser limpa cache do **navegador**, mas **não força** o servidor do Streamlit Cloud a recarregar o código. Após `git push`, o webhook pode demorar (já vimos 5–10 min) ou não disparar.
+- **Solução robusta:** Manage app (no painel do app) → ⋮ → **Reboot app**. Aguardar "Running".
+- Para testar mudanças no celular sem cache, **abrir em aba anônima** elimina cache local de uma vez.
 
 ## 🗂 Estrutura do projeto
 
@@ -113,3 +127,10 @@ Depois acessa http://localhost:8501.
 | 2026-05-15 | Logo verde Rehagro embutida no `.docx` gerado |
 | 2026-05-15 | Primeiro commit + push pro GitHub Rehagro/cs-rehagro |
 | 2026-05-15 | Deploy no Streamlit Cloud (faltou configurar secrets no primeiro deploy) |
+| 2026-05-18 | `CS_PASSWORD` configurado em Secrets (`rehagro`); reboot do app necessário pra propagar |
+| 2026-05-18 | Confirmado que reboot do app no Cloud apaga o SQLite — 1 rodada de respostas perdida; mitigação postergada (Supabase free esgotado, considerar Turso/Neon) |
+| 2026-05-18 | 4 dores atualizadas no `mapeamento.py` conforme novo `DOR DO ALUNO.docx` |
+| 2026-05-18 | Plano de aula `.docx` alinhado ao `Plano de aula - arquivo 2.docx`: subtítulo "Materiais de aula:", labels "Tempo de aula gravada aproximado", "Atividades para realizar", "Programação: Se programe para assistir esse conteúdo em..." |
+| 2026-05-18 | Link real do módulo Boas-vindas (`/courses/2850`) adicionado em `MODULO_BOASVINDAS` |
+| 2026-05-18 | Texto de orientação das prioridades reescrito conforme briefing CS |
+| 2026-05-18 | **Mobile fix:** trocados os 3 `st.selectbox` da etapa 4 por `st.radio` — selectbox do BaseWeb não tinha solução CSS robusta pra wrap de opção longa sem quebrar virtualização (ver seção Aprendizados) |
