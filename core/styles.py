@@ -267,6 +267,31 @@ div[data-baseweb="select"] > div {
     font-size: 15px !important;
     min-height: 44px !important;
 }
+
+/* Selectbox: permitir quebra de linha para opções longas (dor do aluno).
+   Sem isso, no mobile o texto fica cortado por "..." e o aluno não enxerga
+   a opção inteira nem no campo selecionado nem no dropdown. */
+div[data-baseweb="select"] > div,
+div[data-baseweb="select"] > div > div {
+    height: auto !important;
+    min-height: 44px !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    line-height: 1.35 !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+}
+div[data-baseweb="select"] [data-baseweb="tag"],
+div[data-baseweb="select"] input,
+div[data-baseweb="popover"] li,
+ul[role="listbox"] li,
+div[role="listbox"] li,
+div[role="option"] {
+    white-space: normal !important;
+    word-break: break-word !important;
+    height: auto !important;
+    line-height: 1.35 !important;
+}
 div[data-testid="stTextInput"] input:focus,
 div[data-testid="stSelectbox"] select:focus,
 div[data-testid="stTextArea"] textarea:focus {

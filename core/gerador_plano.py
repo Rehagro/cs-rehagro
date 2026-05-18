@@ -141,11 +141,21 @@ def _add_modulo_block(doc: Document, ordem: str, modulo: dict,
     if modulo.get("aulas"):
         details.append(f"Quantidade de aulas: {modulo['aulas']}")
     if modulo.get("tempo"):
-        details.append(f"Tempo de aula gravada: {modulo['tempo']}")
+        details.append(f"Tempo de aula gravada aproximado: {modulo['tempo']}")
     if modulo.get("atividades"):
-        details.append(f"Atividades: {modulo['atividades']}")
+        details.append(f"Atividades para realizar: {modulo['atividades']}")
     if modulo.get("programacao"):
-        details.append(f"Programação sugerida: {modulo['programacao']}")
+        details.append(
+            f"Programação: Se programe para assistir esse conteúdo em {modulo['programacao']}"
+        )
+
+    if details:
+        p_mat = doc.add_paragraph()
+        p_mat.paragraph_format.space_before = Pt(4)
+        p_mat.paragraph_format.space_after = Pt(2)
+        r_mat = p_mat.add_run("Materiais de aula:")
+        r_mat.bold = True
+        r_mat.font.size = Pt(11)
 
     for detail in details:
         p_d = doc.add_paragraph(style="List Bullet")

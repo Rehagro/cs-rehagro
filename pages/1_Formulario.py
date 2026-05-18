@@ -336,8 +336,9 @@ with st.container():
             st.markdown(section_tag_html("Suas 3 principais prioridades"), unsafe_allow_html=True)
 
             st.markdown(
-                '<div class="rh-warning">Escolha as <strong>3 prioridades</strong> '
-                'em ordem de importância — da mais urgente para a terceira. '
+                '<div class="rh-warning">Escolha as <strong>3 prioridades</strong>, '
+                'em ordem de importância, que você considera mais urgentes para serem '
+                'melhoradas/trabalhadas na(s) propriedade(s) que atua/irá atuar. '
                 'Cada dor só pode aparecer uma vez.</div>',
                 unsafe_allow_html=True,
             )

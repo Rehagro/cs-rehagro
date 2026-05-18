@@ -27,7 +27,7 @@ DORES = [
     },
     {
         "id": "gestao_financeira",
-        "dor": "Organizar os gastos da fazenda, saber o custo do litro de leite e buscar oportunidades para reduzir custos.",
+        "dor": "Organizar os gastos, saber o custo do litro de leite e buscar o aumento do lucro na fazenda.",
         "dor_curta": "Gestão financeira e custos",
         "modulo": "Gestão financeira e econômica",
         "link": "https://rehagro.instructure.com/courses/2859",
@@ -38,7 +38,7 @@ DORES = [
     },
     {
         "id": "sanidade_bezerras",
-        "dor": "Reduzir a ocorrência de doenças e mortalidade e definir protocolos para tratamento de doenças das bezerras.",
+        "dor": "Reduzir doenças e mortalidade e definir protocolos para tratamento das bezerras.",
         "dor_curta": "Sanidade de bezerras e novilhas",
         "modulo": "Sanidade de bezerras e novilhas",
         "link": "https://rehagro.instructure.com/courses/2855",
@@ -49,7 +49,7 @@ DORES = [
     },
     {
         "id": "criacao_bezerras",
-        "dor": "Melhorar o ganho de peso das bezerras, definir plano alimentar das bezerras nas diferentes fases da vida.",
+        "dor": "Melhorar o ganho de peso e definir plano alimentar das bezerras nas diferentes fases da vida.",
         "dor_curta": "Criação e alimentação de bezerras",
         "modulo": "Criação de bezerras e novilhas",
         "link": "https://rehagro.instructure.com/courses/2851",
@@ -71,7 +71,7 @@ DORES = [
     },
     {
         "id": "indicadores_rebanho",
-        "dor": "Planejar a necessidade de forragem do rebanho, calculando os indicadores e identificando oportunidades de manejo.",
+        "dor": "Planejar a necessidade de forrageira, calcular indicadores e identificar oportunidades no manejo.",
         "dor_curta": "Indicadores reprodutivos e evolução do rebanho",
         "modulo": "Indicadores reprodutivos e Evolução de rebanho",
         "link": "https://rehagro.instructure.com/courses/2853",
