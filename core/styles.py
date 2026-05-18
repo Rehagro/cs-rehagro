@@ -270,27 +270,49 @@ div[data-baseweb="select"] > div {
 
 /* Selectbox: permitir quebra de linha para opções longas (dor do aluno).
    Sem isso, no mobile o texto fica cortado por "..." e o aluno não enxerga
-   a opção inteira nem no campo selecionado nem no dropdown. */
+   a opção inteira nem no campo selecionado nem no dropdown.
+   O BaseWeb aplica text-overflow:ellipsis nos descendentes do <li>, então
+   precisamos forçar override em todos os filhos também. */
+
+/* Campo selecionado (controle fechado) */
 div[data-baseweb="select"] > div,
-div[data-baseweb="select"] > div > div {
+div[data-baseweb="select"] > div > div,
+div[data-baseweb="select"] [data-baseweb="tag"],
+div[data-baseweb="select"] input {
     height: auto !important;
     min-height: 44px !important;
     white-space: normal !important;
     word-break: break-word !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
     line-height: 1.35 !important;
     padding-top: 8px !important;
     padding-bottom: 8px !important;
 }
-div[data-baseweb="select"] [data-baseweb="tag"],
-div[data-baseweb="select"] input,
+
+/* Dropdown aberto (popover renderiza fora do form, no body) — atinge
+   também TODOS os descendentes da option, porque é num <div> interno
+   que o BaseWeb coloca o ellipsis. */
 div[data-baseweb="popover"] li,
+div[data-baseweb="popover"] li *,
 ul[role="listbox"] li,
-div[role="listbox"] li,
-div[role="option"] {
+ul[role="listbox"] li *,
+li[role="option"],
+li[role="option"] *,
+div[role="option"],
+div[role="option"] * {
     white-space: normal !important;
     word-break: break-word !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    max-height: none !important;
     height: auto !important;
-    line-height: 1.35 !important;
+    line-height: 1.4 !important;
+}
+li[role="option"],
+div[role="option"] {
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
 }
 div[data-testid="stTextInput"] input:focus,
 div[data-testid="stSelectbox"] select:focus,
