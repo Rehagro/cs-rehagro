@@ -223,7 +223,7 @@ def gerar_plano_docx(resposta: dict) -> bytes:
     _add_modulo_block(
         doc, "Início",
         MODULO_BOASVINDAS,
-        "Para iniciar, veja como funciona o curso e os critérios de aprovação."
+        "Para iniciar, veja como funciona o curso e os critérios de aprovação, no nosso módulo de Boas-vindas:"
     )
 
     # ── Módulos das 3 dores ───────────────────────────────

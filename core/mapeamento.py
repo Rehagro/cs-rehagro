@@ -107,7 +107,7 @@ DORES = [
 # Módulo de boas-vindas (sempre incluído no início do plano)
 MODULO_BOASVINDAS = {
     "modulo": "Boas-vindas",
-    "link": "CL GPL T1 - Boas-vindas",
+    "link": "https://rehagro.instructure.com/courses/2850",
     "aulas": None,
     "tempo": None,
     "programacao": None,
