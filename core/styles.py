@@ -309,8 +309,27 @@ div[role="option"] * {
     height: auto !important;
     line-height: 1.4 !important;
 }
+
+/* O BaseWeb virtualiza a lista: cada <li> fica com position:absolute e
+   top:0/40/80px. Como agora cada opção tem altura variável (texto longo
+   quebra em N linhas), o posicionamento fixo causa sobreposição. Forçar
+   flow natural: ul ganha altura automática, items voltam a ser relativos. */
+ul[role="listbox"],
+div[data-baseweb="popover"] ul,
+div[data-baseweb="menu"] ul {
+    position: relative !important;
+    height: auto !important;
+    max-height: 60vh !important;
+    overflow-y: auto !important;
+}
+ul[role="listbox"] li,
+ul[role="listbox"] > div,
 li[role="option"],
 div[role="option"] {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
     padding-top: 10px !important;
     padding-bottom: 10px !important;
 }
