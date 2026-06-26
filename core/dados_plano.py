@@ -4,8 +4,18 @@ dados que o template do plano de aula espera (ver design_handoff_plano_de_aula
 /template/dados_exemplo.json).
 """
 from datetime import datetime
+from urllib.parse import quote
 
 from core.mapeamento import MODULO_BOASVINDAS
+
+# WhatsApp do time de Sucesso do Cliente (formato internacional, só dígitos).
+# Abre a conversa já com uma mensagem pronta que o aluno só envia.
+_WHATSAPP_NUMERO = "5531991476763"
+_WHATSAPP_MENSAGEM = (
+    "Olá! Sou aluno do curso e gostaria de falar com a "
+    "Equipe de Sucesso do Cliente do Rehagro."
+)
+_WHATSAPP_URL = f"https://wa.me/{_WHATSAPP_NUMERO}?text={quote(_WHATSAPP_MENSAGEM)}"
 
 # Descrição de cada módulo conforme a posição na trilha (1ª, 2ª, 3ª…).
 _INTROS = [
@@ -27,6 +37,7 @@ _ENCERRAMENTO = {
     ),
     "equipe": "Equipe de Sucesso do Cliente",
     "organizacao": "Rehagro",
+    "whatsapp_url": _WHATSAPP_URL,
 }
 
 
