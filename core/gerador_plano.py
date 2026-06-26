@@ -12,10 +12,48 @@ from docx.oxml import OxmlElement
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 from core.mapeamento import MODULO_BOASVINDAS, get_dor_por_id
 
+# ── Identidade visual Rehagro (2026-06-26) ─────────────────
+FONTE      = "Myriad Pro"
+COR_VERDE  = "015641"   # verde principal
+COR_OURO   = "cdaf69"   # dourado
+COR_VERDE2 = "87a851"   # verde secundário
+COR_TEXTO  = "1A1A1A"
+COR_MUTED  = "6B6B5E"
+
 _LOGO_VERDE_PATH = os.path.join(
     os.path.dirname(os.path.dirname(__file__)),
     "assets", "logo_rehagro_verde.png"
 )
+
+
+def _hex_to_rgb(hex_color: str) -> RGBColor:
+    h = hex_color.replace("#", "")
+    return RGBColor(int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16))
+
+
+def _aplicar_fonte(run, nome: str = FONTE):
+    """Garante a fonte tanto no objeto quanto no rPr (ascii/hAnsi/cs)."""
+    run.font.name = nome
+    rpr = run._element.get_or_add_rPr()
+    rFonts = rpr.find(qn("w:rFonts"))
+    if rFonts is None:
+        rFonts = OxmlElement("w:rFonts")
+        rpr.append(rFonts)
+    for attr in ("w:ascii", "w:hAnsi", "w:cs"):
+        rFonts.set(qn(attr), nome)
+
+
+def _set_doc_font(doc: Document, nome: str = FONTE):
+    """Define a fonte padrão (estilo Normal) do documento."""
+    style = doc.styles["Normal"]
+    style.font.name = nome
+    rpr = style.element.get_or_add_rPr()
+    rFonts = rpr.find(qn("w:rFonts"))
+    if rFonts is None:
+        rFonts = OxmlElement("w:rFonts")
+        rpr.append(rFonts)
+    for attr in ("w:ascii", "w:hAnsi", "w:cs"):
+        rFonts.set(qn(attr), nome)
 
 
 def _set_cell_bg(cell, hex_color: str):
@@ -29,7 +67,7 @@ def _set_cell_bg(cell, hex_color: str):
 
 
 def _add_hyperlink(paragraph, url: str, text: str,
-                   color_hex: str = "C9A84C", size_pt: int = 11):
+                   color_hex: str = COR_VERDE2, size_pt: int = 11):
     """Insere um hyperlink clicável no parágrafo."""
     part = paragraph.part
     r_id = part.relate_to(
@@ -43,6 +81,11 @@ def _add_hyperlink(paragraph, url: str, text: str,
 
     new_run = OxmlElement("w:r")
     rPr = OxmlElement("w:rPr")
+
+    rFonts = OxmlElement("w:rFonts")
+    for attr in ("w:ascii", "w:hAnsi", "w:cs"):
+        rFonts.set(qn(attr), FONTE)
+    rPr.append(rFonts)
 
     color_el = OxmlElement("w:color")
     color_el.set(qn("w:val"), color_hex.replace("#", ""))
@@ -69,19 +112,19 @@ def _add_hyperlink(paragraph, url: str, text: str,
 
 
 def _add_heading(doc: Document, text: str, level: int = 1,
-                 color_hex: str = "1C3829", size_pt: int = 16):
+                 color_hex: str = COR_VERDE, size_pt: int = 16):
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.LEFT
     run = p.add_run(text)
     run.bold = True
     run.font.size = Pt(size_pt)
-    r, g, b = int(color_hex[0:2], 16), int(color_hex[2:4], 16), int(color_hex[4:6], 16)
-    run.font.color.rgb = RGBColor(r, g, b)
+    run.font.color.rgb = _hex_to_rgb(color_hex)
+    _aplicar_fonte(run)
     return p
 
 
 def _add_paragraph(doc: Document, text: str, size_pt: int = 11,
-                   bold: bool = False, color_hex: str = "1A1A1A",
+                   bold: bool = False, color_hex: str = COR_TEXTO,
                    space_before: int = 0, space_after: int = 6):
     p = doc.add_paragraph()
     p.paragraph_format.space_before = Pt(space_before)
@@ -89,8 +132,8 @@ def _add_paragraph(doc: Document, text: str, size_pt: int = 11,
     run = p.add_run(text)
     run.bold = bold
     run.font.size = Pt(size_pt)
-    r, g, b = int(color_hex[0:2], 16), int(color_hex[2:4], 16), int(color_hex[4:6], 16)
-    run.font.color.rgb = RGBColor(r, g, b)
+    run.font.color.rgb = _hex_to_rgb(color_hex)
+    _aplicar_fonte(run)
     return p
 
 
@@ -98,7 +141,11 @@ def _add_modulo_block(doc: Document, ordem: str, modulo: dict,
                       descricao_intro: str = ""):
     """Adiciona um bloco de módulo ao documento."""
     # Linha separadora
-    doc.add_paragraph("─" * 60).paragraph_format.space_after = Pt(4)
+    sep = doc.add_paragraph("─" * 60)
+    sep.paragraph_format.space_after = Pt(4)
+    for r in sep.runs:
+        r.font.color.rgb = _hex_to_rgb(COR_OURO)
+        _aplicar_fonte(r)
 
     # Ordem e nome do módulo
     p = doc.add_paragraph()
@@ -106,12 +153,14 @@ def _add_modulo_block(doc: Document, ordem: str, modulo: dict,
     r1 = p.add_run(f"{ordem}  ")
     r1.bold = True
     r1.font.size = Pt(11)
-    r1.font.color.rgb = RGBColor(0xC9, 0xA8, 0x4C)  # gold
+    r1.font.color.rgb = _hex_to_rgb(COR_OURO)
+    _aplicar_fonte(r1)
 
     r2 = p.add_run(modulo["modulo"])
     r2.bold = True
     r2.font.size = Pt(12)
-    r2.font.color.rgb = RGBColor(0x1C, 0x38, 0x29)  # green
+    r2.font.color.rgb = _hex_to_rgb(COR_VERDE)
+    _aplicar_fonte(r2)
 
     # Texto introdutório
     if descricao_intro:
@@ -125,16 +174,16 @@ def _add_modulo_block(doc: Document, ordem: str, modulo: dict,
         r_label = p_link.add_run("Link de acesso: ")
         r_label.bold = True
         r_label.font.size = Pt(11)
+        _aplicar_fonte(r_label)
 
         link_val = modulo["link"]
         if link_val.startswith("http://") or link_val.startswith("https://"):
-            # Hyperlink clicável (azul ou dourado, sublinhado)
-            _add_hyperlink(p_link, link_val, link_val, color_hex="0563C1", size_pt=11)
+            _add_hyperlink(p_link, link_val, link_val, color_hex=COR_VERDE2, size_pt=11)
         else:
-            # Texto comum (placeholder/nome do curso)
             r_link = p_link.add_run(link_val)
             r_link.font.size = Pt(11)
-            r_link.font.color.rgb = RGBColor(0xC9, 0xA8, 0x4C)
+            r_link.font.color.rgb = _hex_to_rgb(COR_VERDE2)
+            _aplicar_fonte(r_link)
 
     # Detalhes
     details = []
@@ -156,6 +205,8 @@ def _add_modulo_block(doc: Document, ordem: str, modulo: dict,
         r_mat = p_mat.add_run("Materiais de aula:")
         r_mat.bold = True
         r_mat.font.size = Pt(11)
+        r_mat.font.color.rgb = _hex_to_rgb(COR_VERDE)
+        _aplicar_fonte(r_mat)
 
     for detail in details:
         p_d = doc.add_paragraph(style="List Bullet")
@@ -163,6 +214,8 @@ def _add_modulo_block(doc: Document, ordem: str, modulo: dict,
         p_d.paragraph_format.space_after = Pt(1)
         run = p_d.add_run(detail)
         run.font.size = Pt(10)
+        run.font.color.rgb = _hex_to_rgb(COR_TEXTO)
+        _aplicar_fonte(run)
 
     doc.add_paragraph()  # espaço
 
@@ -170,6 +223,10 @@ def _add_modulo_block(doc: Document, ordem: str, modulo: dict,
 def gerar_plano_docx(resposta: dict) -> bytes:
     """
     Gera o plano de aula personalizado em .docx e retorna como bytes.
+
+    `resposta` aceita tanto o registro vindo do CSV do HubSpot
+    (core.hubspot_csv) quanto qualquer dict com:
+        nome, turma_nome, prioridade_1, prioridade_2, prioridade_3 (ids de dor)
     """
     nome = resposta.get("nome", "Aluno")
     p1_id = resposta.get("prioridade_1")
@@ -181,6 +238,7 @@ def gerar_plano_docx(resposta: dict) -> bytes:
     mod3 = get_dor_por_id(p3_id) if p3_id else None
 
     doc = Document()
+    _set_doc_font(doc)
 
     # Margens
     for section in doc.sections:
@@ -199,13 +257,13 @@ def gerar_plano_docx(resposta: dict) -> bytes:
 
     # ── Título ───────────────────────────────────────────
     _add_heading(doc, f"Plano de aula — {nome}",
-                 level=1, color_hex="1C3829", size_pt=18)
+                 level=1, color_hex=COR_VERDE, size_pt=18)
 
     _add_paragraph(
         doc,
         f"Rehagro · Customer Success  |  {resposta.get('turma_nome', '')}  |  "
         f"Gerado em {datetime.now().strftime('%d/%m/%Y')}",
-        size_pt=9, color_hex="6B6B5E", space_after=12
+        size_pt=9, color_hex=COR_MUTED, space_after=12
     )
 
     # ── Introdução ────────────────────────────────────────
@@ -219,7 +277,7 @@ def gerar_plano_docx(resposta: dict) -> bytes:
     _add_paragraph(doc, intro, size_pt=11, space_before=4, space_after=14)
 
     # ── Módulo: Boas-vindas ───────────────────────────────
-    _add_heading(doc, "Para começar", level=2, color_hex="C9A84C", size_pt=13)
+    _add_heading(doc, "Para começar", level=2, color_hex=COR_OURO, size_pt=13)
     _add_modulo_block(
         doc, "Início",
         MODULO_BOASVINDAS,
@@ -228,7 +286,7 @@ def gerar_plano_docx(resposta: dict) -> bytes:
 
     # ── Módulos das 3 dores ───────────────────────────────
     _add_heading(doc, "Sua trilha personalizada", level=2,
-                 color_hex="C9A84C", size_pt=13)
+                 color_hex=COR_OURO, size_pt=13)
 
     ordens = ["1ª prioridade", "2ª prioridade", "3ª prioridade"]
     intros = [
@@ -241,7 +299,10 @@ def gerar_plano_docx(resposta: dict) -> bytes:
             _add_modulo_block(doc, ordens[i], modulo, intros[i])
 
     # ── Encerramento ─────────────────────────────────────
-    doc.add_paragraph("─" * 60)
+    fecho = doc.add_paragraph("─" * 60)
+    for r in fecho.runs:
+        r.font.color.rgb = _hex_to_rgb(COR_OURO)
+        _aplicar_fonte(r)
     _add_paragraph(
         doc,
         "Nos acione a qualquer momento que precisar! "
@@ -249,7 +310,7 @@ def gerar_plano_docx(resposta: dict) -> bytes:
         size_pt=11, space_before=8, space_after=4
     )
     _add_paragraph(doc, "Equipe Customer Success — Rehagro",
-                   size_pt=11, bold=True, color_hex="1C3829")
+                   size_pt=11, bold=True, color_hex=COR_VERDE)
 
     # Salvar em bytes
     buffer = io.BytesIO()

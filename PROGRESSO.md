@@ -1,6 +1,23 @@
 # Progresso e próximos passos — CS Rehagro
 
-Último marco: **Ajustes pós-lançamento (mobile, dores, plano de aula) em 2026-05-18.**
+Último marco: **Reestruturação para fluxo HubSpot → .docx em 2026-06-26.**
+
+## 🔄 Reestruturação 2026-06-26 (mudança de uso da ferramenta)
+
+A pesquisa de início de curso saiu do formulário próprio e passou a ser feita no **HubSpot Survey**. A ferramenta deixou de coletar respostas e virou um **gerador**: recebe o CSV do HubSpot, casa as 3 prioridades com os módulos e gera o plano em `.docx`.
+
+**O que mudou:**
+- ❌ Removidos: formulário público, banco SQLite (`core/database.py`), Dashboard, Turmas e a pasta `pages/`.
+- ✅ `app.py` virou página única: login CS → upload CSV → escolher aluno → revisar → baixar `.docx`.
+- ✅ Novo `core/hubspot_csv.py`: desfaz o **duplo-encoding** do CSV (2 passadas) e mapeia colunas por palavra-chave.
+- ✅ `core/mapeamento.py`: textos das 9 dores atualizados para o **`DOR DO ALUNO v2.docx`** + `match_dores()` (casamento por texto normalizado, porque as dores têm vírgula interna e não dá pra `split(",")`).
+- ✅ Identidade visual nova: fonte **Myriad Pro**, verde `#015641`, dourado `#cdaf69`, verde secundário `#87a851`. Aplicada no `.docx` e na UI.
+
+**Cuidado conhecido:** no HubSpot a pergunta das prioridades é multi-seleção, então a ordem do CSV é a ordem das opções, **não** o ranking de urgência do aluno. A trilha é montada na ordem em que aparece no CSV (sinalizado na tela). Se precisar ranquear, adicionar reordenação manual antes do download.
+
+---
+
+### Histórico anterior — Último marco: **Ajustes pós-lançamento (mobile, dores, plano de aula) em 2026-05-18.**
 
 ## ✅ O que está pronto
 

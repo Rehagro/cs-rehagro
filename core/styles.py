@@ -15,6 +15,12 @@ def _logo_base64() -> str:
 
 BASE_CSS = """
 <style>
+/* ── Fonte da identidade (Myriad Pro, com fallbacks) ── */
+html, body, [class*="css"], .stApp, .stMarkdown,
+input, textarea, select, button {
+    font-family: "Myriad Pro", "Segoe UI", "Helvetica Neue", Arial, sans-serif !important;
+}
+
 /* ── Reset Streamlit ───────────────────────────────── */
 #MainMenu, footer { visibility: hidden; }
 [data-testid="stDecoration"] { display: none; }
@@ -27,10 +33,10 @@ BASE_CSS = """
 
 /* Header do Streamlit (contém o botão de toggle da sidebar) — visível e acima do conteúdo */
 header[data-testid="stHeader"] {
-    background: #1C3829 !important;
+    background: #015641 !important;
     height: 3rem !important;
     z-index: 100 !important;
-    border-bottom: 1px solid #2A4F3A !important;
+    border-bottom: 1px solid #0E6B52 !important;
 }
 header[data-testid="stHeader"] [data-testid="stToolbar"] {
     background: transparent !important;
@@ -48,32 +54,32 @@ header[data-testid="stHeader"] [data-testid="stToolbar"] {
     margin-right: -2.5rem !important;
     width: calc(100% + 5rem) !important;
 }
-.stApp { background: #F0EBE0; }
+.stApp { background: #F4F1E9; }
 
 /* Sidebar com identidade Rehagro */
 section[data-testid="stSidebar"] {
-    background: #1C3829 !important;
-    border-right: 1px solid #2A4F3A !important;
+    background: #015641 !important;
+    border-right: 1px solid #0E6B52 !important;
 }
 section[data-testid="stSidebar"] * {
-    color: #F0EBE0 !important;
+    color: #F4F1E9 !important;
 }
 section[data-testid="stSidebar"] a {
-    color: #F0EBE0 !important;
+    color: #F4F1E9 !important;
     font-weight: 500 !important;
     border-radius: 6px !important;
     transition: background 0.15s !important;
 }
 section[data-testid="stSidebar"] a:hover {
-    background: rgba(201,168,76,0.12) !important;
-    color: #C9A84C !important;
+    background: rgba(205,175,105,0.14) !important;
+    color: #cdaf69 !important;
 }
 /* Botão de toggle (abrir/fechar sidebar) — sempre visível */
 button[data-testid="stSidebarCollapseButton"],
 button[data-testid="stExpandSidebarButton"] {
-    color: #C9A84C !important;
-    background: #1C3829 !important;
-    border: 1px solid #C9A84C !important;
+    color: #cdaf69 !important;
+    background: #015641 !important;
+    border: 1px solid #cdaf69 !important;
     border-radius: 6px !important;
     visibility: visible !important;
     opacity: 1 !important;
@@ -90,17 +96,17 @@ button[data-testid="stExpandSidebarButton"] span,
 button[data-testid="stSidebarCollapseButton"] span,
 button[data-testid="stExpandSidebarButton"] *,
 button[data-testid="stSidebarCollapseButton"] * {
-    fill: #C9A84C !important;
-    color: #C9A84C !important;
+    fill: #cdaf69 !important;
+    color: #cdaf69 !important;
 }
 button[data-testid="stExpandSidebarButton"]:hover,
 button[data-testid="stSidebarCollapseButton"]:hover {
-    background: #2A4F3A !important;
+    background: #0E6B52 !important;
 }
 
 /* ── Header Rehagro ────────────────────────────────── */
 .rh-header {
-    background: #1C3829 !important;
+    background: #015641 !important;
     padding: 24px 40px 22px !important;
     display: flex !important;
     justify-content: space-between !important;
@@ -108,7 +114,7 @@ button[data-testid="stSidebarCollapseButton"]:hover {
     margin-bottom: 32px !important;
     width: 100% !important;
     box-sizing: border-box !important;
-    border-bottom: 3px solid #C9A84C !important;
+    border-bottom: 3px solid #cdaf69 !important;
 }
 .rh-header-left {
     flex: 1;
@@ -116,7 +122,7 @@ button[data-testid="stSidebarCollapseButton"]:hover {
 .rh-header-tag {
     font-size: 11px !important;
     letter-spacing: 2.5px !important;
-    color: #C9A84C !important;
+    color: #cdaf69 !important;
     text-transform: uppercase !important;
     font-weight: 600 !important;
     margin-bottom: 6px !important;
@@ -124,7 +130,7 @@ button[data-testid="stSidebarCollapseButton"]:hover {
 .rh-header-title {
     font-size: 26px !important;
     font-weight: 800 !important;
-    color: #C9A84C !important;
+    color: #cdaf69 !important;
     text-transform: uppercase !important;
     letter-spacing: 1.5px !important;
     line-height: 1.1 !important;
@@ -132,7 +138,7 @@ button[data-testid="stSidebarCollapseButton"]:hover {
 }
 .rh-header-sub {
     font-size: 13px !important;
-    color: #9FB8A8 !important;
+    color: #B7CDBE !important;
     font-weight: 400 !important;
 }
 .rh-header-logo {
@@ -152,7 +158,7 @@ button[data-testid="stSidebarCollapseButton"]:hover {
     font-size: 12px;
     letter-spacing: 2.5px;
     text-transform: uppercase;
-    color: #C9A84C;
+    color: #cdaf69;
     font-weight: 700;
     margin-bottom: 18px;
     padding-bottom: 10px;
@@ -172,14 +178,14 @@ button[data-testid="stSidebarCollapseButton"]:hover {
     background: #FFFFFF;
     border: 0.5px solid #D8D3C8;
     border-radius: 12px;
-    border-top: 3px solid #C9A84C;
+    border-top: 3px solid #cdaf69;
     padding: 24px 28px;
     margin-bottom: 16px;
 }
 .rh-card-num {
     width: 30px; height: 30px;
     border-radius: 50%;
-    background: #1C3829;
+    background: #015641;
     color: white;
     font-size: 13px;
     font-weight: 700;
@@ -219,7 +225,7 @@ button[data-testid="stSidebarCollapseButton"]:hover {
     overflow: hidden;
 }
 .rh-progress-fill {
-    background: #C9A84C;
+    background: #cdaf69;
     height: 100%;
     border-radius: 3px;
     transition: width 0.4s ease;
@@ -240,13 +246,13 @@ div.stDownloadButton > button {
 div.stButton > button[kind="primary"],
 div.stFormSubmitButton > button[kind="primary"],
 div.stDownloadButton > button[kind="primary"] {
-    background: #1C3829 !important;
+    background: #015641 !important;
     color: white !important;
     border: none !important;
 }
 div.stButton > button[kind="primary"]:hover,
 div.stFormSubmitButton > button[kind="primary"]:hover {
-    background: #2A4F3A !important;
+    background: #0E6B52 !important;
 }
 div.stButton > button[kind="secondary"],
 div.stFormSubmitButton > button[kind="secondary"] {
@@ -307,8 +313,8 @@ div[role="radiogroup"] label:hover {
 div[data-testid="stTextInput"] input:focus,
 div[data-testid="stSelectbox"] select:focus,
 div[data-testid="stTextArea"] textarea:focus {
-    border-color: #C9A84C !important;
-    box-shadow: 0 0 0 2px rgba(201,168,76,0.15) !important;
+    border-color: #cdaf69 !important;
+    box-shadow: 0 0 0 2px rgba(205,175,105,0.18) !important;
 }
 
 /* Labels MAIS legíveis */
@@ -345,18 +351,18 @@ div[data-testid="stCaptionContainer"],
 /* ── Alert / Success ───────────────────────────────── */
 .rh-success {
     background: #EAF0EC;
-    border: 0.5px solid #1C3829;
-    border-left: 4px solid #C9A84C;
+    border: 0.5px solid #015641;
+    border-left: 4px solid #cdaf69;
     border-radius: 8px;
     padding: 18px 22px;
     margin-bottom: 18px;
     font-size: 15px;
-    color: #1C3829;
+    color: #015641;
 }
 .rh-warning {
     background: #FBF6ED;
     border: 0.5px solid #D8D3C8;
-    border-left: 4px solid #C9A84C;
+    border-left: 4px solid #cdaf69;
     border-radius: 8px;
     padding: 18px 22px;
     margin-bottom: 18px;
@@ -378,7 +384,7 @@ div[data-testid="stCaptionContainer"],
 .rh-thanks-title {
     font-size: 28px;
     font-weight: 800;
-    color: #1C3829;
+    color: #015641;
     margin-bottom: 10px;
     text-transform: uppercase;
     letter-spacing: 1px;
