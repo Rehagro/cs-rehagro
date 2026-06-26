@@ -37,6 +37,31 @@ Reproduza pixel a pixel. Todos os valores exatos estão na seção **Design Toke
 
 ---
 
+## ⚠️ Restrição de paginação: o PDF DEVE caber em 2 páginas A4
+Uma implementação anterior gerou **3 páginas** por excesso de espaçamento vertical.
+O template e os tokens deste pacote já foram **recalibrados** para caber em **2 páginas A4**
+(com os 3 módulos de exemplo). Não reintroduza paddings/margens maiores nem aumente as
+fontes — isso estoura para 3 páginas.
+
+**Como a paginação foi validada (largura/altura reais de impressão A4 @96dpi):**
+- Coluna de conteúdo impressa: `794px − 2×0.5in(48px) = 698px` de largura.
+- Altura útil por página: `1123px − 2×0.38in(36.5px) = ~1050px` (as bandas de margem
+  superior/inferior vêm do `thead`/`tfoot` repetidos).
+- Altura total renderizada do conteúdo: **~1832px ≈ 1,74 páginas.**
+- Com `break-inside: avoid` nos cards, a quebra cai naturalmente assim:
+  - **Página 1:** Hero + Intro + Boas-vindas + Módulo 1.
+  - **Página 2:** Módulo 2 + Módulo 3 + Encerramento.
+
+**Se o seu conteúdo for maior (mais módulos, textos mais longos) e voltar a 3 páginas:**
+1. Confirme que está usando os valores compactos desta versão (não os da versão anterior).
+2. Reduza primeiro os espaços entre blocos (margens das seções, `margin-bottom` dos cards
+   de 13px), depois os paddings internos dos cards/painéis — nunca as fontes abaixo dos
+   valores aqui (legibilidade impressa).
+3. Última opção, se houver muitos módulos: aceitar 3 páginas é melhor do que espremer a
+   ponto de prejudicar leitura. A meta de 2 páginas vale para ~3 módulos.
+
+---
+
 ## Recomendação de arquitetura (IMPORTANTE — leia antes de implementar)
 O documento original era gerado como **.docx** e depois convertido manualmente em PDF
 pelo CS. Recomendamos **abandonar o .docx** por dois motivos:
@@ -233,16 +258,18 @@ permanecem clicáveis (Chromium/Puppeteer preservam hyperlinks). Não há hover/
 | Branco | `#FFFFFF` | Superfície do documento e tiles |
 | Texto sobre verde | `#EAF1EC` / `#A9C2B2` | Mensagem e subtítulo do encerramento |
 
-### Tipografia
+### Tipografia (escala COMPACTA — versão de 2 páginas)
 - **Display/Títulos:** `Poppins` (500, 600, 700) — Google Fonts.
 - **Corpo:** `Mulish` (400, 500, 600, 700) — Google Fonts.
 - Import: `https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Mulish:wght@400;500;600;700&display=swap`
-- Escala principal: H1 38/1.05; H3 (cards) 20; corpo 14.5–15.5/1.65–1.7; eyebrows 10–13
-  uppercase com `letter-spacing` 0.12–0.22em; números de métrica 20/700.
+- H1 (nome do aluno) **31px**/1.05; H3 (títulos de card) **17px**; corpo/descrições
+  **13–13.5px**/1.55–1.6; texto das métricas e info **12.5px**; legendas **11px**;
+  números de métrica **18px/700**; eyebrows **9.5–12px** uppercase com
+  `letter-spacing` 0.12–0.2em. **Não reduzir abaixo destes valores** (legibilidade impressa).
 
-### Raios
-Tiles `12px` · botões `10px` · welcome card `16px` · module/closing card `18px` ·
-hero `20px` · pílulas/badges/avatar `999px`/círculo · ícone do welcome `14px`.
+### Raios (versão compacta)
+Tiles `10px` · botões `9px` · welcome card `14px` · module/closing card `15px` ·
+hero `18px` · pílulas/badges/avatar `999px`/círculo · ícone do welcome `12px`.
 
 ### Sombras
 - Documento (tela): `0 10px 40px rgba(14,58,41,.14)` (removida na impressão).
@@ -251,9 +278,19 @@ hero `20px` · pílulas/badges/avatar `999px`/círculo · ícone do welcome `14p
 - Ícone welcome: `0 4px 12px rgba(15,70,48,.25)`.
 
 ### Espaçamento (referências)
-Padding do documento: `44px 54px 60px` (tela) / `0 0.55in` (impressão).
-Hero: `34px 36px 32px`. Module header: `20px 24px`. Corpo do card: `4px 24px 24px`.
-Painel de materiais: `18px 20px`. Gap do grid de tiles: `12px`.
+Valores da **versão compacta de 2 páginas** (use exatamente estes):
+- Padding do documento: `32px 42px 36px` (tela) / `0 0.5in` (impressão).
+- Bandas de margem por página (thead/tfoot): `0.38in`.
+- Hero: `24px 30px 22px`. Intro: `margin 18px 2px 4px`.
+- Section headers: `margin 22–24px 0 6–12px`. Welcome card: `16px 20px`.
+- Module card: `margin-bottom 13px` (último `6px`). Module header: `13px 18px`.
+  Corpo do card: `2px 18px 16px`.
+- Painel de materiais: `14px 16px`. Gap do grid de tiles: `10px`. Tiles: `10px 13px`.
+- Linhas de info (Atividades/Programação): `padding 8px 0`.
+- Encerramento: `margin-top 16px`, `padding 20px 24px`.
+
+> Estes números foram calibrados para fechar em **~1832px de altura ≈ 2 páginas A4**.
+> A versão anterior (mais espaçada) gerava 3 páginas.
 
 ---
 

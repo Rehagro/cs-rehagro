@@ -18,7 +18,9 @@ Depois de migrar para o fluxo HubSpot → .docx (ver seção abaixo), o `.docx` 
 - Removidos: `core/gerador_plano.py`, `core/font_embed.py` (.docx).
 - `requirements.txt`: troca python-docx/pandas por `jinja2` + `playwright`.
 
-**Validado:** CSV real → 3 módulos casados → PDF de 3 páginas pixel-perfect ao protótipo (hero, badges, painéis de materiais, encerramento). Chromium OK em local.
+**Validado:** CSV real → 3 módulos casados → PDF pixel-perfect ao protótipo (hero, badges, painéis de materiais, encerramento). Chromium OK em local.
+
+**Ajuste v2 (2026-06-26):** o handoff foi recalibrado (espaçamentos/fontes compactos) para o PDF caber em **2 páginas A4** (antes 3). Só o template (`templates/plano_de_aula.html.j2`) e a pasta de referência mudaram — dados/contrato/código de render iguais. Quebra: pág.1 = capa+intro+boas-vindas+módulo 1; pág.2 = módulos 2 e 3 + encerramento. Meta de 2 páginas vale p/ ~3 módulos; com muitos módulos pode passar (aceitável).
 
 ---
 
