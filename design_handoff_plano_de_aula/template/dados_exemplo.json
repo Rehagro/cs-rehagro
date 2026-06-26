@@ -1,0 +1,49 @@
+{
+  "logo_url": "assets/rehagro-logo-white.png",
+  "data_geracao": "26/06/2026",
+  "aluno": {
+    "nome": "Douglas Brandão"
+  },
+  "curso": {
+    "nome": "Curso de teste"
+  },
+  "boas_vindas": {
+    "titulo": "Boas-vindas",
+    "descricao": "Para iniciar, veja como funciona o curso e os critérios de aprovação no nosso módulo de Boas-vindas.",
+    "url": "https://rehagro.instructure.com/courses/2850"
+  },
+  "modulos": [
+    {
+      "titulo": "Manejo da cultura do milho",
+      "descricao": "Em seguida, veja o módulo que vai te ajudar com o desafio que você identificou como mais urgente.",
+      "url": "https://rehagro.instructure.com/courses/2856",
+      "qtd_aulas": "16",
+      "tempo_aula": "~3h",
+      "atividades": "Teste seu conhecimento (necessário para certificação) e Atividade prática (extra).",
+      "programacao": "3 semanas — 1h por semana (5 videoaulas por semana)."
+    },
+    {
+      "titulo": "Planejamento forrageiro e manejo alimentar",
+      "descricao": "Depois de finalizado o módulo anterior, confira este conteúdo.",
+      "url": "https://rehagro.instructure.com/courses/2857",
+      "qtd_aulas": "28",
+      "tempo_aula": "~3,5h",
+      "atividades": "Teste seu conhecimento (necessário para certificação) e Atividade prática (extra).",
+      "programacao": "4 semanas — 1h por semana (7 videoaulas por semana)."
+    },
+    {
+      "titulo": "Produção de leite de qualidade",
+      "descricao": "Por fim, finalize sua trilha com este módulo.",
+      "url": "https://rehagro.instructure.com/courses/2858",
+      "qtd_aulas": "35",
+      "tempo_aula": "~3,5h",
+      "atividades": "Teste seu conhecimento (necessário para certificação) e Atividade prática (extra).",
+      "programacao": "4 semanas — 1h por semana (9 videoaulas por semana)."
+    }
+  ],
+  "encerramento": {
+    "mensagem": "Nos acione a qualquer momento que precisar! Estamos aqui para garantir que você tire o máximo deste curso. 🌱",
+    "equipe": "Equipe Customer Success",
+    "organizacao": "Rehagro"
+  }
+}

@@ -1,6 +1,28 @@
 # Progresso e próximos passos — CS Rehagro
 
-Último marco: **Reestruturação para fluxo HubSpot → .docx em 2026-06-26.**
+Último marco: **Redesign profissional: saída agora é PDF (HTML/Jinja2/Chromium) em 2026-06-26.**
+
+## 🎨 Redesign para PDF (handoff de design) — 2026-06-26
+
+Depois de migrar para o fluxo HubSpot → .docx (ver seção abaixo), o `.docx` foi **aposentado** em favor de um design profissional hi-fi (handoff feito no Canva, entregue em `design_handoff_plano_de_aula/`).
+
+**Decisões (confirmadas com o usuário):**
+- Saída passa a ser **PDF** (substitui o link do .docx no AVA/e-mail). `.docx` descontinuado.
+- Render: **dados → HTML (Jinja2) → PDF (Chromium headless via Playwright)**. WeasyPrint NÃO serve (sem flex/grid).
+- Como o app roda no **Streamlit Cloud** (vários CS) e Chromium lá é arriscado: **tentar PDF no servidor, com fallback** para o CS baixar o HTML e salvar como PDF no navegador (CSS A4 já pronto).
+- Plano **auto-gerado é final** (sem passo de edição manual).
+- Fontes **Poppins + Mulish** (Google Fonts, livres) → fim do impasse Myriad/licença. Trabalho de embedding .docx (`font_embed.py`) foi descartado.
+
+**Arquivos:**
+- Novos: `templates/plano_de_aula.html.j2`, `core/dados_plano.py`, `core/render_plano.py`, `assets/rehagro-logo-white.png` / `rehagro-logo-color.png`.
+- Removidos: `core/gerador_plano.py`, `core/font_embed.py` (.docx).
+- `requirements.txt`: troca python-docx/pandas por `jinja2` + `playwright`.
+
+**Validado:** CSV real → 3 módulos casados → PDF de 3 páginas pixel-perfect ao protótipo (hero, badges, painéis de materiais, encerramento). Chromium OK em local.
+
+---
+
+### Histórico anterior — Último marco: **Reestruturação para fluxo HubSpot → .docx em 2026-06-26.**
 
 ## 🔄 Reestruturação 2026-06-26 (mudança de uso da ferramenta)
 

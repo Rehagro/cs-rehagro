@@ -18,6 +18,9 @@ data/
 *.docx
 !assets/*.docx
 
+# Nota: assets/fonts/ (Poppins/Mulish) são fontes livres (OFL) e SÃO versionadas
+# de propósito — precisam estar no repo pra geração do PDF funcionar no deploy.
+
 # ── Arquivos temporários ─────────────────────────────
 assets/logo_branca_b64.txt
 

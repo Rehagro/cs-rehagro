@@ -5,18 +5,20 @@ Fluxo (uso interno do time CS):
     1. Login (senha CS)
     2. Upload do CSV exportado do HubSpot Survey
     3. Seleção do aluno
-    4. Revisão da trilha (3 dores → 3 módulos) + dados do aluno
-    5. Download do plano de aula em .docx (identidade visual Rehagro)
+    4. Geração do plano de aula no design Rehagro:
+       - PDF automático (Chromium headless) quando disponível;
+       - fallback: download do HTML (o CS salva como PDF pelo navegador, Ctrl+P).
 """
 import os
 import sys
 
 import streamlit as st
+import streamlit.components.v1 as components
 
 sys.path.insert(0, os.path.dirname(__file__))
 from core.hubspot_csv import parse_hubspot_csv
-from core.gerador_plano import gerar_plano_docx
-from core.mapeamento import get_dor_por_id
+from core.dados_plano import montar_dados
+from core.render_plano import render_html, gerar_pdf
 from core.styles import BASE_CSS, header_html, section_tag_html
 from config import CS_PASSWORD
 
@@ -27,12 +29,16 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# CSS base (esconde a sidebar — app de página única)
 CSS = BASE_CSS.replace(
     "</style>",
     "section[data-testid=\"stSidebar\"] { display: none; }</style>",
 )
 st.markdown(CSS, unsafe_allow_html=True)
+
+
+def _slug(nome: str) -> str:
+    return "".join(c if c.isalnum() else "_" for c in (nome or "aluno")).strip("_")
+
 
 # ── Autenticação ──────────────────────────────────────────────────────────
 if "cs_auth" not in st.session_state:
@@ -41,13 +47,13 @@ if "cs_auth" not in st.session_state:
 if not st.session_state.cs_auth:
     st.markdown("""
     <div style="max-width:420px; margin: 70px auto 24px;">
-        <div style="background:#015641; border-radius:14px; padding:34px; text-align:center;
-                    border-bottom:4px solid #cdaf69;">
-            <div style="font-size:11px; letter-spacing:2px; color:#cdaf69;
+        <div style="background:#0F4630; border-radius:14px; padding:34px; text-align:center;
+                    border-bottom:4px solid #C49A45;">
+            <div style="font-size:11px; letter-spacing:2px; color:#E0C06A;
                         text-transform:uppercase; margin-bottom:8px;">
                 Rehagro · Customer Success
             </div>
-            <div style="font-size:22px; font-weight:800; color:#cdaf69;
+            <div style="font-size:22px; font-weight:800; color:#E0C06A;
                         text-transform:uppercase; letter-spacing:1px;">
                 Gerador de Plano de Aula
             </div>
@@ -78,7 +84,7 @@ if not st.session_state.cs_auth:
 st.markdown(
     header_html(
         "Gerador de Plano de Aula",
-        "Suba o CSV do HubSpot, escolha o aluno e baixe o plano em .docx",
+        "Suba o CSV do HubSpot, escolha o aluno e gere o plano no design Rehagro",
     ),
     unsafe_allow_html=True,
 )
@@ -118,99 +124,78 @@ opcoes = {
 escolha = st.selectbox("Aluno", list(opcoes.keys()), label_visibility="collapsed")
 aluno = alunos[opcoes[escolha]]
 
+# ── Resumo da trilha casada ───────────────────────────────────────────────
+modulos = aluno.get("modulos", [])
+if not modulos:
+    st.error("Nenhuma das 3 prioridades casou com a lista de dores. "
+             "Confira o texto das opções no HubSpot vs. o mapeamento.")
+else:
+    cols = st.columns(len(modulos))
+    for i, (col, m) in enumerate(zip(cols, modulos)):
+        with col:
+            st.markdown(
+                f"<div style='border:0.5px solid #E2EAE4; border-left:4px solid #C49A45; "
+                f"border-radius:0 8px 8px 0; padding:12px 14px; background:#FBFAF4;'>"
+                f"<div style='font-size:10px; font-weight:700; letter-spacing:1px; "
+                f"color:#9A7626; text-transform:uppercase;'>{i + 1}ª prioridade</div>"
+                f"<div style='font-size:14px; font-weight:600; color:#0F4630; margin-top:3px;'>"
+                f"{m['modulo']}</div>"
+                f"<div style='font-size:11px; color:#6A776E; margin-top:3px;'>"
+                f"{m.get('aulas') or '?'} aulas · ~{m.get('tempo') or '?'}</div></div>",
+                unsafe_allow_html=True,
+            )
+
+if aluno.get("dores_nao_reconhecidas"):
+    st.warning(
+        "Trechos do campo de prioridades que **não** casaram com nenhuma dor:\n\n"
+        + "\n".join(f"- {s}" for s in aluno["dores_nao_reconhecidas"])
+    )
+
 st.divider()
 
-# ── Revisão ───────────────────────────────────────────────────────────────
-col_info, col_plan = st.columns([1, 2])
+# ── Geração do plano ──────────────────────────────────────────────────────
+dados = montar_dados(aluno)
+html = render_html(dados)
+nome_base = f"Plano_de_Aula_{_slug(aluno.get('nome'))}"
 
-with col_info:
-    st.markdown("**Dados do aluno**")
-    info_items = [
-        ("Curso",      aluno.get("curso", "—")),
-        ("Perfil",     aluno.get("perfil", "—")),
-        ("Formação",   aluno.get("formacao", "—")),
-        ("Produção",   aluno.get("producao", "—")),
-        ("Animais",    aluno.get("animais", "—")),
-        ("Média/vaca", aluno.get("media_vaca", "—")),
-        ("E-mail",     aluno.get("email", "—")),
-    ]
-    for label, val in info_items:
-        st.markdown(
-            f"<div style='display:flex; justify-content:space-between; gap:12px; "
-            f"font-size:13px; padding:6px 0; "
-            f"border-bottom:0.5px solid #D8D3C8;'>"
-            f"<span style='color:#6B6B5E'>{label}</span>"
-            f"<span style='font-weight:500; text-align:right'>{val or '—'}</span></div>",
-            unsafe_allow_html=True,
-        )
+col_a, col_b = st.columns([1, 1])
 
-    st.markdown("<br>**Respostas abertas**", unsafe_allow_html=True)
-    st.markdown(
-        f"<div style='background:#FBF6ED; border-left:3px solid #cdaf69; "
-        f"border-radius:0 8px 8px 0; padding:12px; font-size:13px; "
-        f"margin-bottom:8px; color:#1A1A1A;'>"
-        f"<strong>Para valer a pena, preciso aprender:</strong><br>"
-        f"{aluno.get('valeu_a_pena') or '—'}</div>",
-        unsafe_allow_html=True,
-    )
-    st.markdown(
-        f"<div style='background:#EAF0EC; border-left:3px solid #015641; "
-        f"border-radius:0 8px 8px 0; padding:12px; font-size:13px; color:#1A1A1A;'>"
-        f"<strong>Meta em 5 anos:</strong><br>{aluno.get('meta') or '—'}</div>",
-        unsafe_allow_html=True,
+with col_a:
+    gerar = st.button("📄 Gerar PDF do plano", type="primary",
+                      use_container_width=True, disabled=not modulos)
+
+with col_b:
+    st.download_button(
+        "⬇️ Baixar HTML (salvar como PDF no navegador)",
+        data=html.encode("utf-8"),
+        file_name=f"{nome_base}.html",
+        mime="text/html",
+        use_container_width=True,
+        disabled=not modulos,
+        help="Abra o arquivo e use Ctrl+P → 'Salvar como PDF' (layout A4 já configurado).",
     )
 
-with col_plan:
-    st.markdown("**Trilha personalizada** "
-                "<span style='color:#6B6B5E; font-size:12px;'>(na ordem em que aparece no HubSpot)</span>",
-                unsafe_allow_html=True)
-
-    modulos = aluno.get("modulos", [])
-    badges = ["1ª prioridade", "2ª prioridade", "3ª prioridade"]
-
-    if not modulos:
-        st.error("Nenhuma das 3 prioridades casou com a lista de dores. "
-                 "Confira o texto das opções no HubSpot vs. o mapeamento.")
-    for i, mod in enumerate(modulos):
-        st.markdown(f"""
-        <div style="background:#FBF6ED; border:0.5px solid #D8D3C8;
-                    border-left:4px solid #cdaf69; border-radius:0 8px 8px 0;
-                    padding:14px 16px; margin-bottom:10px;">
-            <div style="font-size:11px; font-weight:700; letter-spacing:1.5px;
-                        color:#cdaf69; text-transform:uppercase; margin-bottom:4px;">
-                {badges[i] if i < 3 else f'{i+1}ª'}
-            </div>
-            <div style="font-size:14px; font-weight:600; color:#015641; margin-bottom:2px;">
-                {mod['modulo']}
-            </div>
-            <div style="font-size:12px; color:#6B6B5E;">{mod['dor']}</div>
-            {"<div style='font-size:11px; color:#888; margin-top:4px;'>" +
-             str(mod.get('aulas') or '?') + " aulas · " + str(mod.get('tempo') or '?') +
-             (" · " + str(mod.get('programacao')) if mod.get('programacao') else '') +
-             "</div>" if mod.get('aulas') else ""}
-        </div>
-        """, unsafe_allow_html=True)
-
-    if aluno.get("dores_nao_reconhecidas"):
-        st.warning(
-            "Trechos do campo de prioridades que **não** casaram com nenhuma dor:\n\n"
-            + "\n".join(f"- {s}" for s in aluno["dores_nao_reconhecidas"])
-        )
-
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    # ── Download ──────────────────────────────────────────────────────────
-    try:
-        docx_bytes = gerar_plano_docx(aluno)
-        nome_arq = f"Plano_de_Aula_{(aluno.get('nome') or 'aluno').replace(' ', '_')}.docx"
+if gerar:
+    with st.spinner("Gerando o PDF..."):
+        pdf = gerar_pdf(html)
+    if pdf:
         st.download_button(
-            label="⬇️ Baixar Plano de Aula (.docx)",
-            data=docx_bytes,
-            file_name=nome_arq,
-            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "✅ Baixar Plano de Aula (PDF)",
+            data=pdf,
+            file_name=f"{nome_base}.pdf",
+            mime="application/pdf",
             type="primary",
             use_container_width=True,
-            disabled=not modulos,
         )
-    except Exception as e:
-        st.error(f"Erro ao gerar o plano: {e}")
+    else:
+        st.info(
+            "A geração automática de PDF não está disponível neste ambiente "
+            "(sem Chromium no servidor). Use o botão **Baixar HTML** ao lado e, "
+            "no arquivo aberto, faça **Ctrl+P → Salvar como PDF** — o layout A4 já "
+            "está pronto e sai idêntico."
+        )
+
+# ── Pré-visualização ──────────────────────────────────────────────────────
+if modulos:
+    with st.expander("👁️ Pré-visualizar o plano"):
+        components.html(html, height=900, scrolling=True)
