@@ -2,6 +2,10 @@
 
 Último marco: **Reestilização da UI do app (2 telas no design Rehagro) em 2026-06-26.**
 
+## ✂️ Removido o "Gerar PDF" do servidor — 2026-06-26
+
+O botão "Gerar PDF do plano" (Playwright/Chromium) foi **removido**: no Streamlit Cloud o Chromium não existe, então ele sempre caía no fallback (confuso). Agora o fluxo é só **Baixar plano (HTML) → Ctrl+P → Salvar como PDF**, com uma caixa de orientação passo a passo na etapa 3. O botão de download virou a ação primária (verde). `playwright` foi tirado do `requirements.txt` (deploy mais leve). `core/render_plano.py` mantém só o `render_html`; `gerar_pdf`/`pdf_disponivel` seguem no arquivo (sem uso, degradam sem playwright).
+
 ## 🖥️ Redesign da UI do app — 2026-06-26 (handoff design_handoff_gerador_ui)
 
 As 2 telas do app (login + gerador) foram reestilizadas na identidade do plano (verde-floresta/dourado, Poppins/Mulish), mantendo toda a lógica de CSV/PDF.

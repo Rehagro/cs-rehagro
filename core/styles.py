@@ -99,16 +99,17 @@ header[data-testid="stHeader"]{
 [data-testid="stFileUploaderDropzoneInstructions"] *{ color:var(--muted) !important; }
 
 /* ---- BOTÕES ---- */
-/* primário (type="primary"): verde floresta */
-.stButton > button[kind="primary"]{
+/* primário (type="primary") + download (ação principal): verde floresta */
+.stButton > button[kind="primary"],
+[data-testid="stDownloadButton"] > button{
   background:var(--forest) !important; color:#fff !important; border:none !important;
   border-radius:12px !important; height:52px; font-family:'Poppins'; font-weight:600;
   font-size:14.5px; box-shadow:0 6px 16px rgba(15,70,48,.22);
 }
-.stButton > button[kind="primary"]:hover{ background:#0c3a28 !important; }
-/* secundário + download: outline */
-.stButton > button[kind="secondary"],
-[data-testid="stDownloadButton"] > button{
+.stButton > button[kind="primary"]:hover,
+[data-testid="stDownloadButton"] > button:hover{ background:#0c3a28 !important; color:#fff !important; }
+/* secundário: outline */
+.stButton > button[kind="secondary"]{
   background:#fff !important; color:var(--forest) !important;
   border:1.5px solid #C9C2B0 !important; border-radius:12px !important; height:52px;
   font-family:'Poppins'; font-weight:600; font-size:13.5px;

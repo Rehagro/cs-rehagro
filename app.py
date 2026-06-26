@@ -16,7 +16,7 @@ import streamlit.components.v1 as components
 sys.path.insert(0, os.path.dirname(__file__))
 from core.hubspot_csv import parse_hubspot_csv
 from core.dados_plano import montar_dados
-from core.render_plano import render_html, gerar_pdf
+from core.render_plano import render_html
 from core.styles import BRAND_CSS, masthead_html, step_html, card_prioridade_html
 from config import CS_PASSWORD
 
@@ -123,45 +123,41 @@ def tela_gerador():
 
     st.divider()
 
-    # ── Etapa 3 — Gerar ───────────────────────────────────────────────────
-    st.markdown(step_html(3, "Gere e envie o plano"), unsafe_allow_html=True)
+    # ── Etapa 3 — Baixar e enviar ─────────────────────────────────────────
+    st.markdown(step_html(3, "Baixe o plano e envie ao aluno"), unsafe_allow_html=True)
 
     html = render_html(montar_dados(aluno))
     nome_base = f"Plano_de_Aula_{_slug(aluno.get('nome'))}"
 
-    b1, b2 = st.columns([1.6, 1], gap="medium")
-    with b1:
-        gerar = st.button("📄  Gerar PDF do plano", type="primary",
-                          use_container_width=True, disabled=not modulos)
-    with b2:
-        st.download_button(
-            "⬇  Baixar HTML (salvar como PDF)",
-            data=html.encode("utf-8"),
-            file_name=f"{nome_base}.html",
-            mime="text/html",
-            use_container_width=True,
-            disabled=not modulos,
-            help="Abra o arquivo e use Ctrl+P → 'Salvar como PDF' (layout A4 já configurado).",
-        )
-
-    if gerar:
-        with st.spinner("Gerando o PDF..."):
-            pdf = gerar_pdf(html)
-        if pdf:
-            st.download_button(
-                "✅ Baixar Plano de Aula (PDF)",
-                data=pdf,
-                file_name=f"{nome_base}.pdf",
-                mime="application/pdf",
-                type="primary",
-                use_container_width=True,
-            )
-        else:
-            st.info(
-                "A geração automática de PDF não está disponível neste ambiente "
-                "(sem Chromium no servidor). Use o botão **Baixar HTML** e, no arquivo "
-                "aberto, faça **Ctrl+P → Salvar como PDF** — o layout A4 já está pronto."
-            )
+    st.download_button(
+        "⬇  Baixar plano de aula",
+        data=html.encode("utf-8"),
+        file_name=f"{nome_base}.html",
+        mime="text/html",
+        use_container_width=True,
+        disabled=not modulos,
+    )
+    st.markdown(
+        """
+        <div style="background:#FBFAF6; border:1px solid #E7E1D3; border-left:4px solid #C49A45;
+             border-radius:12px; padding:14px 18px; margin-top:6px;">
+          <div style="font-family:'Poppins',sans-serif; font-weight:600; font-size:13px;
+               color:#0F4630; margin-bottom:8px;">📄 Como salvar o plano em PDF</div>
+          <ol style="margin:0; padding-left:18px; color:#5A6B61; font-size:13px; line-height:1.75;">
+            <li>Clique em <strong style="color:#0F4630;">Baixar plano de aula</strong>
+                (baixa um arquivo <code>.html</code>).</li>
+            <li>Abra o arquivo baixado — ele abre no seu navegador.</li>
+            <li>Pressione <strong style="color:#0F4630;">Ctrl + P</strong>
+                (no Mac, <strong style="color:#0F4630;">⌘ + P</strong>).</li>
+            <li>Em <em>Destino / Impressora</em>, escolha
+                <strong style="color:#0F4630;">Salvar como PDF</strong>.</li>
+            <li>Clique em <strong style="color:#0F4630;">Salvar</strong>.
+                Esse PDF é o que você envia ao aluno. ✅</li>
+          </ol>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
     if modulos:
         with st.expander("👁  Pré-visualizar o plano"):
