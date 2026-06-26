@@ -9,23 +9,23 @@ from core.mapeamento import MODULO_BOASVINDAS
 
 # Descrição de cada módulo conforme a posição na trilha (1ª, 2ª, 3ª…).
 _INTROS = [
-    "Em seguida, veja o módulo que vai te ajudar com o desafio que você identificou como mais urgente.",
-    "Depois de finalizado o módulo anterior, confira este conteúdo.",
-    "Por fim, finalize sua trilha com este módulo.",
+    "Responde ao desafio que você apontou como mais urgente. Por isso vem primeiro.",
+    "Ao concluir o módulo anterior, siga para o segundo desafio que você indicou.",
+    "Fecha sua trilha com o terceiro ponto que você destacou.",
 ]
 _INTRO_EXTRA = "Continue sua trilha com este módulo."
 
 _BOAS_VINDAS_DESC = (
-    "Para iniciar, veja como funciona o curso e os critérios de aprovação "
-    "no nosso módulo de Boas-vindas."
+    "Comece por aqui: veja como o curso funciona e o que garante sua aprovação "
+    "(a entrega das atividades)."
 )
 
 _ENCERRAMENTO = {
     "mensagem": (
-        "Nos acione a qualquer momento que precisar! Estamos aqui para garantir "
-        "que você tire o máximo deste curso. 🌱"
+        "Conte com a gente sempre que precisar — pra você tirar o máximo do curso "
+        "e levar resultado pra sua fazenda. 🌱"
     ),
-    "equipe": "Equipe Customer Success",
+    "equipe": "Equipe de Sucesso do Cliente",
     "organizacao": "Rehagro",
 }
 

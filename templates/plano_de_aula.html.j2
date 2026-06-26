@@ -48,7 +48,7 @@
 
         <div style="position:relative; display:flex; align-items:center; justify-content:space-between; gap:16px;">
           <img src="{{ logo_url }}" alt="Rehagro" style="height:23px; width:auto; display:block;">
-          <span style="font-family:'Poppins',sans-serif; font-size:10px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:#E0C06A; border:1px solid rgba(224,192,106,.45); padding:5px 11px; border-radius:999px; white-space:nowrap;">Customer Success</span>
+          <span style="font-family:'Poppins',sans-serif; font-size:10px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:#E0C06A; border:1px solid rgba(224,192,106,.45); padding:5px 11px; border-radius:999px; white-space:nowrap;">Sucesso do Cliente</span>
         </div>
 
         <div style="position:relative; margin-top:20px;">
@@ -70,7 +70,7 @@
 
       <!-- ===================== INTRO ===================== -->
       <p style="font-size:13.5px; line-height:1.6; color:#33433A; margin:18px 2px 4px;">
-        <strong style="color:#0F4630;">{{ aluno.nome }}</strong>, esse é o seu plano de aula, personalizado de acordo com os seus principais desafios. Nele você verá as orientações sobre a sequência de conteúdos para assistir nesses primeiros meses de curso, além de materiais complementares que podem te apoiar no seu dia a dia. Confira abaixo nossa recomendação:
+        <strong style="color:#0F4630;">{{ aluno.nome }}</strong>, este plano de aula foi montado a partir das suas respostas na pesquisa do primeiro módulo. Foi o que você nos contou que definiu a ordem dos módulos — começando pelo mais urgente pra sua fazenda. Confira sua recomendação:
       </p>
 
       <!-- ===================== PARA COMEÇAR ===================== -->
@@ -101,7 +101,7 @@
         <h2 style="font-family:'Poppins',sans-serif; font-weight:600; font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:#0F4630; margin:0; white-space:nowrap;">Sua trilha personalizada</h2>
         <span style="flex:1; height:2px; background:linear-gradient(90deg,#C49A45 0%, #E7EBE6 100%); border-radius:2px;"></span>
       </div>
-      <p style="font-size:12.5px; line-height:1.5; color:#6A776E; margin:0 2px 14px;">Siga a ordem das prioridades abaixo — cada módulo foi organizado a partir dos desafios que você identificou.</p>
+      <p style="font-size:12.5px; line-height:1.5; color:#6A776E; margin:0 2px 14px;">A ordem abaixo veio das suas respostas na pesquisa. Cada módulo responde a um desafio que você apontou.</p>
 
       {# ===== LOOP DE MÓDULOS — repete um card por item em `modulos` ===== #}
       {% for m in modulos %}

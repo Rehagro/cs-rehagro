@@ -15,7 +15,7 @@ DORES = [
         "aulas": None,
         "tempo": None,
         "programacao": None,
-        "atividades": "Teste seu conhecimento (necessário para certificação) e Atividade prática (extra)",
+        "atividades": "Teste seu conhecimento (obrigatório para a aprovação) e Atividade prática (extra)",
     },
     {
         "id": "eficiencia_produtiva",
@@ -26,7 +26,7 @@ DORES = [
         "aulas": 21,
         "tempo": "3,5h",
         "programacao": "3 semanas (1h por semana – 7 videoaulas por semana)",
-        "atividades": "Teste seu conhecimento (necessário para certificação) e Atividade prática (extra)",
+        "atividades": "Teste seu conhecimento (obrigatório para a aprovação) e Atividade prática (extra)",
     },
     {
         "id": "gestao_financeira",
@@ -37,7 +37,7 @@ DORES = [
         "aulas": 31,
         "tempo": "4h",
         "programacao": "4 semanas (1h por semana – 8 videoaulas por semana)",
-        "atividades": "Teste seu conhecimento (necessário para certificação) e Atividade prática (extra)",
+        "atividades": "Teste seu conhecimento (obrigatório para a aprovação) e Atividade prática (extra)",
     },
     {
         "id": "sanidade_bezerras",
@@ -48,7 +48,7 @@ DORES = [
         "aulas": 21,
         "tempo": "2,5h",
         "programacao": "3 semanas (1h por semana – 7 videoaulas por semana)",
-        "atividades": "Teste seu conhecimento (necessário para certificação) e Atividade prática (extra)",
+        "atividades": "Teste seu conhecimento (obrigatório para a aprovação) e Atividade prática (extra)",
     },
     {
         "id": "criacao_bezerras",
@@ -59,7 +59,7 @@ DORES = [
         "aulas": 18,
         "tempo": "3h",
         "programacao": "3 semanas (1h por semana – 6 videoaulas por semana)",
-        "atividades": "Teste seu conhecimento (necessário para certificação) e Atividade prática (extra)",
+        "atividades": "Teste seu conhecimento (obrigatório para a aprovação) e Atividade prática (extra)",
     },
     {
         "id": "qualidade_leite",
@@ -70,7 +70,7 @@ DORES = [
         "aulas": 35,
         "tempo": "3,5h",
         "programacao": "4 semanas (1h por semana – 9 videoaulas por semana)",
-        "atividades": "Teste seu conhecimento (necessário para certificação) e Atividade prática (extra)",
+        "atividades": "Teste seu conhecimento (obrigatório para a aprovação) e Atividade prática (extra)",
     },
     {
         "id": "indicadores_rebanho",
@@ -81,7 +81,7 @@ DORES = [
         "aulas": 20,
         "tempo": "3h",
         "programacao": "3 semanas (1h por semana – 7 videoaulas por semana)",
-        "atividades": "Teste seu conhecimento (necessário para certificação) e Atividade prática (extra)",
+        "atividades": "Teste seu conhecimento (obrigatório para a aprovação) e Atividade prática (extra)",
     },
     {
         "id": "manejo_milho",
@@ -92,7 +92,7 @@ DORES = [
         "aulas": 16,
         "tempo": "3h",
         "programacao": "3 semanas (1h por semana – 5 videoaulas por semana)",
-        "atividades": "Teste seu conhecimento (necessário para certificação) e Atividade prática (extra)",
+        "atividades": "Teste seu conhecimento (obrigatório para a aprovação) e Atividade prática (extra)",
     },
     {
         "id": "manejo_alimentar",
@@ -103,7 +103,7 @@ DORES = [
         "aulas": 28,
         "tempo": "3,5h",
         "programacao": "4 semanas (1h por semana – 7 videoaulas por semana)",
-        "atividades": "Teste seu conhecimento (necessário para certificação) e Atividade prática (extra)",
+        "atividades": "Teste seu conhecimento (obrigatório para a aprovação) e Atividade prática (extra)",
     },
 ]
 
