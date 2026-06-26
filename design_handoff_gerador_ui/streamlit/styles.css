@@ -1,0 +1,95 @@
+/* ============================================================
+   Rehagro · Gerador de Plano de Aula — CSS de marca para Streamlit
+   Injete uma vez no topo do app:
+       st.markdown(f"<style>{open('styles.css').read()}</style>",
+                   unsafe_allow_html=True)
+   Observação: o Streamlit gera nomes de classe instáveis; preferimos
+   seletores por data-testid (estáveis) + componentes desenhados em HTML
+   puro (masthead, cards de prioridade, banners) via st.markdown.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Mulish:wght@400;500;600;700&display=swap');
+
+:root{
+  --forest:#0F4630; --forest2:#0A2C1E; --bar:#0B3B2B;
+  --green:#1E7A45;  --gold:#C49A45;   --gold-2:#E6C977; --gold-soft:#FBF3DE;
+  --cream:#F2EEE4;  --ink:#1B2B22;    --muted:#5A6B61;  --muted-2:#8A8270;
+  --line:#E7E1D3;   --line-input:#E2DED1;
+}
+
+/* ---- base / fontes ---- */
+html, body, [class*="css"]{ font-family:'Mulish', system-ui, sans-serif; color:var(--ink); }
+.stApp{ background:var(--cream); }
+h1,h2,h3,h4,h5{ font-family:'Poppins', sans-serif; }
+
+/* barra superior fina verde (substitui o header padrão do Streamlit) */
+header[data-testid="stHeader"]{
+  background:linear-gradient(90deg,var(--bar),#0E4632);
+  height:60px;
+}
+/* largura/respiro do conteúdo */
+.block-container{ max-width:1120px; padding-top:18px; padding-bottom:48px; }
+
+/* ---- TÍTULOS DE ETAPA (renderizar via st.markdown com a classe .step) ---- */
+.step{ display:flex; align-items:center; gap:11px; margin:0 0 13px; }
+.step .n{ width:24px; height:24px; border-radius:50%; border:1.5px solid var(--gold);
+  color:#9A7626; font-family:'Poppins'; font-weight:700; font-size:12px;
+  display:flex; align-items:center; justify-content:center; }
+.step .t{ font-family:'Poppins'; font-size:12px; font-weight:600; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--muted); }
+
+/* ---- INPUT DE TEXTO / SENHA ---- */
+[data-testid="stTextInput"] input{
+  height:46px; border:1.5px solid var(--line-input) !important; border-radius:11px !important;
+  background:#FBFAF6 !important; font-size:14px;
+}
+[data-testid="stTextInput"] input:focus{ border-color:var(--gold) !important;
+  box-shadow:0 0 0 3px rgba(196,154,69,.18) !important; }
+
+/* ---- SELECTBOX (selecione o aluno) ---- */
+[data-testid="stSelectbox"] div[data-baseweb="select"] > div{
+  border:1.5px solid var(--line-input) !important; border-radius:11px !important;
+  background:#fff !important; min-height:48px; padding:4px 6px;
+}
+
+/* ---- FILE UPLOADER ---- */
+[data-testid="stFileUploader"] section{
+  border:1.5px dashed #C9C2B0 !important; border-radius:14px !important;
+  background:#fff !important; padding:18px;
+}
+[data-testid="stFileUploader"] section:hover{ border-color:var(--gold) !important; }
+[data-testid="stFileUploaderDropzoneInstructions"] *{ color:var(--muted) !important; }
+
+/* ---- BOTÕES ---- */
+/* primário (type="primary"): verde floresta */
+.stButton > button[kind="primary"], .stButton > button[data-testid="baseButton-primary"]{
+  background:var(--forest) !important; color:#fff !important; border:none !important;
+  border-radius:12px !important; height:52px; font-family:'Poppins'; font-weight:600;
+  font-size:14.5px; box-shadow:0 6px 16px rgba(15,70,48,.22);
+}
+/* secundário: outline */
+.stButton > button[kind="secondary"], .stButton > button:not([kind="primary"]){
+  background:#fff !important; color:var(--forest) !important;
+  border:1.5px solid #C9C2B0 !important; border-radius:12px !important; height:52px;
+  font-family:'Poppins'; font-weight:600; font-size:13.5px;
+}
+/* botão dourado (login "Entrar") — aplique via classe wrapper .gold-btn ou um type custom */
+.gold-btn .stButton > button{
+  background:linear-gradient(135deg,var(--gold-2),var(--gold)) !important;
+  color:var(--forest) !important; border:none !important; border-radius:11px !important;
+  height:48px; font-family:'Poppins'; font-weight:600; box-shadow:0 4px 12px rgba(196,154,69,.3);
+}
+
+/* ---- ALERTA DE SUCESSO (st.success) ---- */
+[data-testid="stAlert"]{
+  background:#E7F1E8 !important; border:1px solid #C3E0C8 !important;
+  border-radius:12px !important; color:var(--forest) !important;
+}
+
+/* ---- EXPANDER (pré-visualizar o plano) ---- */
+[data-testid="stExpander"]{ border:1px solid var(--line) !important; border-radius:12px !important;
+  background:#fff !important; }
+[data-testid="stExpander"] summary{ font-family:'Poppins'; font-weight:500; color:var(--forest); }
+
+/* esconder rodapé "Made with Streamlit" (opcional) */
+footer{ visibility:hidden; }

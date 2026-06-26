@@ -1,0 +1,12 @@
+[theme]
+# Tema base do Rehagro — Gerador de Plano de Aula
+base = "light"
+primaryColor = "#0F4630"          # verde floresta (botões primários, foco)
+backgroundColor = "#F2EEE4"        # creme (fundo da página)
+secondaryBackgroundColor = "#FFFFFF"  # superfície de cards/inputs
+textColor = "#1B2B22"              # tinta
+font = "sans serif"                # as fontes reais (Poppins/Mulish) entram via CSS @import
+
+[server]
+# opcional — esconder o menu/rodapé "Manage app" para o time CS, se desejar
+# headless = true

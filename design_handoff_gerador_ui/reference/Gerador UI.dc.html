@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Mulish:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Mulish', system-ui, sans-serif; color: #1B2B22; -webkit-font-smoothing: antialiased; }
+</style>
+</helmet>
+
+<!-- ============================================================ -->
+<!-- FRAME 1 — LOGIN -->
+<!-- ============================================================ -->
+<div style="position:absolute; left:80px; top:80px; width:1180px;">
+  <div data-drags-parent="1" style="font-family:'Poppins',sans-serif; font-size:13px; font-weight:600; letter-spacing:.04em; color:#4A4A4A; margin-bottom:12px;">01 · Tela de login (time CS)</div>
+  <div style="background:#F2EEE4; border-radius:12px; overflow:hidden; box-shadow:0 8px 30px rgba(0,0,0,.12); border:1px solid #E7E1D3;">
+
+    <!-- top bar -->
+    <div style="height:60px; background:linear-gradient(90deg,#0B3B2B,#0E4632);"></div>
+
+    <!-- auth column -->
+    <div style="padding:64px 0 90px; display:flex; flex-direction:column; align-items:center;">
+      <div style="width:520px; max-width:90%;">
+
+        <!-- masthead card -->
+        <div style="position:relative; overflow:hidden; border-radius:16px; border-bottom:3px solid #C49A45; background:linear-gradient(135deg,#0F4630 0%,#0A2C1E 100%); padding:30px 34px 28px; text-align:center;">
+          <svg viewBox="0 0 300 300" style="position:absolute; top:-90px; right:-80px; width:240px; height:240px; opacity:.8;" aria-hidden="true"><circle cx="150" cy="150" r="130" fill="none" stroke="#C49A45" stroke-width="2" opacity="0.45"></circle></svg>
+          <div style="position:relative;">
+            <div style="font-family:'Poppins',sans-serif; font-size:11px; font-weight:600; letter-spacing:.22em; text-transform:uppercase; color:#E0C06A;">Rehagro · Customer Success</div>
+            <div style="font-family:'Poppins',sans-serif; font-size:25px; font-weight:700; letter-spacing:.01em; color:#fff; margin-top:8px;">Gerador de Plano de Aula</div>
+          </div>
+        </div>
+
+        <!-- form card -->
+        <div style="background:#fff; border:1px solid #E7E1D3; border-radius:16px; padding:28px 30px; margin-top:18px; box-shadow:0 2px 14px rgba(15,70,48,.05);">
+          <label style="display:block; font-family:'Poppins',sans-serif; font-size:12px; font-weight:600; letter-spacing:.04em; color:#5A6B61; margin-bottom:9px;">Senha de acesso</label>
+          <div style="display:flex; gap:10px;">
+            <div style="flex:1; display:flex; align-items:center; height:46px; border:1.5px solid #E2DED1; border-radius:11px; padding:0 14px; background:#FBFAF6;">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#9AA39C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:10px; flex:none;"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              <span style="color:#A7A089; font-size:14px; font-style:italic;">Digite a senha do time CS</span>
+            </div>
+            <button style="flex:none; width:46px; height:46px; border:1.5px solid #E2DED1; border-radius:11px; background:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5A6B61" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            </button>
+          </div>
+          <button style="width:100%; height:48px; margin-top:16px; border:none; border-radius:11px; background:linear-gradient(135deg,#E6C977,#C49A45); color:#0F4630; font-family:'Poppins',sans-serif; font-weight:600; font-size:14.5px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 12px rgba(196,154,69,.3);">
+            Entrar
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F4630" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"></path></svg>
+          </button>
+          <div style="display:flex; align-items:center; gap:8px; margin-top:16px; color:#8A8270; font-size:12.5px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C49A45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4M12 8h.01"></path></svg>
+            Acesso restrito à equipe de Customer Success.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- FRAME 2 — GERADOR -->
+<!-- ============================================================ -->
+<div style="position:absolute; left:1340px; top:80px; width:1180px;">
+  <div data-drags-parent="1" style="font-family:'Poppins',sans-serif; font-size:13px; font-weight:600; letter-spacing:.04em; color:#4A4A4A; margin-bottom:12px;">02 · Tela principal do gerador</div>
+  <div style="background:#F2EEE4; border-radius:12px; overflow:hidden; box-shadow:0 8px 30px rgba(0,0,0,.12); border:1px solid #E7E1D3;">
+
+    <!-- top bar -->
+    <div style="height:60px; background:linear-gradient(90deg,#0B3B2B,#0E4632);"></div>
+
+    <!-- masthead band -->
+    <div style="position:relative; overflow:hidden; margin:18px 28px 0; border-radius:16px; border-bottom:3px solid #C49A45; background:linear-gradient(135deg,#0F4630 0%,#0A2C1E 100%); padding:24px 30px;">
+      <svg viewBox="0 0 400 300" style="position:absolute; top:-80px; right:60px; width:280px; height:280px; opacity:.7;" aria-hidden="true"><circle cx="200" cy="150" r="130" fill="none" stroke="#C49A45" stroke-width="2" opacity="0.4"></circle></svg>
+      <div style="position:relative; display:flex; align-items:center; justify-content:space-between; gap:24px;">
+        <div>
+          <div style="font-family:'Poppins',sans-serif; font-size:11px; font-weight:600; letter-spacing:.22em; text-transform:uppercase; color:#E0C06A;">Rehagro · Customer Success</div>
+          <div style="font-family:'Poppins',sans-serif; font-size:26px; font-weight:700; color:#fff; margin:6px 0 6px;">Gerador de Plano de Aula</div>
+          <div style="font-size:13px; color:rgba(255,255,255,.78);">Suba o CSV do HubSpot, escolha o aluno e gere o plano no design Rehagro.</div>
+        </div>
+        <img src="assets/rehagro-logo-white.png" alt="Rehagro" style="height:30px; width:auto; flex:none;">
+      </div>
+    </div>
+
+    <!-- content -->
+    <div style="padding:26px 28px 30px;">
+
+      <!-- STEP 1 — CSV -->
+      <div style="display:flex; align-items:center; gap:11px; margin-bottom:13px;">
+        <span style="flex:none; width:24px; height:24px; border-radius:50%; border:1.5px solid #C49A45; color:#9A7626; font-family:'Poppins',sans-serif; font-weight:700; font-size:12px; display:flex; align-items:center; justify-content:center;">1</span>
+        <span style="font-family:'Poppins',sans-serif; font-size:12px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:#5A6B61;">Arquivo CSV exportado do HubSpot Survey</span>
+        <span style="flex:1;"></span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B0A98F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg>
+      </div>
+
+      <div style="background:#fff; border:1px solid #E7E1D3; border-radius:14px; padding:14px 16px; display:flex; align-items:center; gap:14px;">
+        <div style="flex:none; width:42px; height:42px; border-radius:10px; background:#0F4630; display:flex; align-items:center; justify-content:center;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E0C06A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path><path d="M8 13h2M8 17h2M14 13h2M14 17h2"></path></svg>
+        </div>
+        <div style="flex:1; min-width:0;">
+          <div style="font-family:'Poppins',sans-serif; font-weight:600; font-size:14px; color:#0F4630;">hubspot-survey-export-06-25.csv</div>
+          <div style="font-size:12px; color:#8A8270; margin-top:2px;">1.7 KB · carregado agora</div>
+        </div>
+        <button style="flex:none; width:32px; height:32px; border-radius:8px; border:1px solid #E7E1D3; background:#FBFAF6; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#A33B3B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+        </button>
+        <div style="flex:none; width:1px; height:30px; background:#ECE7DA;"></div>
+        <button style="flex:none; display:inline-flex; align-items:center; gap:7px; height:32px; padding:0 13px; border-radius:8px; border:1.5px dashed #C9C2B0; background:#fff; color:#5A6B61; font-family:'Poppins',sans-serif; font-weight:500; font-size:12.5px; cursor:pointer;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1E7A45" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg>
+          Trocar arquivo
+        </button>
+      </div>
+
+      <!-- success banner -->
+      <div style="display:flex; align-items:center; gap:11px; margin-top:12px; background:#E7F1E8; border:1px solid #C3E0C8; border-radius:12px; padding:12px 15px;">
+        <span style="flex:none; width:22px; height:22px; border-radius:50%; background:#1E7A45; display:flex; align-items:center; justify-content:center;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+        </span>
+        <span style="font-size:13.5px; color:#0F4630; font-weight:600;">1 aluno(s) carregado(s) do CSV.</span>
+      </div>
+
+      <div style="height:1px; background:#E7E1D3; margin:24px 0;"></div>
+
+      <!-- STEP 2 — ALUNO -->
+      <div style="display:flex; align-items:center; gap:11px; margin-bottom:13px;">
+        <span style="flex:none; width:24px; height:24px; border-radius:50%; border:1.5px solid #C49A45; color:#9A7626; font-family:'Poppins',sans-serif; font-weight:700; font-size:12px; display:flex; align-items:center; justify-content:center;">2</span>
+        <span style="font-family:'Poppins',sans-serif; font-size:12px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:#5A6B61;">Selecione o aluno</span>
+      </div>
+
+      <!-- dropdown -->
+      <div style="display:flex; align-items:center; justify-content:space-between; background:#fff; border:1.5px solid #E2DED1; border-radius:11px; padding:13px 16px; cursor:pointer;">
+        <div style="display:flex; align-items:center; gap:11px;">
+          <span style="flex:none; width:30px; height:30px; border-radius:50%; background:linear-gradient(135deg,#E6C977,#C49A45); color:#0F4630; font-family:'Poppins',sans-serif; font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center;">DB</span>
+          <span style="font-size:14.5px; color:#1B2B22;"><strong style="font-family:'Poppins',sans-serif; font-weight:600; color:#0F4630;">Douglas Brandão</strong> <span style="color:#8A8270;">· Curso de teste</span></span>
+        </div>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5A6B61" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+      </div>
+
+      <!-- priority cards -->
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-top:16px;">
+
+        <div style="background:#fff; border:1px solid #E7E1D3; border-radius:14px; padding:16px 17px; box-shadow:0 2px 8px rgba(15,70,48,.04);">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:11px;">
+            <span style="flex:none; width:30px; height:30px; border-radius:50%; background:linear-gradient(135deg,#E6C977,#C49A45); color:#fff; font-family:'Poppins',sans-serif; font-weight:700; font-size:14px; display:flex; align-items:center; justify-content:center; box-shadow:0 3px 8px rgba(196,154,69,.3);">1</span>
+            <span style="font-family:'Poppins',sans-serif; font-size:9.5px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:#9A7626; background:#FBF3DE; padding:3px 9px; border-radius:999px;">1ª Prioridade</span>
+          </div>
+          <div style="font-family:'Poppins',sans-serif; font-weight:600; font-size:15px; color:#0F4630; line-height:1.25; min-height:38px;">Manejo da cultura do milho</div>
+          <div style="display:flex; align-items:center; gap:13px; margin-top:11px; padding-top:11px; border-top:1px solid #F0EBDE; color:#5A6B61; font-size:12.5px;">
+            <span style="display:inline-flex; align-items:center; gap:6px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C49A45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="14" rx="2"></rect><path d="M10 9l4 2-4 2V9z" fill="#C49A45" stroke="none"></path></svg>16 aulas</span>
+            <span style="display:inline-flex; align-items:center; gap:6px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C49A45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>~3h</span>
+          </div>
+        </div>
+
+        <div style="background:#fff; border:1px solid #E7E1D3; border-radius:14px; padding:16px 17px; box-shadow:0 2px 8px rgba(15,70,48,.04);">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:11px;">
+            <span style="flex:none; width:30px; height:30px; border-radius:50%; background:linear-gradient(135deg,#E6C977,#C49A45); color:#fff; font-family:'Poppins',sans-serif; font-weight:700; font-size:14px; display:flex; align-items:center; justify-content:center; box-shadow:0 3px 8px rgba(196,154,69,.3);">2</span>
+            <span style="font-family:'Poppins',sans-serif; font-size:9.5px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:#9A7626; background:#FBF3DE; padding:3px 9px; border-radius:999px;">2ª Prioridade</span>
+          </div>
+          <div style="font-family:'Poppins',sans-serif; font-weight:600; font-size:15px; color:#0F4630; line-height:1.25; min-height:38px;">Planejamento forrageiro e manejo alimentar</div>
+          <div style="display:flex; align-items:center; gap:13px; margin-top:11px; padding-top:11px; border-top:1px solid #F0EBDE; color:#5A6B61; font-size:12.5px;">
+            <span style="display:inline-flex; align-items:center; gap:6px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C49A45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="14" rx="2"></rect><path d="M10 9l4 2-4 2V9z" fill="#C49A45" stroke="none"></path></svg>28 aulas</span>
+            <span style="display:inline-flex; align-items:center; gap:6px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C49A45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>~3,5h</span>
+          </div>
+        </div>
+
+        <div style="background:#fff; border:1px solid #E7E1D3; border-radius:14px; padding:16px 17px; box-shadow:0 2px 8px rgba(15,70,48,.04);">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:11px;">
+            <span style="flex:none; width:30px; height:30px; border-radius:50%; background:linear-gradient(135deg,#E6C977,#C49A45); color:#fff; font-family:'Poppins',sans-serif; font-weight:700; font-size:14px; display:flex; align-items:center; justify-content:center; box-shadow:0 3px 8px rgba(196,154,69,.3);">3</span>
+            <span style="font-family:'Poppins',sans-serif; font-size:9.5px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:#9A7626; background:#FBF3DE; padding:3px 9px; border-radius:999px;">3ª Prioridade</span>
+          </div>
+          <div style="font-family:'Poppins',sans-serif; font-weight:600; font-size:15px; color:#0F4630; line-height:1.25; min-height:38px;">Produção de leite de qualidade</div>
+          <div style="display:flex; align-items:center; gap:13px; margin-top:11px; padding-top:11px; border-top:1px solid #F0EBDE; color:#5A6B61; font-size:12.5px;">
+            <span style="display:inline-flex; align-items:center; gap:6px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C49A45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="14" rx="2"></rect><path d="M10 9l4 2-4 2V9z" fill="#C49A45" stroke="none"></path></svg>35 aulas</span>
+            <span style="display:inline-flex; align-items:center; gap:6px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C49A45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>~3,5h</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="height:1px; background:#E7E1D3; margin:24px 0;"></div>
+
+      <!-- STEP 3 — GERAR -->
+      <div style="display:flex; align-items:center; gap:11px; margin-bottom:13px;">
+        <span style="flex:none; width:24px; height:24px; border-radius:50%; border:1.5px solid #C49A45; color:#9A7626; font-family:'Poppins',sans-serif; font-weight:700; font-size:12px; display:flex; align-items:center; justify-content:center;">3</span>
+        <span style="font-family:'Poppins',sans-serif; font-size:12px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:#5A6B61;">Gere e envie o plano</span>
+      </div>
+
+      <div style="display:flex; gap:14px;">
+        <button style="flex:1.6; height:52px; border:none; border-radius:12px; background:#0F4630; color:#fff; font-family:'Poppins',sans-serif; font-weight:600; font-size:14.5px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:9px; box-shadow:0 6px 16px rgba(15,70,48,.22);">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E0C06A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path></svg>
+          Gerar PDF do plano
+        </button>
+        <button style="flex:1; height:52px; border:1.5px solid #C9C2B0; border-radius:12px; background:#fff; color:#0F4630; font-family:'Poppins',sans-serif; font-weight:600; font-size:13.5px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:9px;">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E7A45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="M7 10l5 5 5-5M12 15V3"></path></svg>
+          Baixar HTML (salvar como PDF)
+        </button>
+      </div>
+
+      <!-- preview collapsible -->
+      <div style="display:flex; align-items:center; gap:11px; margin-top:14px; background:#fff; border:1px solid #E7E1D3; border-radius:12px; padding:14px 16px; cursor:pointer;">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5A6B61" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#C49A45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+        <span style="font-family:'Poppins',sans-serif; font-weight:500; font-size:14px; color:#0F4630;">Pré-visualizar o plano</span>
+      </div>
+
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

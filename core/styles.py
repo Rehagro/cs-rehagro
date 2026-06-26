@@ -1,457 +1,200 @@
-"""CSS da identidade visual Rehagro — injetado em todas as páginas."""
+"""
+Rehagro · Gerador de Plano de Aula — CSS de marca + helpers de UI (Streamlit).
+
+Estratégia (do handoff design_handoff_gerador_ui):
+  1. Tema base em .streamlit/config.toml.
+  2. CSS de marca injetado uma vez (BRAND_CSS) — refina widgets nativos por data-testid.
+  3. Blocos "ricos" (masthead, etapas, cards de prioridade) desenhados em HTML
+     puro via st.markdown, usando os helpers abaixo.
+"""
 import base64
 import os
 
-_BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-_LOGO_BRANCA = os.path.join(_BASE_DIR, "assets", "logo_rehagro_branca.png")
+_ASSETS = os.path.join(os.path.dirname(os.path.dirname(__file__)), "assets")
+_LOGO_WHITE = os.path.join(_ASSETS, "rehagro-logo-white.png")
 
 
-def _logo_base64() -> str:
-    if not os.path.exists(_LOGO_BRANCA):
+def logo_white_data_uri() -> str:
+    if not os.path.exists(_LOGO_WHITE):
         return ""
-    with open(_LOGO_BRANCA, "rb") as f:
-        return base64.b64encode(f.read()).decode()
+    with open(_LOGO_WHITE, "rb") as f:
+        return f"data:image/png;base64,{base64.b64encode(f.read()).decode('ascii')}"
 
 
-BASE_CSS = """
+# Anel dourado decorativo (canto do masthead)
+_RING = (
+    '<svg viewBox="0 0 200 200" aria-hidden="true" style="position:absolute;'
+    'top:-70px;right:-40px;width:190px;height:190px;opacity:.5;">'
+    '<circle cx="100" cy="100" r="80" fill="none" stroke="#C49A45" stroke-width="2"></circle>'
+    '<circle cx="100" cy="100" r="60" fill="none" stroke="#C49A45" stroke-width="1" opacity=".5"></circle>'
+    '</svg>'
+)
+
+
+BRAND_CSS = """
 <style>
-/* ── Fonte da identidade (Myriad Pro, com fallbacks) ── */
-html, body, [class*="css"], .stApp, .stMarkdown,
-input, textarea, select, button {
-    font-family: "Myriad Pro", "Segoe UI", "Helvetica Neue", Arial, sans-serif !important;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Mulish:wght@400;500;600;700&display=swap');
+
+:root{
+  --forest:#0F4630; --forest2:#0A2C1E; --bar:#0B3B2B;
+  --green:#1E7A45;  --gold:#C49A45;   --gold-2:#E6C977; --gold-soft:#FBF3DE;
+  --cream:#F2EEE4;  --ink:#1B2B22;    --muted:#5A6B61;  --muted-2:#8A8270;
+  --line:#E7E1D3;   --line-input:#E2DED1;
 }
 
-/* ── Reset Streamlit ───────────────────────────────── */
-#MainMenu, footer { visibility: hidden; }
-[data-testid="stDecoration"] { display: none; }
-[data-testid="stStatusWidget"] { display: none; }
-[data-testid="stMainMenu"] { display: none !important; }
+/* ---- base / fontes ---- */
+html, body, [class*="css"]{ font-family:'Mulish', system-ui, sans-serif; color:var(--ink); }
+.stApp{ background:var(--cream); }
+h1,h2,h3,h4,h5{ font-family:'Poppins', sans-serif; }
 
-/* Esconde APENAS o botão Deploy e ações extras — preserva o stExpandSidebarButton */
-[data-testid="stToolbarActions"] { display: none !important; }
-[data-testid="stAppDeployButton"] { display: none !important; }
+/* esconder chrome do Streamlit */
+#MainMenu, footer { visibility:hidden; }
+[data-testid="stToolbarActions"],
+[data-testid="stAppDeployButton"],
+[data-testid="stMainMenu"],
+[data-testid="stDecoration"],
+[data-testid="stStatusWidget"] { display:none !important; }
+section[data-testid="stSidebar"] { display:none; }
 
-/* Header do Streamlit (contém o botão de toggle da sidebar) — visível e acima do conteúdo */
-header[data-testid="stHeader"] {
-    background: #015641 !important;
-    height: 3rem !important;
-    z-index: 100 !important;
-    border-bottom: 1px solid #0E6B52 !important;
-}
-header[data-testid="stHeader"] [data-testid="stToolbar"] {
-    background: transparent !important;
-    padding: 6px 12px !important;
+/* barra superior fina verde (substitui o header padrão do Streamlit) */
+header[data-testid="stHeader"]{
+  background:linear-gradient(90deg,var(--bar),#0E4632) !important;
+  height:60px;
 }
 
-.block-container {
-    padding: 3rem 2.5rem 2rem 2.5rem !important;
-    max-width: 100% !important;
+/* largura/respiro do conteúdo (padding-top folga a barra verde de 60px) */
+.block-container{ max-width:1120px; padding-top:80px !important; padding-bottom:48px !important; }
+
+/* ---- TÍTULOS DE ETAPA (.step via st.markdown) ---- */
+.step{ display:flex; align-items:center; gap:11px; margin:0 0 13px; }
+.step .n{ width:24px; height:24px; border-radius:50%; border:1.5px solid var(--gold);
+  color:#9A7626; font-family:'Poppins'; font-weight:700; font-size:12px;
+  display:flex; align-items:center; justify-content:center; flex:none; }
+.step .t{ font-family:'Poppins'; font-size:12px; font-weight:600; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--muted); }
+
+/* ---- INPUT DE TEXTO / SENHA ---- */
+[data-testid="stTextInput"] input{
+  height:46px; border:1.5px solid var(--line-input) !important; border-radius:11px !important;
+  background:#FBFAF6 !important; font-size:14px;
+}
+[data-testid="stTextInput"] input:focus{ border-color:var(--gold) !important;
+  box-shadow:0 0 0 3px rgba(196,154,69,.18) !important; }
+[data-testid="stTextInput"] label, [data-testid="stSelectbox"] label{
+  font-family:'Poppins'; font-weight:600; font-size:12.5px; color:var(--muted) !important;
 }
 
-/* Header REHAGRO expande além do padding do block-container */
-.rh-header {
-    margin-left: -2.5rem !important;
-    margin-right: -2.5rem !important;
-    width: calc(100% + 5rem) !important;
-}
-.stApp { background: #F4F1E9; }
-
-/* Sidebar com identidade Rehagro */
-section[data-testid="stSidebar"] {
-    background: #015641 !important;
-    border-right: 1px solid #0E6B52 !important;
-}
-section[data-testid="stSidebar"] * {
-    color: #F4F1E9 !important;
-}
-section[data-testid="stSidebar"] a {
-    color: #F4F1E9 !important;
-    font-weight: 500 !important;
-    border-radius: 6px !important;
-    transition: background 0.15s !important;
-}
-section[data-testid="stSidebar"] a:hover {
-    background: rgba(205,175,105,0.14) !important;
-    color: #cdaf69 !important;
-}
-/* Botão de toggle (abrir/fechar sidebar) — sempre visível */
-button[data-testid="stSidebarCollapseButton"],
-button[data-testid="stExpandSidebarButton"] {
-    color: #cdaf69 !important;
-    background: #015641 !important;
-    border: 1px solid #cdaf69 !important;
-    border-radius: 6px !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    z-index: 999999 !important;
-}
-button[data-testid="stExpandSidebarButton"] {
-    /* Garante que o botão de expandir fique visível e acessível no canto */
-    width: 40px !important;
-    height: 40px !important;
-}
-button[data-testid="stExpandSidebarButton"] svg,
-button[data-testid="stSidebarCollapseButton"] svg,
-button[data-testid="stExpandSidebarButton"] span,
-button[data-testid="stSidebarCollapseButton"] span,
-button[data-testid="stExpandSidebarButton"] *,
-button[data-testid="stSidebarCollapseButton"] * {
-    fill: #cdaf69 !important;
-    color: #cdaf69 !important;
-}
-button[data-testid="stExpandSidebarButton"]:hover,
-button[data-testid="stSidebarCollapseButton"]:hover {
-    background: #0E6B52 !important;
+/* ---- SELECTBOX (selecione o aluno) ---- */
+[data-testid="stSelectbox"] div[data-baseweb="select"] > div{
+  border:1.5px solid var(--line-input) !important; border-radius:11px !important;
+  background:#fff !important; min-height:48px; padding:4px 6px;
 }
 
-/* ── Header Rehagro ────────────────────────────────── */
-.rh-header {
-    background: #015641 !important;
-    padding: 24px 40px 22px !important;
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    margin-bottom: 32px !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-    border-bottom: 3px solid #cdaf69 !important;
+/* ---- FILE UPLOADER ---- */
+[data-testid="stFileUploader"] section{
+  border:1.5px dashed #C9C2B0 !important; border-radius:14px !important;
+  background:#fff !important; padding:18px;
 }
-.rh-header-left {
-    flex: 1;
+[data-testid="stFileUploader"] section:hover{ border-color:var(--gold) !important; }
+[data-testid="stFileUploaderDropzoneInstructions"] *{ color:var(--muted) !important; }
+
+/* ---- BOTÕES ---- */
+/* primário (type="primary"): verde floresta */
+.stButton > button[kind="primary"]{
+  background:var(--forest) !important; color:#fff !important; border:none !important;
+  border-radius:12px !important; height:52px; font-family:'Poppins'; font-weight:600;
+  font-size:14.5px; box-shadow:0 6px 16px rgba(15,70,48,.22);
 }
-.rh-header-tag {
-    font-size: 11px !important;
-    letter-spacing: 2.5px !important;
-    color: #cdaf69 !important;
-    text-transform: uppercase !important;
-    font-weight: 600 !important;
-    margin-bottom: 6px !important;
+.stButton > button[kind="primary"]:hover{ background:#0c3a28 !important; }
+/* secundário + download: outline */
+.stButton > button[kind="secondary"],
+[data-testid="stDownloadButton"] > button{
+  background:#fff !important; color:var(--forest) !important;
+  border:1.5px solid #C9C2B0 !important; border-radius:12px !important; height:52px;
+  font-family:'Poppins'; font-weight:600; font-size:13.5px;
 }
-.rh-header-title {
-    font-size: 26px !important;
-    font-weight: 800 !important;
-    color: #cdaf69 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 1.5px !important;
-    line-height: 1.1 !important;
-    margin-bottom: 4px !important;
+/* botão dourado: o submit do formulário de login (único form do app) */
+div[data-testid="stForm"] button{
+  background:linear-gradient(135deg,var(--gold-2),var(--gold)) !important;
+  color:var(--forest) !important; border:none !important; border-radius:11px !important;
+  height:48px; font-family:'Poppins'; font-weight:600; font-size:14.5px;
+  box-shadow:0 4px 12px rgba(196,154,69,.3);
 }
-.rh-header-sub {
-    font-size: 13px !important;
-    color: #B7CDBE !important;
-    font-weight: 400 !important;
-}
-.rh-header-logo {
-    height: 46px;
-    width: auto;
-    opacity: 1;
-    margin-left: 24px;
+/* o formulário de login é o card branco */
+div[data-testid="stForm"]{ background:#fff !important; border:1px solid var(--line) !important;
+  border-radius:16px !important; padding:24px 26px !important;
+  box-shadow:0 8px 30px rgba(0,0,0,.06); }
+
+/* ---- ALERTA DE SUCESSO (st.success) ---- */
+[data-testid="stAlert"]{
+  background:#E7F1E8 !important; border:1px solid #C3E0C8 !important;
+  border-radius:12px !important; color:var(--forest) !important;
 }
 
-/* ── Conteúdo ──────────────────────────────────────── */
-.rh-content {
-    padding: 0 48px 48px;
-    max-width: 980px;
-    margin: 0 auto;
-}
-.rh-section-tag {
-    font-size: 12px;
-    letter-spacing: 2.5px;
-    text-transform: uppercase;
-    color: #cdaf69;
-    font-weight: 700;
-    margin-bottom: 18px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #D8D3C8;
-}
-.rh-section-tag::before { content: "— "; }
+/* ---- EXPANDER (pré-visualizar o plano) ---- */
+[data-testid="stExpander"]{ border:1px solid var(--line) !important; border-radius:12px !important;
+  background:#fff !important; }
+[data-testid="stExpander"] summary{ font-family:'Poppins'; font-weight:500; color:var(--forest); }
 
-/* Container central do formulário */
-.rh-form-wrap {
-    max-width: 760px;
-    margin: 0 auto;
-    padding: 0 24px;
-}
-
-/* ── Cards ─────────────────────────────────────────── */
-.rh-card {
-    background: #FFFFFF;
-    border: 0.5px solid #D8D3C8;
-    border-radius: 12px;
-    border-top: 3px solid #cdaf69;
-    padding: 24px 28px;
-    margin-bottom: 16px;
-}
-.rh-card-num {
-    width: 30px; height: 30px;
-    border-radius: 50%;
-    background: #015641;
-    color: white;
-    font-size: 13px;
-    font-weight: 700;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 10px;
-}
-.rh-card-label {
-    font-size: 15px;
-    font-weight: 600;
-    color: #1A1A1A;
-    margin-bottom: 4px;
-}
-.rh-card-hint {
-    font-size: 13px;
-    color: #6B6B5E;
-    margin-bottom: 10px;
-}
-
-/* ── Progress bar ──────────────────────────────────── */
-.rh-progress-wrap {
-    margin-bottom: 28px;
-}
-.rh-progress-label {
-    font-size: 13px;
-    color: #6B6B5E;
-    margin-bottom: 8px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    font-weight: 600;
-}
-.rh-progress-bar {
-    background: #D8D3C8;
-    height: 5px;
-    border-radius: 3px;
-    overflow: hidden;
-}
-.rh-progress-fill {
-    background: #cdaf69;
-    height: 100%;
-    border-radius: 3px;
-    transition: width 0.4s ease;
-}
-
-/* ── Botões ────────────────────────────────────────── */
-div.stButton > button,
-div.stFormSubmitButton > button,
-div.stDownloadButton > button {
-    border-radius: 8px !important;
-    font-size: 15px !important;
-    font-weight: 600 !important;
-    letter-spacing: 0.5px !important;
-    height: 48px !important;
-    padding: 0 28px !important;
-    transition: all 0.2s !important;
-}
-div.stButton > button[kind="primary"],
-div.stFormSubmitButton > button[kind="primary"],
-div.stDownloadButton > button[kind="primary"] {
-    background: #015641 !important;
-    color: white !important;
-    border: none !important;
-}
-div.stButton > button[kind="primary"]:hover,
-div.stFormSubmitButton > button[kind="primary"]:hover {
-    background: #0E6B52 !important;
-}
-div.stButton > button[kind="secondary"],
-div.stFormSubmitButton > button[kind="secondary"] {
-    background: transparent !important;
-    color: #6B6B5E !important;
-    border: 0.5px solid #D8D3C8 !important;
-}
-
-/* ── Inputs Streamlit (FONTE MAIOR) ────────────────── */
-div[data-testid="stTextInput"] input,
-div[data-testid="stNumberInput"] input,
-div[data-testid="stSelectbox"] select,
-div[data-testid="stTextArea"] textarea,
-div[data-baseweb="select"] > div {
-    border-radius: 8px !important;
-    border: 0.5px solid #D8D3C8 !important;
-    background: #FAFAF8 !important;
-    font-size: 15px !important;
-    min-height: 44px !important;
-}
-
-/* Campo selecionado (controle fechado) — permite quebra de linha quando
-   a opção tem texto longo. Não toca em ul/li do dropdown porque o BaseWeb
-   virtualiza a lista e mexer no posicionamento quebra scroll dos selects
-   de listas longas (Estado tem 27 UFs). */
-div[data-baseweb="select"] > div,
-div[data-baseweb="select"] > div > div,
-div[data-baseweb="select"] [data-baseweb="tag"] {
-    height: auto !important;
-    min-height: 44px !important;
-    white-space: normal !important;
-    word-break: break-word !important;
-    line-height: 1.35 !important;
-}
-
-/* Radio buttons (etapa 4 — prioridades): texto longo precisa quebrar e
-   cada opção deve ter área clicável grande pra mobile (tap target ≥44px). */
-div[role="radiogroup"] label {
-    align-items: flex-start !important;
-    padding: 10px 6px !important;
-    border-bottom: 0.5px solid #ECE7DC !important;
-    cursor: pointer !important;
-    gap: 10px !important;
-}
-div[role="radiogroup"] label:last-child {
-    border-bottom: none !important;
-}
-div[role="radiogroup"] label p,
-div[role="radiogroup"] label div {
-    white-space: normal !important;
-    word-break: break-word !important;
-    line-height: 1.45 !important;
-}
-div[role="radiogroup"] label:hover {
-    background: #FBF6ED !important;
-    border-radius: 6px !important;
-}
-div[data-testid="stTextInput"] input:focus,
-div[data-testid="stSelectbox"] select:focus,
-div[data-testid="stTextArea"] textarea:focus {
-    border-color: #cdaf69 !important;
-    box-shadow: 0 0 0 2px rgba(205,175,105,0.18) !important;
-}
-
-/* Labels MAIS legíveis */
-div[data-testid="stTextInput"] label,
-div[data-testid="stSelectbox"] label,
-div[data-testid="stNumberInput"] label,
-div[data-testid="stTextArea"] label,
-div[data-testid="stCheckbox"] label,
-.stMarkdown p {
-    font-size: 15px !important;
-    color: #1A1A1A !important;
-}
-div[data-testid="stTextInput"] label,
-div[data-testid="stSelectbox"] label,
-div[data-testid="stNumberInput"] label,
-div[data-testid="stTextArea"] label {
-    font-weight: 600 !important;
-}
-
-/* Captions */
-div[data-testid="stCaptionContainer"],
-.stCaption {
-    font-size: 13px !important;
-    color: #6B6B5E !important;
-}
-
-/* Markdown geral (NÃO aplicar a divs do header — ele tem suas próprias cores) */
-.stMarkdown p, .stMarkdown li {
-    font-size: 15px;
-    line-height: 1.6;
-    color: #1A1A1A;
-}
-
-/* ── Alert / Success ───────────────────────────────── */
-.rh-success {
-    background: #EAF0EC;
-    border: 0.5px solid #015641;
-    border-left: 4px solid #cdaf69;
-    border-radius: 8px;
-    padding: 18px 22px;
-    margin-bottom: 18px;
-    font-size: 15px;
-    color: #015641;
-}
-.rh-warning {
-    background: #FBF6ED;
-    border: 0.5px solid #D8D3C8;
-    border-left: 4px solid #cdaf69;
-    border-radius: 8px;
-    padding: 18px 22px;
-    margin-bottom: 18px;
-    font-size: 15px;
-    color: #6B6B5E;
-}
-
-/* ── Tela de agradecimento ─────────────────────────── */
-.rh-thanks {
-    text-align: center;
-    padding: 80px 40px;
-    max-width: 600px;
-    margin: 0 auto;
-}
-.rh-thanks-icon {
-    font-size: 56px;
-    margin-bottom: 18px;
-}
-.rh-thanks-title {
-    font-size: 28px;
-    font-weight: 800;
-    color: #015641;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-.rh-thanks-sub {
-    font-size: 16px;
-    color: #6B6B5E;
-    line-height: 1.7;
-}
-
-/* ── Responsivo mobile ─────────────────────────────── */
-@media (max-width: 768px) {
-    .rh-header {
-        padding: 24px 20px 20px;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 16px;
-    }
-    .rh-header-logo { margin-left: 0; height: 44px; }
-    .rh-header-title { font-size: 22px; }
-    .rh-content { padding: 0 20px 32px; }
-    .rh-form-wrap { padding: 0 8px; }
-}
+/* divisória mais suave */
+[data-testid="stDivider"] hr, hr{ border-color:var(--line) !important; }
 </style>
 """
 
 
-def header_html(titulo: str, subtitulo: str = "",
-                tag: str = "Rehagro · Customer Success") -> str:
-    logo_b64 = _logo_base64()
-    logo_img = (
-        f'<img class="rh-header-logo" src="data:image/png;base64,{logo_b64}" alt="Rehagro">'
-        if logo_b64 else ""
+def masthead_html(subtitulo: str = "", com_logo: bool = True, titulo: str = "Gerador de Plano de Aula") -> str:
+    """Faixa verde com underline dourado (capa do app)."""
+    logo = ""
+    if com_logo:
+        uri = logo_white_data_uri()
+        if uri:
+            logo = f'<img src="{uri}" alt="Rehagro" style="height:30px;width:auto;flex:none;position:relative;">'
+    sub = (
+        f'<div style="font-size:13px;color:rgba(255,255,255,.80);margin-top:6px;max-width:560px;">{subtitulo}</div>'
+        if subtitulo else ""
     )
     return f"""
-    <div class="rh-header">
-        <div class="rh-header-left">
-            <div class="rh-header-tag">{tag}</div>
-            <div class="rh-header-title">{titulo}</div>
-            {"<div class='rh-header-sub'>" + subtitulo + "</div>" if subtitulo else ""}
-        </div>
-        {logo_img}
+    <div style="position:relative;overflow:hidden;border-radius:16px;
+         border-bottom:3px solid #C49A45;
+         background:linear-gradient(135deg,#0F4630 0%,#0A2C1E 100%);
+         padding:24px 30px;display:flex;align-items:center;justify-content:space-between;gap:24px;">
+      {_RING}
+      <div style="position:relative;">
+        <div style="font-family:'Poppins';font-size:11px;font-weight:600;letter-spacing:.22em;
+             text-transform:uppercase;color:#E0C06A;">Rehagro · Customer Success</div>
+        <div style="font-family:'Poppins';font-size:26px;font-weight:700;color:#fff;margin-top:6px;line-height:1.1;">
+             {titulo}</div>
+        {sub}
+      </div>
+      {logo}
     </div>
     """
 
 
-def progress_html(pct: int, label: str = "") -> str:
+def step_html(n: int, titulo: str) -> str:
+    return f'<div class="step"><span class="n">{n}</span><span class="t">{titulo}</span></div>'
+
+
+def card_prioridade_html(num: int, titulo: str, aulas, tempo: str) -> str:
+    aulas_txt = aulas if aulas not in (None, "") else "?"
+    tempo_txt = tempo if tempo else "?"
     return f"""
-    <div class="rh-progress-wrap">
-        {"<div class='rh-progress-label'>" + label + "</div>" if label else ""}
-        <div class="rh-progress-bar">
-            <div class="rh-progress-fill" style="width:{pct}%"></div>
-        </div>
+    <div style="background:#fff;border:1px solid #E7E1D3;border-radius:14px;padding:16px 17px;
+         box-shadow:0 2px 8px rgba(15,70,48,.04);height:100%;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:11px;">
+        <span style="width:30px;height:30px;border-radius:50%;flex:none;
+             background:linear-gradient(135deg,#E6C977,#C49A45);color:#fff;font-family:'Poppins';
+             font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;
+             box-shadow:0 3px 8px rgba(196,154,69,.3);">{num}</span>
+        <span style="font-family:'Poppins';font-size:9.5px;font-weight:600;letter-spacing:.1em;
+             text-transform:uppercase;color:#9A7626;background:#FBF3DE;padding:3px 9px;
+             border-radius:999px;">{num}ª Prioridade</span>
+      </div>
+      <div style="font-family:'Poppins';font-weight:600;font-size:15px;color:#0F4630;
+           line-height:1.25;min-height:38px;">{titulo}</div>
+      <div style="margin-top:11px;padding-top:11px;border-top:1px solid #F0EBDE;
+           color:#5A6B61;font-size:12.5px;">
+        {aulas_txt} aulas · ~{tempo_txt}
+      </div>
     </div>
     """
-
-
-def card_html(num: int | str, label: str, hint: str = "", content: str = "") -> str:
-    return f"""
-    <div class="rh-card">
-        <div class="rh-card-num">{num}</div>
-        <div class="rh-card-label">{label}</div>
-        {"<div class='rh-card-hint'>" + hint + "</div>" if hint else ""}
-        {content}
-    </div>
-    """
-
-
-def section_tag_html(text: str) -> str:
-    return f'<div class="rh-section-tag">{text}</div>'

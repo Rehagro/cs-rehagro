@@ -1,6 +1,20 @@
 # Progresso e próximos passos — CS Rehagro
 
-Último marco: **Redesign profissional: saída agora é PDF (HTML/Jinja2/Chromium) em 2026-06-26.**
+Último marco: **Reestilização da UI do app (2 telas no design Rehagro) em 2026-06-26.**
+
+## 🖥️ Redesign da UI do app — 2026-06-26 (handoff design_handoff_gerador_ui)
+
+As 2 telas do app (login + gerador) foram reestilizadas na identidade do plano (verde-floresta/dourado, Poppins/Mulish), mantendo toda a lógica de CSV/PDF.
+
+- `.streamlit/config.toml`: tema forest `#0F4630` / cream `#F2EEE4`.
+- `core/styles.py`: reescrito — `BRAND_CSS` (CSS de marca p/ widgets nativos via data-testid) + helpers `masthead_html`, `step_html`, `card_prioridade_html`. Fontes via `@import` Google.
+- `app.py`: 2 telas — **login** (masthead + form card branco + botão dourado; o `<form>` é o card e o submit dourado é estilizado via `div[data-testid="stForm"] button`) e **gerador** (masthead band com logo + 3 etapas numeradas: upload CSV, seleção do aluno com 3 cards de prioridade, gerar PDF/baixar HTML/pré-visualizar).
+- Validado com screenshots (Playwright) das 2 telas vs. protótipo — fiel.
+- Botão dourado: evitamos o hack do wrapper `.gold-btn` (não embrulha o widget de forma confiável); usamos o escopo do form (único form do app).
+
+---
+
+### Histórico anterior — Último marco: **Redesign profissional: saída agora é PDF (HTML/Jinja2/Chromium) em 2026-06-26.**
 
 ## 🎨 Redesign para PDF (handoff de design) — 2026-06-26
 
