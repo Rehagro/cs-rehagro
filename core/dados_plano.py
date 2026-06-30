@@ -43,8 +43,9 @@ def _fmt_tempo(tempo) -> str:
 def _modulo_para_template(dor: dict, indice: int) -> dict:
     return {
         "titulo": dor.get("modulo", "—"),
-        # Subtítulo do card = a própria dor que o aluno apontou para este módulo.
-        "descricao": dor.get("dor", ""),
+        # Subtítulo do card = a dor que o aluno apontou (redação de exibição do
+        # arquivo 3; cai para "dor" se não houver versão de exibição).
+        "descricao": dor.get("dor_exibicao") or dor.get("dor", ""),
         "url": dor.get("link", ""),
         "qtd_aulas": str(dor["aulas"]) if dor.get("aulas") else "—",
         "tempo_aula": _fmt_tempo(dor.get("tempo")),

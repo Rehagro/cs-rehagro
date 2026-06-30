@@ -1,7 +1,10 @@
 # ─────────────────────────────────────────
 #  Mapeamento: Dor do aluno → Módulo GPL
-#  Textos das dores conforme "DOR DO ALUNO v2.docx"
-#  (opções do HubSpot Survey, atualizadas em 2026-06-26)
+#  - "dor": texto que CASA com o CSV do HubSpot (redação do "DOR DO ALUNO
+#    v2.docx"). NÃO alterar sem alinhar com o HubSpot Survey, senão o
+#    casamento quebra.
+#  - "dor_exibicao": texto MOSTRADO no card do plano (redação oficial do
+#    "Plano de aula - arquivo 3.docx").
 # ─────────────────────────────────────────
 import unicodedata
 
@@ -9,6 +12,7 @@ DORES = [
     {
         "id": "sistemas_producao",
         "dor": "Definir o melhor sistema de produção, instalações e raças para a minha realidade.",
+        "dor_exibicao": "Definir o melhor sistema de produção, instalações e raças para a minha realidade",
         "dor_curta": "Sistema de produção e instalações",
         "modulo": "Sistemas de produção e visão estratégica do negócio leite",
         "link": "https://rehagro.instructure.com/courses/2852",
@@ -20,6 +24,7 @@ DORES = [
     {
         "id": "eficiencia_produtiva",
         "dor": "Reduzir doenças pós-parto, estabelecer estratégias para emprenhar vacas rapidamente.",
+        "dor_exibicao": "Reduzir doenças pós-parto, estabelecer estratégias para emprenhar vacas rapidamente",
         "dor_curta": "Reprodução e eficiência produtiva",
         "modulo": "Estratégias para eficiência produtiva",
         "link": "https://rehagro.instructure.com/courses/2854",
@@ -31,6 +36,7 @@ DORES = [
     {
         "id": "gestao_financeira",
         "dor": "Organizar os gastos, saber o custo do litro de leite para atuar no aumento do lucro.",
+        "dor_exibicao": "Organizar os gastos, saber o custo do litro de leite para atuar no aumento do lucro",
         "dor_curta": "Gestão financeira e custos",
         "modulo": "Gestão financeira e econômica",
         "link": "https://rehagro.instructure.com/courses/2859",
@@ -42,6 +48,7 @@ DORES = [
     {
         "id": "sanidade_bezerras",
         "dor": "Reduzir doenças e mortalidade das bezerras e definir protocolos de tratamento.",
+        "dor_exibicao": "Reduzir doenças e mortalidade das bezerras e definir protocolos de tratamento",
         "dor_curta": "Sanidade de bezerras e novilhas",
         "modulo": "Sanidade de bezerras e novilhas",
         "link": "https://rehagro.instructure.com/courses/2855",
@@ -53,6 +60,7 @@ DORES = [
     {
         "id": "criacao_bezerras",
         "dor": "Melhorar o ganho de peso e definir alimentação das bezerras nas diferentes categorias.",
+        "dor_exibicao": "Melhorar o ganho de peso e definir alimentação das bezerras nas diferentes categorias",
         "dor_curta": "Criação e alimentação de bezerras",
         "modulo": "Criação de bezerras e novilhas",
         "link": "https://rehagro.instructure.com/courses/2851",
@@ -64,6 +72,7 @@ DORES = [
     {
         "id": "qualidade_leite",
         "dor": "Reduzir gasto com medicamento de mastite, reduzir CCS e CBT do leite do tanque.",
+        "dor_exibicao": "Reduzir gastos com medicamento de mastite, reduzir CCS e CBT do leite do tanque",
         "dor_curta": "Qualidade do leite e mastite",
         "modulo": "Produção de leite de qualidade",
         "link": "https://rehagro.instructure.com/courses/2858",
@@ -75,6 +84,7 @@ DORES = [
     {
         "id": "indicadores_rebanho",
         "dor": "Saber a quantidade de animais do próximo ano e quanto de forragem preciso produzir.",
+        "dor_exibicao": "Saber a quantidade de animais no próximo ano e quanto de forragem preciso produzir",
         "dor_curta": "Indicadores reprodutivos e evolução do rebanho",
         "modulo": "Indicadores reprodutivos e Evolução de rebanho",
         "link": "https://rehagro.instructure.com/courses/2853",
@@ -86,6 +96,7 @@ DORES = [
     {
         "id": "manejo_milho",
         "dor": "Produzir silagem de milho ou sorgo de qualidade e em quantidade adequada para o rebanho.",
+        "dor_exibicao": "Produzir silagem de milho ou sorgo de qualidade e em quantidade adequada para o rebanho",
         "dor_curta": "Silagem de milho e sorgo",
         "modulo": "Manejo da cultura do milho",
         "link": "https://rehagro.instructure.com/courses/2856",
@@ -97,6 +108,7 @@ DORES = [
     {
         "id": "manejo_alimentar",
         "dor": "Estruturar manejo alimentar para otimizar a produção de leite.",
+        "dor_exibicao": "Estruturar manejo alimentar para otimizar produção de leite",
         "dor_curta": "Manejo alimentar e planejamento forrageiro",
         "modulo": "Planejamento forrageiro e manejo alimentar",
         "link": "https://rehagro.instructure.com/courses/2857",
