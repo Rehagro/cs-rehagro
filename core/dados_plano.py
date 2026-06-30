@@ -17,23 +17,14 @@ _WHATSAPP_MENSAGEM = (
 )
 _WHATSAPP_URL = f"https://wa.me/{_WHATSAPP_NUMERO}?text={quote(_WHATSAPP_MENSAGEM)}"
 
-# Descrição de cada módulo conforme a posição na trilha (1ª, 2ª, 3ª…).
-_INTROS = [
-    "Responde ao desafio que você apontou como mais urgente. Por isso vem primeiro.",
-    "Ao concluir o módulo anterior, siga para o segundo desafio que você indicou.",
-    "Fecha sua trilha com o terceiro ponto que você destacou.",
-]
-_INTRO_EXTRA = "Continue sua trilha com este módulo."
-
 _BOAS_VINDAS_DESC = (
-    "Comece por aqui: veja como o curso funciona e o que garante sua aprovação "
-    "(a entrega das atividades)."
+    "Para iniciar, veja como funciona o curso e os critérios que garantem sua aprovação."
 )
 
 _ENCERRAMENTO = {
     "mensagem": (
-        "Conte com a gente sempre que precisar — pra você tirar o máximo do curso "
-        "e levar resultado pra sua fazenda. 🌱"
+        "Conte com a gente sempre que precisar — pra você aproveitar ao máximo o curso "
+        "e levar o resultado para sua fazenda. 🌱"
     ),
     "equipe": "Equipe de Sucesso do Cliente",
     "organizacao": "Rehagro",
@@ -52,7 +43,8 @@ def _fmt_tempo(tempo) -> str:
 def _modulo_para_template(dor: dict, indice: int) -> dict:
     return {
         "titulo": dor.get("modulo", "—"),
-        "descricao": _INTROS[indice] if indice < len(_INTROS) else _INTRO_EXTRA,
+        # Subtítulo do card = a própria dor que o aluno apontou para este módulo.
+        "descricao": dor.get("dor", ""),
         "url": dor.get("link", ""),
         "qtd_aulas": str(dor["aulas"]) if dor.get("aulas") else "—",
         "tempo_aula": _fmt_tempo(dor.get("tempo")),
