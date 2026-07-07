@@ -21,7 +21,7 @@ from core.styles import BRAND_CSS, masthead_html, step_html, card_prioridade_htm
 from config import CS_PASSWORD
 
 st.set_page_config(
-    page_title="Gerador de Plano de Aula · Rehagro",
+    page_title="Gerador de Plano de Estudos · Rehagro",
     page_icon="🌱",
     layout="wide",
     initial_sidebar_state="collapsed",
@@ -127,10 +127,10 @@ def tela_gerador():
     st.markdown(step_html(3, "Baixe o plano e envie ao aluno"), unsafe_allow_html=True)
 
     html = render_html(montar_dados(aluno))
-    nome_base = f"Plano_de_Aula_{_slug(aluno.get('nome'))}"
+    nome_base = f"Plano_de_Estudos_{_slug(aluno.get('nome'))}"
 
     st.download_button(
-        "⬇  Baixar plano de aula",
+        "⬇  Baixar plano de estudos",
         data=html.encode("utf-8"),
         file_name=f"{nome_base}.html",
         mime="text/html",
@@ -144,7 +144,7 @@ def tela_gerador():
           <div style="font-family:'Poppins',sans-serif; font-weight:600; font-size:13px;
                color:#0F4630; margin-bottom:8px;">📄 Como salvar o plano em PDF</div>
           <ol style="margin:0; padding-left:18px; color:#5A6B61; font-size:13px; line-height:1.75;">
-            <li>Clique em <strong style="color:#0F4630;">Baixar plano de aula</strong>
+            <li>Clique em <strong style="color:#0F4630;">Baixar plano de estudos</strong>
                 (baixa um arquivo <code>.html</code>).</li>
             <li>Abra o arquivo baixado — ele abre no seu navegador.</li>
             <li>Pressione <strong style="color:#0F4630;">Ctrl + P</strong>

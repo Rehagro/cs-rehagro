@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Plano de Aula — {{ aluno.nome }}</title>
+<title>Plano de Estudos — {{ aluno.nome }}</title>
 {# Fontes embutidas (base64) — documento self-contained, sem depender de rede.
    Injetado por core.render_plano.render_html. #}
 {{ font_face_css | safe }}
@@ -52,7 +52,7 @@
         </div>
 
         <div style="position:relative; margin-top:20px;">
-          <div style="font-family:'Poppins',sans-serif; font-size:11px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:#E0C06A;">Plano de Aula Personalizado</div>
+          <div style="font-family:'Poppins',sans-serif; font-size:11px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:#E0C06A;">Plano de Estudos Personalizado</div>
           <h1 style="font-family:'Poppins',sans-serif; font-weight:700; font-size:31px; line-height:1.05; color:#fff; margin:7px 0 0; letter-spacing:-.01em;">{{ aluno.nome }}</h1>
           <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px 14px; margin-top:13px; color:rgba(255,255,255,.78); font-size:12.5px; font-weight:500;">
             <span style="display:inline-flex; align-items:center; gap:7px;">
@@ -70,7 +70,7 @@
 
       <!-- ===================== INTRO ===================== -->
       <p style="font-size:13.5px; line-height:1.6; color:#33433A; margin:18px 2px 4px;">
-        <strong style="color:#0F4630;">{{ aluno.nome }}</strong>, esse é o seu plano de aula, personalizado de acordo com os seus principais desafios. <strong style="color:#0F4630;">Recomendamos que seus estudos sigam a sequência de módulos abaixo.</strong> Confira sua recomendação:
+        <strong style="color:#0F4630;">{{ aluno.nome }}</strong>, esse é o seu plano de estudos, personalizado de acordo com os seus principais desafios. <strong style="color:#0F4630;">Recomendamos que seus estudos sigam a sequência de módulos abaixo.</strong> Confira sua recomendação:
       </p>
 
       <!-- ===================== PARA COMEÇAR ===================== -->
@@ -101,7 +101,7 @@
         <h2 style="font-family:'Poppins',sans-serif; font-weight:600; font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:#0F4630; margin:0; white-space:nowrap;">Sua trilha personalizada</h2>
         <span style="flex:1; height:2px; background:linear-gradient(90deg,#C49A45 0%, #E7EBE6 100%); border-radius:2px;"></span>
       </div>
-      <p style="font-size:12.5px; line-height:1.5; color:#6A776E; margin:0 2px 14px;">A sua trilha apresenta os 3 módulos principais para sanar suas maiores dores e desafios, de acordo com as respostas de sua pesquisa.</p>
+      <p style="font-size:14px; line-height:1.5; color:#6A776E; margin:0 2px 14px;">A sua trilha apresenta os 3 módulos principais para sanar suas maiores dores e desafios, <strong style="color:#0F4630;">de acordo com as respostas de sua pesquisa</strong>.</p>
 
       {# ===== LOOP DE MÓDULOS — repete um card por item em `modulos` ===== #}
       {% for m in modulos %}
