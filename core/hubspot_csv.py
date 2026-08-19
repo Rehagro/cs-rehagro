@@ -5,13 +5,21 @@ Particularidades tratadas aqui:
   1. O export costuma vir DUPLO-ENCODADO: a linha inteira é um único campo
      entre aspas, com as aspas internas duplicadas. Detectamos isso e fazemos
      o parse em 2 passadas.
-  2. O campo das 3 prioridades junta as opções por vírgula, mas algumas dores
-     têm vírgula interna — o casamento é feito por texto em core.mapeamento.
+  2. As 3 prioridades podem vir em DOIS formatos:
+       a) ranqueado (formulário atual): uma coluna por prioridade —
+          "Qual a primeira/segunda/terceira prioridade?". A ordem das colunas
+          É o ranqueamento do aluno e vira a ordem dos módulos no plano.
+       b) combinado (formato antigo): uma única coluna com as opções juntas
+          por vírgula. Como algumas dores têm vírgula interna, o casamento é
+          por texto (core.mapeamento.match_dores), e a ordem é a da tela.
+     O parser detecta o formato (a) e cai para o (b) se não achar as colunas.
+  3. Os cabeçalhos podem vir com HTML (<strong>, <span style=...>) — as chaves
+     de busca são procuradas dentro do texto normalizado, então isso não atrapalha.
 """
 import csv
 import io
 
-from core.mapeamento import match_dores
+from core.mapeamento import match_dor_unica, match_dores
 
 # Cada coluna do HubSpot é identificada por uma palavra-chave (normalizada,
 # minúscula) presente no cabeçalho — resiliente a pequenas mudanças de texto.
@@ -23,11 +31,19 @@ _COLUNAS = [
     ("formacao",                    "formacao"),
     ("volume de",                   "producao"),
     ("numero medio de animais",     "animais"),
+    ("qtd_animais",                 "animais"),   # nome interno da propriedade
     ("media de producao por vaca",  "media_vaca"),
     ("valer a pena",                "valeu_a_pena"),
     ("daqui a 5 anos",              "meta"),
-    ("3 pontos mais importantes",   "prioridades"),
+    ("3 pontos mais importantes",   "prioridades"),   # formato combinado (antigo)
     ("contact email",              "email"),
+]
+
+# Formato ranqueado: uma coluna por prioridade, na ordem escolhida pelo aluno.
+_COLUNAS_RANQUEADAS = [
+    ("primeira prioridade",  "prioridade_texto_1"),
+    ("segunda prioridade",   "prioridade_texto_2"),
+    ("terceira prioridade",  "prioridade_texto_3"),
 ]
 
 
@@ -69,7 +85,7 @@ def _mapear_cabecalho(header: list[str]) -> dict[int, str]:
     idx_para_chave = {}
     for i, col in enumerate(header):
         col_norm = _strip_acentos(col)
-        for chave_busca, chave_interna in _COLUNAS:
+        for chave_busca, chave_interna in _COLUNAS + _COLUNAS_RANQUEADAS:
             if chave_busca in col_norm and i not in idx_para_chave:
                 # 'matriculado' tem prioridade sobre o "Nome" simples
                 if chave_interna not in idx_para_chave.values():
@@ -78,12 +94,54 @@ def _mapear_cabecalho(header: list[str]) -> dict[int, str]:
     return idx_para_chave
 
 
+def colunas_reconhecidas(raw) -> dict[str, str]:
+    """chave interna -> cabeçalho como veio no arquivo (sem o HTML dos rótulos).
+
+    Serve ao diagnóstico na tela: mostra ao CS o que o sistema achou no CSV e,
+    por consequência, o que NÃO achou.
+    """
+    import re
+
+    linhas = _linhas(_decode(raw))
+    if not linhas:
+        return {}
+    header = linhas[0]
+    limpo = lambda s: " ".join(re.sub(r"<[^>]+>", " ", s or "").split())
+    return {chave: limpo(header[i]) for i, chave in _mapear_cabecalho(header).items()}
+
+
+def _casar_prioridades(registro: dict) -> tuple[list[dict], list[str]]:
+    """Resolve as 3 dores do aluno, em ordem, nos dois formatos de export.
+
+    Ranqueado tem prioridade: se houver ao menos uma coluna de prioridade
+    preenchida, a ordem das colunas (1ª → 3ª) é a ordem dos módulos no plano.
+    Sem isso, cai para o campo combinado antigo.
+    """
+    textos = [registro.get(chave, "") for _, chave in _COLUNAS_RANQUEADAS]
+    if not any(t.strip() for t in textos):
+        return match_dores(registro.get("prioridades", ""))
+
+    modulos, nao_reconhecidas = [], []
+    for texto in textos:
+        texto = (texto or "").strip()
+        if not texto:
+            continue
+        dor = match_dor_unica(texto)
+        if dor is None:
+            nao_reconhecidas.append(texto)
+        elif dor not in modulos:          # aluno repetiu a mesma opção
+            modulos.append(dor)
+    return modulos, nao_reconhecidas
+
+
 def parse_hubspot_csv(raw) -> list[dict]:
     """
     Lê o CSV (bytes ou str) e retorna uma lista de alunos. Cada aluno é um dict:
         nome, curso, perfil, formacao, producao, animais, media_vaca,
         valeu_a_pena, meta, email, prioridades (texto cru),
-        modulos        -> lista de dicts de dor casados (ordem do CSV)
+        modulos        -> lista de dicts de dor casados, JÁ na ordem de
+                          prioridade do aluno (1ª → 3ª) quando o export traz
+                          as colunas ranqueadas
         prioridade_1/2/3 -> ids das dores (para o gerador de plano)
         dores_nao_reconhecidas -> trechos do campo que não casaram
     """
@@ -97,7 +155,7 @@ def parse_hubspot_csv(raw) -> list[dict]:
 
     alunos = []
     for linha in linhas[1:]:
-        registro = {chave: "" for _, chave in _COLUNAS}
+        registro = {chave: "" for _, chave in _COLUNAS + _COLUNAS_RANQUEADAS}
         for i, valor in enumerate(linha):
             chave = idx_para_chave.get(i)
             if chave:
@@ -107,7 +165,7 @@ def parse_hubspot_csv(raw) -> list[dict]:
         if not registro.get("nome") and linha:
             registro["nome"] = (linha[0] or "").strip()
 
-        modulos, sobras = match_dores(registro.get("prioridades", ""))
+        modulos, sobras = _casar_prioridades(registro)
         registro["modulos"] = modulos
         registro["dores_nao_reconhecidas"] = sobras
         for n in range(3):
