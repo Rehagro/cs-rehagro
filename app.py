@@ -14,10 +14,11 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 sys.path.insert(0, os.path.dirname(__file__))
-from core.hubspot_csv import parse_hubspot_csv
+from core.hubspot_csv import colunas_reconhecidas, parse_hubspot_csv
 from core.dados_plano import montar_dados
 from core.render_plano import render_html
 from core.styles import BRAND_CSS, masthead_html, step_html, card_prioridade_html
+from core.validacao import diagnosticar_aluno, diagnosticar_arquivo
 from config import CS_PASSWORD
 
 st.set_page_config(
@@ -31,6 +32,54 @@ st.markdown(BRAND_CSS, unsafe_allow_html=True)
 
 def _slug(nome: str) -> str:
     return "".join(c if c.isalnum() else "_" for c in (nome or "aluno")).strip("_")
+
+
+def _mostrar_diagnostico(diag: dict) -> None:
+    """Resumo do que o sistema achou (e não achou) no CSV, antes de gerar nada."""
+    for msg in diag["bloqueios"]:
+        st.error(msg)
+    for msg in diag["avisos"]:
+        st.warning(msg)
+
+    if not diag["bloqueios"] and not diag["avisos"]:
+        st.success(
+            f"{diag['total']} aluno(s) carregado(s) — todos os dados necessários "
+            "para o plano vieram no arquivo."
+        )
+    else:
+        st.caption(f"{diag['total']} aluno(s) lidos do arquivo.")
+
+    tem_problema = bool(diag["bloqueios"] or diag["avisos"])
+    rotulo = "🔎 Detalhar o que está inconsistente" if tem_problema else "🔎 Ver o que o sistema encontrou no arquivo"
+
+    with st.expander(rotulo, expanded=bool(diag["bloqueios"])):
+        if diag["dores_divergentes"]:
+            st.markdown("**Respostas de prioridade que não casaram com nenhum módulo**")
+            for texto, qtd in diag["dores_divergentes"]:
+                st.markdown(f"- “{texto}” — {qtd} aluno(s)")
+            st.info(
+                "Se a redação da opção mudou no HubSpot, acrescente o texto novo em "
+                "`variantes`, na dor correspondente de `core/mapeamento.py`. A redação "
+                "antiga continua valendo — nenhuma turma anterior quebra."
+            )
+
+        if diag["alunos_sem_trilha"]:
+            st.markdown("**Alunos sem nenhum módulo (plano não pode ser gerado)**")
+            st.markdown("\n".join(f"- {n}" for n in diag["alunos_sem_trilha"]))
+
+        if diag["alunos_incompletos"]:
+            st.markdown("**Alunos com menos de 3 módulos**")
+            st.markdown("\n".join(f"- {n} — {q} módulo(s)" for n, q in diag["alunos_incompletos"]))
+
+        for msg in diag["info"]:
+            st.caption(msg)
+
+        st.markdown("**Colunas reconhecidas no CSV**")
+        st.markdown(
+            "\n".join(f"- `{c}` ← {h}" for c, h in diag["colunas"].items())
+            or "- _nenhuma coluna reconhecida_"
+        )
+
 
 
 # ──────────────────────────────────────────────────────────────────────────
@@ -89,7 +138,8 @@ def tela_gerador():
         st.warning("O CSV foi lido, mas nenhum aluno foi encontrado. Confira o arquivo.")
         st.stop()
 
-    st.success(f"{len(alunos)} aluno(s) carregado(s) do CSV.")
+    diag = diagnosticar_arquivo(alunos, colunas_reconhecidas(arquivo.getvalue()))
+    _mostrar_diagnostico(diag)
     st.divider()
 
     # ── Etapa 2 — Aluno ───────────────────────────────────────────────────
@@ -104,10 +154,7 @@ def tela_gerador():
     aluno = alunos[idx]
     modulos = aluno.get("modulos", [])
 
-    if not modulos:
-        st.error("Nenhuma das 3 prioridades casou com a lista de dores. "
-                 "Confira o texto das opções no HubSpot vs. o mapeamento.")
-    else:
+    if modulos:
         cols = st.columns(len(modulos), gap="medium")
         for i, (c, m) in enumerate(zip(cols, modulos), start=1):
             c.markdown(
@@ -115,10 +162,15 @@ def tela_gerador():
                 unsafe_allow_html=True,
             )
 
-    if aluno.get("dores_nao_reconhecidas"):
+    bloqueios_aluno, avisos_aluno = diagnosticar_aluno(aluno)
+    if bloqueios_aluno:
+        st.error(
+            "**Não dá para gerar o plano deste aluno:**\n\n"
+            + "\n".join(f"- {b}" for b in bloqueios_aluno)
+        )
+    if avisos_aluno:
         st.warning(
-            "Trechos do campo de prioridades que **não** casaram com nenhuma dor:\n\n"
-            + "\n".join(f"- {s}" for s in aluno["dores_nao_reconhecidas"])
+            "**Atenção neste aluno:**\n\n" + "\n".join(f"- {a}" for a in avisos_aluno)
         )
 
     st.divider()
@@ -126,7 +178,8 @@ def tela_gerador():
     # ── Etapa 3 — Baixar e enviar ─────────────────────────────────────────
     st.markdown(step_html(3, "Baixe o plano e envie ao aluno"), unsafe_allow_html=True)
 
-    html = render_html(montar_dados(aluno))
+    pode_gerar = bool(modulos) and not bloqueios_aluno
+    html = render_html(montar_dados(aluno)) if pode_gerar else ""
     nome_base = f"Plano_de_Estudos_{_slug(aluno.get('nome'))}"
 
     st.download_button(
@@ -135,7 +188,7 @@ def tela_gerador():
         file_name=f"{nome_base}.html",
         mime="text/html",
         use_container_width=True,
-        disabled=not modulos,
+        disabled=not pode_gerar,
     )
     st.markdown(
         """
@@ -159,7 +212,7 @@ def tela_gerador():
         unsafe_allow_html=True,
     )
 
-    if modulos:
+    if pode_gerar:
         with st.expander("👁  Pré-visualizar o plano"):
             components.html(html, height=900, scrolling=True)
 
