@@ -8,7 +8,7 @@ A pesquisa de início de curso é feita no **HubSpot Survey**. Esta ferramenta r
 
 1. **Login** com a senha do time CS.
 2. **Upload** do CSV exportado do HubSpot Survey.
-3. **Seleção** do aluno (o CSV pode trazer a turma inteira).
+3. **Seleção** do aluno (o CSV pode trazer a turma inteira). A tela avisa, antes de gerar, se algum dado necessário não veio no arquivo.
 4. **Baixar o plano** (arquivo HTML, design Rehagro) → o CS abre e salva como PDF pelo navegador (`Ctrl + P → Salvar como PDF`; o layout A4 já está pronto).
 
 > O HTML é **self-contained** (fontes e logo embutidos) e o PDF gerado pelo navegador sai idêntico ao design. Esse PDF substitui o antigo `.docx` — vai direto pro aluno (link/anexo no AVA/e-mail). Há um **Pré-visualizar** na própria tela.
@@ -58,6 +58,7 @@ streamlit run app.py
 ├── core/
 │   ├── hubspot_csv.py           # Parser do CSV do HubSpot (desfaz duplo-encoding) + casamento das dores
 │   ├── mapeamento.py            # Dor → Módulo + URL Instructure + matcher por texto
+│   ├── validacao.py             # diagnóstico do CSV/aluno (o que falta p/ gerar)
 │   ├── dados_plano.py           # registro CSV → contrato de dados do template
 │   ├── render_plano.py          # Jinja2 → HTML (fontes/logo embutidos)
 │   └── styles.py                # CSS de marca da UI Streamlit + helpers das telas
@@ -69,4 +70,5 @@ streamlit run app.py
 
 - O export costuma vir **duplo-encodado** (linha inteira entre aspas, aspas internas duplicadas). O parser detecta e desfaz isso em 2 passadas.
 - O campo das 3 prioridades junta as opções por vírgula, mas **algumas dores têm vírgula interna** → o casamento é por **texto normalizado**, não por `split(",")`.
-- A ordem dos módulos no plano segue a ordem do CSV (no HubSpot a pergunta é multi-seleção, não ranqueada). Se o texto das opções mudar, atualize `core/mapeamento.py`.
+- As 3 prioridades vêm em **colunas separadas e ranqueadas** ("Qual a primeira/segunda/terceira prioridade?"). A ordem dessas colunas é o ranqueamento do aluno e vira a **ordem dos módulos no plano**. O formato antigo (uma coluna só, opções juntas por vírgula) continua sendo aceito como fallback.
+- Se o texto das opções mudar no formulário, **não sobrescreva** o campo `dor` em `core/mapeamento.py`: acrescente a nova redação em `variantes`. O casamento aceita qualquer uma, então redações antigas e novas continuam funcionando lado a lado.

@@ -33,3 +33,6 @@ Thumbs.db
 
 # ── Logs ─────────────────────────────────────────────
 *.log
+
+# ── Saída gerada pelas ferramentas (PDF/HTML/PNG de alunos reais) ─────
+tools/gerador_plano_pdf/saida/

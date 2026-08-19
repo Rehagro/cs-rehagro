@@ -1,6 +1,41 @@
 # Progresso e próximos passos — CS Rehagro
 
-Último marco: **Reestilização da UI do app (2 telas no design Rehagro) em 2026-06-26.**
+Último marco: **Correção do casamento das dores + leitura das prioridades ranqueadas em 2026-08-19.**
+
+## 🐛 Gerador voltou a casar as dores — 2026-08-19
+
+O formulário de início de curso migrou para `gpl.rehagro.com.br/pesquisa-onboarding` e o export mudou em dois pontos que **zeravam o plano** (o CSV entrava, o aluno aparecia, e a trilha saía com 0 módulos — botão de gerar desabilitado):
+
+1. **As 3 prioridades agora vêm em 3 colunas** ("Qual a primeira/segunda/terceira prioridade?"). O parser procurava uma única coluna com "3 pontos mais importantes", que não existe mais → campo vazio.
+2. **A redação das opções mudou.** 3 das 9 dores (`sistemas_producao`, `gestao_financeira`, `indicadores_rebanho`) tinham texto incompatível com o do formulário, e o casamento é por substring.
+
+**Correções:**
+- `core/mapeamento.py`: cada dor ganhou `variantes` — outras redações aceitas para a mesma dor. `match_dores` percorre canônica + variantes, e o novo `match_dor_unica()` casa o valor de uma coluna de prioridade. Mudança de redação no formulário agora é aditiva, não destrutiva.
+- `core/hubspot_csv.py`: `_casar_prioridades()` lê as 3 colunas ranqueadas (e ignora repetição da mesma opção); cai para o campo combinado antigo se elas não existirem. Cabeçalhos com HTML (`<strong>`, `<span style=...>`) não atrapalham, porque a busca é por substring normalizada. Também mapeia `qtd_animais_lactacao` (nome interno da propriedade) para `animais`.
+
+**Ganho de produto:** a ordem das colunas é o ranqueamento real do aluno, então **a 1ª prioridade dele é o 1º módulo do plano** — a ressalva antiga ("a ordem do CSV não é o ranking") deixou de valer.
+
+**Decisão (2026-08-19):** a opção *"Reduzir perdas no processo da ensilagem e desensilagem"* **sai da pesquisa no HubSpot** — era a única dor da lista sem módulo correspondente, e quem a escolhesse receberia um plano com 2 módulos. Nada muda no código (ela nunca esteve em `DORES`); a lista do formulário passa a ter 9 opções, uma para cada módulo. A regra vale como princípio: **dor sem módulo não entra na pesquisa.**
+
+**Pendência com a área de conteúdo:**
+- O mapeamento de *"Planejar a necessidade de forragem do rebanho, calculando os indicadores..."* → **Indicadores reprodutivos e Evolução de rebanho** foi deduzido pela posição na lista; confirmar se não é *Planejamento forrageiro e manejo alimentar*.
+
+## 🚦 Diagnóstico do CSV na tela — 2026-08-19
+
+Antes, um CSV incompleto ou com redação divergente só aparecia como "0 módulos" e botão desabilitado — sem dizer o que estava errado. Agora `core/validacao.py` diagnostica o arquivo e o aluno, e a tela explica o problema:
+
+- **Etapa 1 (arquivo):** colunas de prioridade ausentes, `Nome do matriculado`/`Nome do curso` vazios, respostas que não casaram com nenhum módulo (com contagem por texto) e quantos alunos ficaram sem trilha ou com menos de 3 módulos. Um expander lista as **colunas reconhecidas** (`chave ← cabeçalho`), que é o que revela na hora um export em formato novo.
+- **Etapa 2 (aluno):** bloqueios e avisos do aluno selecionado; o download só habilita se o plano puder sair correto.
+- **Convenção:** vermelho = não dá para gerar; amarelo = gera, mas confira. Divergência de redação é amarelo (o plano sai mais curto); aluno sem nenhum módulo é vermelho.
+- Quando a redação diverge, a mensagem já diz o conserto: acrescentar o texto novo em `variantes`, em `core/mapeamento.py`.
+
+## 📄 Briefing de expansão para o GPC — 2026-08-19
+
+`docs/briefing_expansao_GPC.md` + `docs/modelos/modelo_matriz_dores_GPC.csv`: o que a área do GPC (Gestão da Pecuária de Corte) precisa entregar para a ferramenta atender o curso — matriz dor→módulo, texto da pesquisa, CSV de teste, textos fixos e gabaritos de validação.
+
+---
+
+### Histórico anterior — Último marco: **Reestilização da UI do app (2 telas no design Rehagro) em 2026-06-26.**
 
 ## ✂️ Removido o "Gerar PDF" do servidor — 2026-06-26
 
