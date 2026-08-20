@@ -1,6 +1,16 @@
 # Progresso e próximos passos — CS Rehagro
 
-Último marco: **Correção do casamento das dores + leitura das prioridades ranqueadas em 2026-08-19.**
+Último marco: **Deploy da correção das dores + ficha do módulo de Sistemas de produção preenchida em 2026-08-20.**
+
+## 📚 Sistemas de produção ganhou aulas e tempo — 2026-08-20
+
+O card de **Sistemas de produção e visão estratégica do negócio leite** saía no plano com `—` em *videoaulas* e *de aula gravada*: era o único módulo sem esses dados no "Plano de aula - arquivo 2.docx", e `core/mapeamento.py` refletia isso com `aulas: None, tempo: None`. O material foi atualizado pela área de conteúdo e os valores entraram: **16 videoaulas, ~2,5h**.
+
+**Ainda pendente no material:** a linha de *Programação* desse módulo continua incompleta no arquivo ("assistir esse conteúdo em ___ semanas (1h por semana – ___ videoaulas por semana)"). Enquanto a área não fechar o número de semanas, `programacao` fica `None` e o card imprime `—` nessa linha — os outros 8 módulos têm a frase completa. Não foi preenchido por dedução de propósito: é texto que vai impresso para o aluno.
+
+## 🚀 Deploy: a correção das dores só foi ao ar em 2026-08-20
+
+Os commits de 19/08 (prioridades ranqueadas + diagnóstico na tela) ficaram um dia **só na máquina local** (`main` 3 commits à frente de `origin/main`). Como o Streamlit Cloud roda o `origin/main`, o app publicado seguia com o parser antigo e um CSV do formato novo entrava e saía com 0 módulos — o mesmo sintoma que a correção resolvia. **Regra:** ajuste no gerador só está entregue depois do `git push`; antes de investigar o parser, conferir `git status -sb`.
 
 ## 🐛 Gerador voltou a casar as dores — 2026-08-19
 
