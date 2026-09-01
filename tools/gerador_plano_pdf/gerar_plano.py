@@ -60,15 +60,15 @@ ATIV = "Teste seu conhecimento (necessário para certificação) e Atividade pr�
 
 # (título, course_id, qtd_aulas, tempo, programação) — na ordem em que devem aparecer.
 MODULOS = [
-    ("Planejamento forrageiro e manejo alimentar", "2857", "28", "3,5h", "3 semanas (9 videoaulas por semana)"),
-    ("Sistemas de produção e visão estratégica do negócio leite", "2852", "16", "2,5h", "2 semanas (8 videoaulas por semana)"),
-    ("Gestão financeira e econômica", "2859", "31", "4h", "4 semanas (8 videoaulas por semana)"),
-    ("Produção de leite de qualidade", "2858", "35", "3,5h", "4 semanas (9 videoaulas por semana)"),
-    ("Indicadores reprodutivos e Evolução de rebanho", "2853", "20", "3h", "2 semanas (10 videoaulas por semana)"),
-    ("Estratégias para eficiência produtiva", "2854", "21", "3,5h", "2 semanas (10 videoaulas por semana)"),
-    ("Criação de bezerras e novilhas", "2851", "18", "3h", "2 semanas (9 videoaulas por semana)"),
-    ("Sanidade de bezerras e novilhas", "2855", "21", "2,5h", "2 semanas (10 videoaulas por semana)"),
-    ("Manejo da cultura do milho", "2856", "16", "3h", "2 semanas (8 videoaulas por semana)"),
+    ("Planejamento forrageiro e manejo alimentar", "3139", "28", "3,5h", "3 semanas (9 videoaulas por semana)"),
+    ("Sistemas de produção e visão estratégica do negócio leite", "3142", "16", "2,5h", "2 semanas (8 videoaulas por semana)"),
+    ("Gestão financeira e econômica", "3136", "31", "4h", "4 semanas (8 videoaulas por semana)"),
+    ("Produção de leite de qualidade", "3140", "35", "3,5h", "4 semanas (9 videoaulas por semana)"),
+    ("Indicadores reprodutivos e Evolução de rebanho", "3137", "20", "3h", "2 semanas (10 videoaulas por semana)"),
+    ("Estratégias para eficiência produtiva", "3135", "21", "3,5h", "2 semanas (10 videoaulas por semana)"),
+    ("Criação de bezerras e novilhas", "3134", "18", "3h", "2 semanas (9 videoaulas por semana)"),
+    ("Sanidade de bezerras e novilhas", "3141", "21", "2,5h", "2 semanas (10 videoaulas por semana)"),
+    ("Manejo da cultura do milho", "3138", "16", "3h", "2 semanas (8 videoaulas por semana)"),
 ]
 
 BOAS_VINDAS = {
@@ -77,7 +77,7 @@ BOAS_VINDAS = {
         "Para iniciar, veja como funciona o curso e os critérios de aprovação "
         "no nosso módulo de Boas-vindas."
     ),
-    "url": _url("2850"),
+    "url": _url("3133"),
 }
 
 ENCERRAMENTO = {

@@ -7,7 +7,7 @@
 #    formulário. O casamento aceita "dor" ou qualquer variante, então mudar a
 #    redação no HubSpot não derruba o gerador — basta acrescentar aqui.
 #  - "dor_exibicao": texto MOSTRADO no card do plano (redação oficial do
-#    "Plano de aula - arquivo 3.docx").
+#    "Plano de aula - arquivo 3 CEIGPL.docx").
 # ─────────────────────────────────────────
 import unicodedata
 
@@ -21,10 +21,10 @@ DORES = [
         "dor_exibicao": "Definir o melhor sistema de produção, instalações e raças para a minha realidade",
         "dor_curta": "Sistema de produção e instalações",
         "modulo": "Sistemas de produção e visão estratégica do negócio leite",
-        "link": "https://rehagro.instructure.com/courses/2852",
+        "link": "https://rehagro.instructure.com/courses/3142",
         "aulas": 16,
         "tempo": "2,5h",
-        "programacao": None,
+        "programacao": "3 semanas (1h por semana – 5 videoaulas por semana)",
         "atividades": "Teste seu conhecimento (obrigatório para a aprovação) e Atividade prática (extra)",
     },
     {
@@ -36,7 +36,7 @@ DORES = [
         "dor_exibicao": "Reduzir doenças pós-parto, estabelecer estratégias para emprenhar vacas rapidamente",
         "dor_curta": "Reprodução e eficiência produtiva",
         "modulo": "Estratégias para eficiência produtiva",
-        "link": "https://rehagro.instructure.com/courses/2854",
+        "link": "https://rehagro.instructure.com/courses/3135",
         "aulas": 21,
         "tempo": "3,5h",
         "programacao": "3 semanas (1h por semana – 7 videoaulas por semana)",
@@ -51,7 +51,7 @@ DORES = [
         "dor_exibicao": "Organizar os gastos, saber o custo do litro de leite para atuar no aumento do lucro",
         "dor_curta": "Gestão financeira e custos",
         "modulo": "Gestão financeira e econômica",
-        "link": "https://rehagro.instructure.com/courses/2859",
+        "link": "https://rehagro.instructure.com/courses/3136",
         "aulas": 31,
         "tempo": "4h",
         "programacao": "4 semanas (1h por semana – 8 videoaulas por semana)",
@@ -66,7 +66,7 @@ DORES = [
         "dor_exibicao": "Reduzir doenças e mortalidade das bezerras e definir protocolos de tratamento",
         "dor_curta": "Sanidade de bezerras e novilhas",
         "modulo": "Sanidade de bezerras e novilhas",
-        "link": "https://rehagro.instructure.com/courses/2855",
+        "link": "https://rehagro.instructure.com/courses/3141",
         "aulas": 21,
         "tempo": "2,5h",
         "programacao": "3 semanas (1h por semana – 7 videoaulas por semana)",
@@ -81,7 +81,7 @@ DORES = [
         "dor_exibicao": "Melhorar o ganho de peso e definir alimentação das bezerras nas diferentes categorias",
         "dor_curta": "Criação e alimentação de bezerras",
         "modulo": "Criação de bezerras e novilhas",
-        "link": "https://rehagro.instructure.com/courses/2851",
+        "link": "https://rehagro.instructure.com/courses/3134",
         "aulas": 18,
         "tempo": "3h",
         "programacao": "3 semanas (1h por semana – 6 videoaulas por semana)",
@@ -96,7 +96,7 @@ DORES = [
         "dor_exibicao": "Reduzir gastos com medicamento de mastite, reduzir CCS e CBT do leite do tanque",
         "dor_curta": "Qualidade do leite e mastite",
         "modulo": "Produção de leite de qualidade",
-        "link": "https://rehagro.instructure.com/courses/2858",
+        "link": "https://rehagro.instructure.com/courses/3140",
         "aulas": 35,
         "tempo": "3,5h",
         "programacao": "4 semanas (1h por semana – 9 videoaulas por semana)",
@@ -111,7 +111,7 @@ DORES = [
         "dor_exibicao": "Saber a quantidade de animais no próximo ano e quanto de forragem preciso produzir",
         "dor_curta": "Indicadores reprodutivos e evolução do rebanho",
         "modulo": "Indicadores reprodutivos e Evolução de rebanho",
-        "link": "https://rehagro.instructure.com/courses/2853",
+        "link": "https://rehagro.instructure.com/courses/3137",
         "aulas": 20,
         "tempo": "3h",
         "programacao": "3 semanas (1h por semana – 7 videoaulas por semana)",
@@ -126,7 +126,7 @@ DORES = [
         "dor_exibicao": "Produzir silagem de milho ou sorgo de qualidade e em quantidade adequada para o rebanho",
         "dor_curta": "Silagem de milho e sorgo",
         "modulo": "Manejo da cultura do milho",
-        "link": "https://rehagro.instructure.com/courses/2856",
+        "link": "https://rehagro.instructure.com/courses/3138",
         "aulas": 16,
         "tempo": "3h",
         "programacao": "3 semanas (1h por semana – 5 videoaulas por semana)",
@@ -141,7 +141,7 @@ DORES = [
         "dor_exibicao": "Estruturar manejo alimentar para otimizar produção de leite",
         "dor_curta": "Manejo alimentar e planejamento forrageiro",
         "modulo": "Planejamento forrageiro e manejo alimentar",
-        "link": "https://rehagro.instructure.com/courses/2857",
+        "link": "https://rehagro.instructure.com/courses/3139",
         "aulas": 28,
         "tempo": "3,5h",
         "programacao": "4 semanas (1h por semana – 7 videoaulas por semana)",
@@ -152,7 +152,7 @@ DORES = [
 # Módulo de boas-vindas (sempre incluído no início do plano)
 MODULO_BOASVINDAS = {
     "modulo": "Boas-vindas",
-    "link": "https://rehagro.instructure.com/courses/2850",
+    "link": "https://rehagro.instructure.com/courses/3133",
     "aulas": None,
     "tempo": None,
     "programacao": None,

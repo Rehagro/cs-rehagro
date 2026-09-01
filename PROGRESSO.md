@@ -1,6 +1,33 @@
 # Progresso e próximos passos — CS Rehagro
 
-Último marco: **Deploy da correção das dores + ficha do módulo de Sistemas de produção preenchida em 2026-08-20.**
+Último marco: **Links dos módulos atualizados para as novas turmas do AVA em 2026-09-01.**
+
+## 🔗 Novos links dos módulos (CEIGPL) — 2026-09-01
+
+A área de conteúdo republicou os 10 módulos do GPL no Instructure e mandou o arquivo novo (`Plano de aula - arquivo 3 CEIGPL.docx`). **Todos os `course_id` mudaram** — os antigos (28xx) ficaram para trás e um plano gerado com eles levaria o aluno para a turma velha.
+
+De → para (extraído do .docx, conferido módulo a módulo pelo nome):
+
+| Módulo | Antes | Agora |
+| --- | --- | --- |
+| Boas-vindas | 2850 | **3133** |
+| Sistemas de produção e visão estratégica do negócio leite | 2852 | **3142** |
+| Estratégias para eficiência produtiva | 2854 | **3135** |
+| Gestão financeira e econômica | 2859 | **3136** |
+| Sanidade de bezerras e novilhas | 2855 | **3141** |
+| Criação de bezerras e novilhas | 2851 | **3134** |
+| Produção de leite de qualidade | 2858 | **3140** |
+| Indicadores reprodutivos e Evolução de rebanho | 2853 | **3137** |
+| Manejo da cultura do milho | 2856 | **3138** |
+| Planejamento forrageiro e manejo alimentar | 2857 | **3139** |
+
+Atualizados em `core/mapeamento.py` (fonte de verdade do app) e no bloco `MODULOS`/`BOAS_VINDAS` de `tools/gerador_plano_pdf/gerar_plano.py`, que é copiado a cada plano avulso. Os arquivos de exemplo (`design_handoff_plano_de_aula/`, `tools/gerador_plano_pdf/saida/`) ficaram com os IDs antigos de propósito: são saídas congeladas de referência visual, não catálogo.
+
+**Pendência resolvida:** o arquivo novo fechou a *Programação* de **Sistemas de produção** — `3 semanas (1h por semana – 5 videoaulas por semana)`. Era o único módulo que imprimia `—` nessa linha. Agora os 9 módulos têm a ficha completa.
+
+**Sem mudança:** quantidade de aulas, tempo de aula gravada e a redação das dores são idênticos ao arquivo 2 — só os links (e a programação acima) mudaram.
+
+**Lembrete de deploy:** o Streamlit Cloud roda o `origin/main`; enquanto não houver `git push`, o app publicado continua mandando o aluno para os cursos antigos.
 
 ## 📚 Sistemas de produção ganhou aulas e tempo — 2026-08-20
 
