@@ -1,6 +1,45 @@
 # Progresso e próximos passos — CS Rehagro
 
-Último marco: **Links dos módulos atualizados para as novas turmas do AVA em 2026-09-01.**
+Último marco: **Proposta do HubSpot virou questionário respondível, com as suposições sobre o portal declaradas — 2026-09-04.**
+
+## ❓ A proposta passa a declarar o que foi suposto — e a coletar as respostas — 2026-09-04
+
+O usuário apontou, corretamente, que boa parte da proposta de 01/09 **infere** como o HubSpot da Rehagro está montado por dentro. É verdade: só três fatos foram confirmados (Ops Hub Pro, Treble integrado, respostas na matrícula). Nome interno de propriedade, tipo da pesquisa, associação matrícula↔contato, existência de app privado e volume de matrículas — tudo suposto, nada verificado.
+
+O artefato foi revisado (mesma URL, `docs/proposta_automacao_hubspot.html`) para separar as duas coisas e para **receber as respostas dentro da própria página**:
+
+- **Nota de leitura** no topo, avisando que o documento foi escrito sem acesso ao portal.
+- **Seção `#portal`** — dois cartões lado a lado: *confirmado pelo time* (3 itens) contra *suposto, ninguém verificou* (6 itens).
+- **Seção `#campos`** — os 14 campos que a ferramenta lê hoje do CSV, com coluna vazia para **nome interno** e **objeto**. É o insumo que destrava a Fase 1 e a única coisa impossível de deduzir de fora. Único indício que temos: o cabeçalho traz `qtd_animais`, sugerindo o padrão de nomenclatura do portal.
+- **Seção `#perguntas`** — 12 perguntas em ordem de impacto, cada uma com *o que muda conforme a resposta*. A 4 (app privado com escopo na matrícula) é a única realmente bloqueante.
+- **As 6 decisões viraram seleção clicável**, mais um campo de ressalvas.
+
+**Correções de honestidade no texto antigo:** a tabela de portas dizia *"API + app privado — já temos"*; virou **"app a criar"**, porque ninguém confirmou que existe. E o painel de conceito dizia "URL gravada no contato", contradizendo o resto do documento — virou "no registro do aluno".
+
+### Como as respostas voltam para cá
+
+O artefato foi publicado com a capacidade **`db`** (contrato 0.2.41). Cada campo salva sozinho em `respostas/{meta,campos,perguntas,decisoes}` e é lido de volta desta sessão com a ação `read_db` do Artifact, coleção `respostas`. Não há planilha de volta, anexo nem e-mail.
+
+**Limite a saber:** artefato que declara `db` é **interno à organização** — quem responder precisa estar no mesmo workspace do Claude. Se o head de CRM não estiver, a página vira documento de leitura (os campos continuam funcionando na tela, mas não salvam) e as respostas voltam por outro canal.
+
+## 🔌 Proposta: colocar o plano na jornada automatizada do HubSpot — 2026-09-01
+
+`docs/proposta_automacao_hubspot.html` (também publicado em https://claude.ai/code/artifact/a539a099-7aa0-4e53-9877-2a1e118fc348) — documento para o **head de CRM decidir** o caminho. Não é plano de implementação; é o leque de opções com custo, esforço e o que cada uma exige.
+
+**Conceito:** o plano deixa de ser arquivo e vira **link + 7 propriedades na matrícula**. O HubSpot não automatiza um PDF que mora na máquina do CS; automatiza uma URL gravada no registro. A partir daí, e-mail, tarefa, Treble, lista e relatório são nativos.
+
+**4 caminhos:** A) assistido (o app lê o HubSpot por API, CS clica) · B) robô agendado no GitHub Actions · C) webhook em tempo real · D) tudo dentro do HubSpot via custom code action. **Recomendação: A agora, C depois** — o A constrói exatamente as peças que o C reaproveita.
+
+**Fatos confirmados com o usuário** (mudam o desenho):
+- Têm **Operations Hub Professional** → webhook e custom code em workflow estão disponíveis.
+- **Treble já integrado ao HubSpot** → com template aprovado, cai a regra "só mandamos se houver conversa aberta".
+- As respostas da pesquisa ficam na **matrícula (objeto personalizado)** e no contato → **o plano pertence à matrícula**, não ao contato: o aluno pode ter GPL agora e GPC depois, e gravar no contato faria o segundo plano apagar o primeiro. Chave = Record ID da matrícula.
+
+**Limite estrutural que define os 4 caminhos:** o Streamlit **não recebe chamada de fora** (não é API, não tem endpoint) e **não roda sozinho** (sem agendador); no plano gratuito hiberna e não tem navegador para PDF. É bancada do CS, não motor de automação. Por isso o webhook (C) exige um serviço à parte, e o robô (B) exige agendador externo.
+
+**Contra-argumento ao caminho D**, registrado porque a evidência é desta semana: no D o catálogo de módulos passaria a viver dentro de um workflow, sem versionamento. Os 10 links do AVA mudarem hoje custou minutos justamente porque a tabela mora num arquivo só, com histórico.
+
+**Aguardando decisão (6 pontos):** caminho; matrícula com ou sem espelho no contato; se o CS confere antes de enviar; onde hospedar a página (testar se o File Manager exibe `.html` ou força download); link não listado vs. área logada; e quem passa a ser dono do processo.
 
 ## 🔗 Novos links dos módulos (CEIGPL) — 2026-09-01
 

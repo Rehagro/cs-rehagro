@@ -1,0 +1,1833 @@
+<title>Plano de Estudos no HubSpot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+  :root {
+    /* Paleta Rehagro — verde de marca, dourado como marcador de decisão,
+       neutros com viés verde (nunca cinza puro). */
+    --ground:      #FBFBF8;
+    --surface:     #FFFFFF;
+    --surface-2:   #F3F5F1;
+    --ink:         #12241E;
+    --ink-2:       #4E605A;
+    --ink-3:       #7C8A84;
+    --line:        #DEE4DD;
+    --line-strong: #C3CDC5;
+    --green:       #015641;
+    --green-soft:  #E5EDE9;
+    --gold:        #96762A;
+    --gold-soft:   #F4EEDF;
+    --gold-line:   #DFC98E;
+    --ok:          #2C6E4E;
+    --warn:        #9A6B15;
+    --crit:        #9E382C;
+    --crit-soft:   #F6E8E5;
+    --shadow:      0 1px 2px rgba(18,36,30,.05), 0 8px 24px -16px rgba(18,36,30,.28);
+
+    --f-display: "Newsreader", Georgia, "Times New Roman", serif;
+    --f-body:    "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --f-mono:    "IBM Plex Mono", ui-monospace, "SF Mono", Consolas, monospace;
+
+    --measure: 68ch;
+    --pad: clamp(20px, 5vw, 56px);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #0C1411;
+      --surface:     #121D19;
+      --surface-2:   #17241F;
+      --ink:         #E7EEE9;
+      --ink-2:       #A3B3AC;
+      --ink-3:       #7C8C85;
+      --line:        #23332C;
+      --line-strong: #33463D;
+      --green:       #56B08B;
+      --green-soft:  #16261F;
+      --gold:        #CDAF69;
+      --gold-soft:   #241E10;
+      --gold-line:   #4A3D1D;
+      --ok:          #5CB183;
+      --warn:        #D2A34C;
+      --crit:        #DE8577;
+      --crit-soft:   #2A1815;
+      --shadow:      0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #0C1411;
+    --surface:     #121D19;
+    --surface-2:   #17241F;
+    --ink:         #E7EEE9;
+    --ink-2:       #A3B3AC;
+    --ink-3:       #7C8C85;
+    --line:        #23332C;
+    --line-strong: #33463D;
+    --green:       #56B08B;
+    --green-soft:  #16261F;
+    --gold:        #CDAF69;
+    --gold-soft:   #241E10;
+    --gold-line:   #4A3D1D;
+    --ok:          #5CB183;
+    --warn:        #D2A34C;
+    --crit:        #DE8577;
+    --crit-soft:   #2A1815;
+    --shadow:      0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--f-body);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 var(--pad) 96px;
+  }
+
+  .col { max-width: var(--measure); }
+
+  /* ── Cabeçalho ────────────────────────────────────────────── */
+  header.top {
+    border-bottom: 1px solid var(--line);
+    padding: clamp(40px, 7vw, 76px) 0 clamp(28px, 4vw, 40px);
+    margin-bottom: clamp(36px, 5vw, 56px);
+  }
+  .eyebrow {
+    font-family: var(--f-mono);
+    font-size: 11.5px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .eyebrow::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--gold-line);
+    max-width: 180px;
+  }
+  h1 {
+    font-family: var(--f-display);
+    font-weight: 500;
+    font-size: clamp(34px, 5.4vw, 54px);
+    line-height: 1.1;
+    letter-spacing: -.015em;
+    text-wrap: balance;
+    margin: 0 0 20px;
+    max-width: 20ch;
+  }
+  .standfirst {
+    font-size: clamp(16.5px, 1.9vw, 19px);
+    line-height: 1.6;
+    color: var(--ink-2);
+    max-width: 60ch;
+    margin: 0;
+  }
+  .standfirst strong { color: var(--ink); font-weight: 500; }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 28px;
+    margin-top: 30px;
+    font-family: var(--f-mono);
+    font-size: 12px;
+    color: var(--ink-3);
+  }
+  .meta b {
+    color: var(--ink-2);
+    font-weight: 500;
+  }
+
+  /* ── Seções ───────────────────────────────────────────────── */
+  section { margin-bottom: clamp(46px, 6vw, 76px); }
+
+  h2 {
+    font-family: var(--f-display);
+    font-weight: 500;
+    font-size: clamp(24px, 3vw, 31px);
+    line-height: 1.2;
+    letter-spacing: -.01em;
+    text-wrap: balance;
+    margin: 0 0 8px;
+  }
+  h2 + .sub {
+    color: var(--ink-2);
+    margin: 0 0 26px;
+    max-width: 62ch;
+  }
+  h3 {
+    font-family: var(--f-body);
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: .005em;
+    margin: 0 0 8px;
+  }
+  p { margin: 0 0 16px; }
+  p:last-child { margin-bottom: 0; }
+
+  a { color: var(--green); text-underline-offset: 3px; }
+  a:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+
+  code {
+    font-family: var(--f-mono);
+    font-size: .88em;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: .08em .34em;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  ul.plain { margin: 0 0 16px; padding-left: 1.15em; }
+  ul.plain li { margin-bottom: 6px; }
+  ul.plain li::marker { color: var(--ink-3); }
+
+  /* ── Fluxo (hoje / proposto) ─────────────────────────────── */
+  .flows { display: grid; gap: 22px; }
+  @media (min-width: 900px) { .flows { grid-template-columns: 1fr 1fr; gap: 26px; } }
+
+  .flow {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface);
+    padding: 22px 22px 24px;
+    box-shadow: var(--shadow);
+  }
+  .flow-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .flow-head h3 { margin: 0; font-size: 14px; }
+  .flow-tag {
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .steps { display: flex; flex-direction: column; gap: 0; margin: 0; padding: 0; list-style: none; }
+  .steps li {
+    display: grid;
+    grid-template-columns: 22px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 0;
+    font-size: 14px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .steps li:last-child { border-bottom: 0; }
+  .dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    margin-left: 6px;
+    background: var(--green);
+  }
+  .dot.manual { background: var(--warn); }
+  .chip {
+    font-family: var(--f-mono);
+    font-size: 10px;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .chip.manual { color: var(--warn); background: var(--gold-soft); border: 1px solid var(--gold-line); }
+  .chip.auto   { color: var(--ok); background: var(--green-soft); border: 1px solid var(--line-strong); }
+  .flow-note {
+    margin-top: 16px;
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--ink-2);
+    padding-left: 13px;
+    border-left: 2px solid var(--crit);
+  }
+  .flow-note.good { border-left-color: var(--green); }
+
+  /* ── Painel de conceito ──────────────────────────────────── */
+  .concept {
+    background: var(--green-soft);
+    border: 1px solid var(--line-strong);
+    border-radius: 12px;
+    padding: clamp(22px, 3.5vw, 34px);
+  }
+  .concept .lead {
+    font-family: var(--f-display);
+    font-size: clamp(20px, 2.6vw, 26px);
+    line-height: 1.35;
+    color: var(--ink);
+    margin: 0 0 16px;
+    max-width: 34ch;
+    text-wrap: balance;
+  }
+  .concept p { color: var(--ink-2); max-width: 58ch; }
+  .concept p strong { color: var(--ink); font-weight: 500; }
+
+  /* ── Duo: faz / não faz ─────────────────────────────────── */
+  .duo { display: grid; gap: 18px; }
+  @media (min-width: 820px) { .duo { grid-template-columns: 1fr 1fr; } }
+  .duo-card {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface);
+    padding: 22px 24px 24px;
+  }
+  .duo-card.stop { border-color: var(--line-strong); background: var(--surface-2); }
+  .duo-card h3 {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    margin: 0 0 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .duo-card.go h3 { color: var(--ok); }
+  .duo-card.stop h3 { color: var(--crit); }
+  .duo-card ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 13px; }
+  .duo-card li { font-size: 14px; line-height: 1.55; color: var(--ink-2); padding-left: 20px; position: relative; }
+  .duo-card li b { color: var(--ink); font-weight: 600; }
+  .duo-card li::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-family: var(--f-mono);
+    font-size: 13px;
+  }
+  .duo-card.go li::before   { content: "+"; color: var(--ok); }
+  .duo-card.stop li::before { content: "\2013"; color: var(--crit); }
+
+  .verdict {
+    margin-top: 22px;
+    padding: 18px 22px;
+    border-left: 3px solid var(--gold);
+    background: var(--gold-soft);
+    border-radius: 0 8px 8px 0;
+    font-family: var(--f-display);
+    font-size: clamp(17px, 2.1vw, 20px);
+    line-height: 1.45;
+    max-width: 56ch;
+  }
+
+  .have {
+    font-family: var(--f-mono);
+    font-size: 10px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ok);
+    border: 1px solid var(--line-strong);
+    background: var(--green-soft);
+    border-radius: 999px;
+    padding: 2px 7px;
+    white-space: nowrap;
+    display: inline-block;
+  }
+  .have.check { color: var(--warn); background: var(--gold-soft); border-color: var(--gold-line); }
+
+  /* ── Cartões de caminho ──────────────────────────────────── */
+  .paths { display: grid; gap: 18px; }
+  @media (min-width: 820px) { .paths { grid-template-columns: 1fr 1fr; } }
+
+  .path {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface);
+    padding: 24px 24px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .path.pick {
+    border-color: var(--gold-line);
+    box-shadow: var(--shadow);
+  }
+  .path-top { display: flex; align-items: flex-start; gap: 14px; }
+  .path-letter {
+    font-family: var(--f-display);
+    font-size: 30px;
+    line-height: 1;
+    color: var(--gold);
+    width: 30px;
+    flex: none;
+  }
+  .path-title { flex: 1; }
+  .path-title h3 { font-size: 17px; margin-bottom: 3px; }
+  .path-title .kicker {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .badge {
+    font-family: var(--f-mono);
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid var(--gold-line);
+    background: var(--gold-soft);
+    border-radius: 999px;
+    padding: 3px 9px;
+    align-self: flex-start;
+    white-space: nowrap;
+  }
+  .path p { font-size: 14.5px; color: var(--ink-2); margin: 0; }
+  .path p strong { color: var(--ink); font-weight: 500; }
+
+  .pros-cons { display: grid; gap: 12px; }
+  @media (min-width: 560px) { .pros-cons { grid-template-columns: 1fr 1fr; } }
+  .pc-block h4 {
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    margin: 0 0 6px;
+    color: var(--ink-3);
+  }
+  .pc-block ul { margin: 0; padding-left: 1.05em; font-size: 13.5px; line-height: 1.55; color: var(--ink-2); }
+  .pc-block li { margin-bottom: 4px; }
+  .pc-block.up li::marker { color: var(--ok); }
+  .pc-block.down li::marker { color: var(--crit); }
+
+  .path-foot {
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 22px;
+    font-family: var(--f-mono);
+    font-size: 11.5px;
+    color: var(--ink-3);
+  }
+  .path-foot b { color: var(--ink-2); font-weight: 500; }
+
+  /* ── Tabelas ─────────────────────────────────────────────── */
+  .table-scroll {
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface);
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 720px;
+    font-size: 13.5px;
+  }
+  caption {
+    caption-side: bottom;
+    text-align: left;
+    padding: 12px 2px 0;
+    font-size: 12.5px;
+    color: var(--ink-3);
+  }
+  th, td {
+    text-align: left;
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  thead th {
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    font-weight: 500;
+    background: var(--surface-2);
+    white-space: nowrap;
+  }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody th {
+    font-weight: 600;
+    font-size: 13.5px;
+    white-space: nowrap;
+  }
+  td.num { font-variant-numeric: tabular-nums; }
+  .mono { font-family: var(--f-mono); font-size: 12.5px; }
+  .row-pick th, .row-pick td { background: var(--gold-soft); }
+
+  /* ── Decisões ────────────────────────────────────────────── */
+  .decisions { display: flex; flex-direction: column; gap: 14px; }
+  .decision {
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--gold);
+    border-radius: 8px;
+    background: var(--surface);
+    padding: 18px 20px;
+  }
+  .decision h3 { font-size: 15.5px; margin-bottom: 6px; }
+  .decision p { font-size: 14px; color: var(--ink-2); margin-bottom: 10px; }
+  .opts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .opt {
+    font-size: 12.5px;
+    border: 1px solid var(--line-strong);
+    border-radius: 6px;
+    padding: 5px 10px;
+    color: var(--ink-2);
+    background: var(--surface-2);
+  }
+  .opt b { color: var(--ink); font-weight: 500; }
+
+  /* ── Fases (sequência real) ──────────────────────────────── */
+  ol.phases { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+  ol.phases li {
+    display: grid;
+    grid-template-columns: 62px 1fr;
+    gap: 20px;
+    padding: 20px 0;
+    border-top: 1px solid var(--line);
+  }
+  ol.phases li:last-child { border-bottom: 1px solid var(--line); }
+  .phase-n {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    padding-top: 3px;
+  }
+  .phase-body h3 { font-size: 16px; margin-bottom: 4px; }
+  .phase-body p { font-size: 14.5px; color: var(--ink-2); margin-bottom: 8px; }
+  .phase-cost {
+    font-family: var(--f-mono);
+    font-size: 11.5px;
+    color: var(--ink-3);
+  }
+
+  /* ── Riscos ──────────────────────────────────────────────── */
+  .risks { display: grid; gap: 14px; }
+  @media (min-width: 760px) { .risks { grid-template-columns: 1fr 1fr; } }
+  .risk {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 16px 18px;
+    background: var(--surface);
+  }
+  .risk .lab {
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    margin-bottom: 7px;
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+  }
+  .lab.confirmar { color: var(--warn); background: var(--gold-soft); border: 1px solid var(--gold-line); }
+  .lab.risco     { color: var(--crit); background: var(--crit-soft); border: 1px solid var(--line-strong); }
+  .risk h3 { font-size: 14.5px; margin-bottom: 6px; }
+  .risk p { font-size: 13.5px; color: var(--ink-2); margin: 0; }
+
+  /* ── Fecho ───────────────────────────────────────────────── */
+  .closing {
+    border-top: 2px solid var(--green);
+    padding-top: 26px;
+  }
+  .closing .lead {
+    font-family: var(--f-display);
+    font-size: clamp(19px, 2.4vw, 23px);
+    line-height: 1.4;
+    max-width: 40ch;
+    margin: 0 0 14px;
+  }
+  footer {
+    margin-top: 46px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    font-family: var(--f-mono);
+    font-size: 11.5px;
+    color: var(--ink-3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 24px;
+  }
+
+  /* ── Confirmado x suposto, e o questionário ──────────────── */
+  .duo-card.assumed { border-color: var(--gold-line); background: var(--gold-soft); }
+  .duo-card.assumed h3 { color: var(--warn); border-bottom-color: var(--gold-line); }
+  .duo-card.assumed li::before { content: "?"; color: var(--warn); }
+
+  .readnote {
+    border: 1px solid var(--gold-line);
+    border-left: 3px solid var(--gold);
+    background: var(--gold-soft);
+    border-radius: 0 10px 10px 0;
+    padding: 18px 22px;
+    margin-bottom: clamp(40px, 5vw, 60px);
+  }
+  .readnote p { margin: 0; font-size: 14.5px; line-height: 1.6; color: var(--ink-2); max-width: 72ch; }
+  .readnote b { color: var(--ink); font-weight: 600; }
+
+  .blank {
+    display: block;
+    min-width: 128px;
+    height: 1.5em;
+    margin-top: 2px;
+    border-bottom: 1px dashed var(--line-strong);
+  }
+  td.qn {
+    font-family: var(--f-mono);
+    font-size: 12.5px;
+    color: var(--gold);
+    width: 1%;
+    padding-right: 4px;
+  }
+
+  /* ── Campos de resposta ──────────────────────────────────── */
+  .field {
+    width: 100%;
+    font-family: var(--f-body);
+    font-size: 13.5px;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    border-radius: 6px;
+    padding: 7px 10px;
+    line-height: 1.5;
+  }
+  .field::placeholder { color: var(--ink-3); }
+  .field:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 1px;
+    border-color: var(--gold-line);
+  }
+  textarea.field { resize: vertical; min-height: 58px; display: block; }
+  input.field.mono-in { font-family: var(--f-mono); font-size: 12.5px; }
+  td .field { min-width: 150px; }
+
+  label.opt {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  label.opt input { position: absolute; opacity: 0; width: 0; height: 0; }
+  label.opt::before {
+    content: "";
+    width: 11px; height: 11px;
+    border-radius: 50%;
+    border: 1px solid var(--line-strong);
+    background: var(--surface);
+    flex: none;
+  }
+  label.opt:has(input:checked) {
+    background: var(--green-soft);
+    border-color: var(--green);
+    color: var(--ink);
+  }
+  label.opt:has(input:checked)::before {
+    background: var(--green);
+    border-color: var(--green);
+    box-shadow: inset 0 0 0 2px var(--surface);
+  }
+  label.opt:has(input:focus-visible) { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+  .answerbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 28px;
+    align-items: flex-end;
+    justify-content: space-between;
+    border: 1px solid var(--line-strong);
+    border-radius: 10px;
+    background: var(--surface-2);
+    padding: 18px 22px;
+    margin-top: 26px;
+  }
+  .answerbar > div { max-width: 58ch; }
+  .ab-lab {
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .answerbar p { margin: 0; font-size: 13.5px; color: var(--ink-2); }
+  .ab-who {
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 190px;
+  }
+
+  .prog {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid var(--gold-line);
+    background: var(--gold-soft);
+    border-radius: 999px;
+    padding: 2px 9px;
+    white-space: nowrap;
+    display: inline-block;
+    margin-left: 4px;
+  }
+  .prog.done { color: var(--ok); background: var(--green-soft); border-color: var(--line-strong); }
+
+  .qgrid { display: grid; gap: 14px; }
+  @media (min-width: 900px) { .qgrid { grid-template-columns: 1fr 1fr; } }
+  .question {
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--green);
+    border-radius: 8px;
+    background: var(--surface);
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+  .question h3 { font-size: 14.5px; margin: 0; display: flex; gap: 9px; line-height: 1.4; }
+  .question h3 .n { font-family: var(--f-mono); font-size: 12px; color: var(--gold); flex: none; padding-top: 1px; }
+  .question .why { font-size: 13px; color: var(--ink-2); margin: 0; }
+  .question textarea { margin-top: auto; }
+
+  .saver {
+    position: fixed;
+    right: 14px;
+    bottom: 14px;
+    z-index: 20;
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: .04em;
+    padding: 7px 13px;
+    border-radius: 999px;
+    border: 1px solid var(--line-strong);
+    background: var(--surface);
+    color: var(--ink-2);
+    box-shadow: var(--shadow);
+    max-width: min(78vw, 330px);
+  }
+  .saver.ok  { color: var(--ok);  background: var(--green-soft); }
+  .saver.bad { color: var(--crit); background: var(--crit-soft); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="top">
+    <p class="eyebrow">Proposta · Customer Success · GPL</p>
+    <h1>Plano de Estudos dentro da jornada do HubSpot</h1>
+    <p class="standfirst">
+      Hoje o plano personalizado do aluno é montado fora do CRM e entregue à mão. Este documento
+      apresenta <strong>quatro caminhos</strong> para colocá-lo dentro da automação — o que cada um
+      exige, o que cada um custa, as <strong>seis decisões</strong> que dependem do CRM e as
+      <strong>doze perguntas</strong> sobre o portal que ainda estão sem resposta.
+    </p>
+    <div class="meta">
+      <span><b>Para:</b> Head de CRM</span>
+      <span><b>Origem:</b> ferramenta CS Rehagro (Streamlit)</span>
+      <span><b>Status:</b> proposta para avaliação</span>
+      <span><b>Data:</b> 01/09/2026 · rev. 04/09/2026</span>
+    </div>
+  </header>
+
+  <div class="readnote">
+    <p>
+      <b>Como ler este documento.</b> Ele foi escrito a partir da ferramenta que o CS usa hoje, do
+      arquivo que ela consome e de três fatos que o time confirmou sobre o portal. Tudo o que depende
+      de <b>como o HubSpot da Rehagro está montado por dentro</b> — nomes internos de propriedades,
+      qual objeto guarda o quê, quais workflows já existem — foi <b>suposto</b>, porque quem escreveu
+      nunca viu o portal. As suposições não estão espalhadas pelo texto: estão reunidas e nomeadas em
+      <a href="#portal">O que sabemos do portal</a>, junto com as perguntas que as resolvem. Se
+      alguma estiver errada, o desenho muda — e é muito mais barato descobrir agora.
+      <b>As respostas podem ser escritas nesta própria página</b>: os campos das seções
+      <a href="#campos">o mapa dos campos</a>, <a href="#perguntas">as doze perguntas</a> e
+      <a href="#decisoes">as seis decisões</a> salvam sozinhos e voltam para o time de CS.
+    </p>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────────── -->
+  <section>
+    <h2>Onde a jornada quebra hoje</h2>
+    <p class="sub">
+      O aluno responde a pesquisa dentro do HubSpot e o e-mail de entrega sai do HubSpot.
+      Entre um ponto e outro, seis passos acontecem na máquina de uma pessoa — e o CRM não vê nada.
+    </p>
+
+    <div class="flows">
+      <div class="flow">
+        <div class="flow-head">
+          <h3>Processo atual</h3>
+          <span class="flow-tag">6 passos manuais</span>
+        </div>
+        <ul class="steps">
+          <li><span class="dot"></span> Aluno responde a pesquisa de onboarding <span class="chip auto">HubSpot</span></li>
+          <li><span class="dot manual"></span> CS exporta o CSV das respostas <span class="chip manual">manual</span></li>
+          <li><span class="dot manual"></span> Sobe o CSV na ferramenta e escolhe o aluno <span class="chip manual">manual</span></li>
+          <li><span class="dot manual"></span> Baixa o HTML e salva em PDF com Ctrl+P <span class="chip manual">manual</span></li>
+          <li><span class="dot manual"></span> Anexa o PDF e envia por e-mail <span class="chip manual">manual</span></li>
+          <li><span class="dot manual"></span> Envia pelo Treble — só se houver conversa aberta <span class="chip manual">manual</span></li>
+        </ul>
+        <p class="flow-note">
+          O CRM não sabe quem recebeu, quando recebeu, nem se o aluno abriu. Não há como criar
+          tarefa de atraso, medir SLA ou disparar follow-up: o plano é um arquivo, e arquivo o
+          HubSpot não enxerga.
+        </p>
+      </div>
+
+      <div class="flow">
+        <div class="flow-head">
+          <h3>Processo proposto</h3>
+          <span class="flow-tag">1 passo manual, ou nenhum</span>
+        </div>
+        <ul class="steps">
+          <li><span class="dot"></span> Aluno responde a pesquisa de onboarding <span class="chip auto">HubSpot</span></li>
+          <li><span class="dot"></span> A ferramenta lê as respostas e monta o plano <span class="chip auto">automático</span></li>
+          <li><span class="dot"></span> Publica a página do plano e devolve a URL <span class="chip auto">automático</span></li>
+          <li><span class="dot"></span> Grava URL, módulos e status na matrícula <span class="chip auto">automático</span></li>
+          <li><span class="dot"></span> Workflow envia o e-mail com o link <span class="chip auto">HubSpot</span></li>
+          <li><span class="dot"></span> Workflow dispara o template do Treble <span class="chip auto">Treble</span></li>
+        </ul>
+        <p class="flow-note good">
+          Tudo o que o CRM precisa para operar — entregar, cobrar, medir, segmentar — passa a existir
+          como propriedade da matrícula. A entrega deixa de depender de alguém lembrar.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────────────────── -->
+  <section>
+    <div class="concept">
+      <p class="lead">O plano deixa de ser um arquivo e passa a ser um link mais sete propriedades.</p>
+      <p>
+        Essa é a única mudança de conceito da proposta, e ela vale para os quatro caminhos.
+        O HubSpot não consegue automatizar a entrega de um PDF que mora no computador do CS.
+        Mas se o resultado da geração for <strong>uma URL gravada no registro do aluno</strong>, o HubSpot
+        passa a fazer sozinho tudo o que já sabe fazer: e-mail com token, tarefa, disparo no
+        Treble, lista, relatório.
+      </p>
+      <p>
+        O link também é melhor que o PDF para o aluno: abre no celular, mantém os dez links dos
+        módulos clicáveis — o que num PDF pelo WhatsApp é sofrível — e permite medir quem abriu.
+        O PDF continua disponível para quem quiser anexar.
+      </p>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────────────────── -->
+  <section>
+    <h2>O que a ferramenta atual resolve — e onde ela para</h2>
+    <p class="sub">
+      A ferramenta é um app em Streamlit. Vale saber o que ele faz bem e o que ele não faz,
+      porque é exatamente isso que separa os quatro caminhos da próxima seção.
+    </p>
+
+    <div class="duo">
+      <div class="duo-card go">
+        <h3>Faz bem hoje</h3>
+        <ul>
+          <li><b>Falar com o HubSpot.</b> Chamadas de saída são HTTP comum: ler as respostas da pesquisa, gravar propriedades, criar tarefa, subir arquivo. Só precisa de um app privado e um token — que ainda não existem.</li>
+          <li><b>Montar o plano.</b> O motor que aplica o design Rehagro e o catálogo de módulos já existe e já está em produção.</li>
+          <li><b>Ser a bancada do CS.</b> Fila, conferência, pré-visualização e tratamento de exceção — uma tela feita para quem opera.</li>
+          <li><b>Guardar segredo.</b> Token fica fora do código, no cofre do próprio ambiente.</li>
+        </ul>
+      </div>
+
+      <div class="duo-card stop">
+        <h3>Não faz — e não é questão de esforço</h3>
+        <ul>
+          <li><b>Não recebe chamada de fora.</b> O Streamlit é uma tela, não uma API: não existe endereço para o HubSpot chamar. É por isso que o caminho do webhook exige um serviço separado.</li>
+          <li><b>Não roda sozinho.</b> Não tem agendador. O código só executa quando alguém abre a página — daí o caminho do robô agendado.</li>
+          <li><b>Hiberna.</b> No plano gratuito o app dorme com a inatividade e leva alguns segundos para acordar. Serve para pessoa, não para máquina.</li>
+          <li><b>Não gera PDF.</b> Não há navegador instalado no ambiente — foi por isso que o botão de PDF saiu em junho e o CS usa Ctrl+P.</li>
+          <li><b>Não distingue quem é quem.</b> A senha é compartilhada pelo time; não há trilha por pessoa.</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="verdict">
+      O Streamlit é uma ótima bancada de trabalho e um motor de automação ruim. A proposta o mantém
+      como bancada e põe o motor em outro lugar.
+    </p>
+  </section>
+
+  <!-- ─────────────────────────────────────────────────────── -->
+  <section>
+    <h2>As portas de entrada do HubSpot</h2>
+    <p class="sub">
+      Tudo o que segue é possível com o que a Rehagro já tem, salvo o que está marcado.
+      A licença de Operations Hub Professional é o que abre as portas 2 e 3 — as duas que
+      permitem o HubSpot mandar, em vez de só receber.
+    </p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Porta</th>
+            <th scope="col">O que permite</th>
+            <th scope="col">Exige</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">API + app privado</th>
+            <td>Ler as respostas da pesquisa, gravar propriedades, criar tarefas, associar registros. É a porta principal, usada nos quatro caminhos — e depende de um app privado com escopo no objeto matrícula, que ninguém confirmou existir.</td>
+            <td><span class="have check">app a criar</span></td>
+          </tr>
+          <tr>
+            <th scope="row">Webhook no workflow</th>
+            <td>O HubSpot avisa um sistema externo no instante em que algo acontece. Base do caminho C.</td>
+            <td><span class="have">Ops Hub Pro</span></td>
+          </tr>
+          <tr>
+            <th scope="row">Código no workflow</th>
+            <td>Rodar código dentro do próprio HubSpot, com acesso a segredos e às APIs. Base do caminho D.</td>
+            <td><span class="have">Ops Hub Pro</span></td>
+          </tr>
+          <tr>
+            <th scope="row">File Manager</th>
+            <td>Hospedar a página do plano e o PDF com URL pública, sem armazenamento externo.</td>
+            <td><span class="have">incluso</span></td>
+          </tr>
+          <tr>
+            <th scope="row">Eventos na linha do tempo</th>
+            <td>Registrar “plano gerado”, “plano enviado”, “plano aberto” no histórico do aluno, ao lado dos e-mails.</td>
+            <td><span class="have check">confirmar</span></td>
+          </tr>
+          <tr>
+            <th scope="row">Cartão no registro</th>
+            <td>Um botão “gerar plano” dentro da ficha do aluno no HubSpot — o CS nem abriria a ferramenta.</td>
+            <td><span class="have check">confirmar licença</span></td>
+          </tr>
+          <tr>
+            <th scope="row">Tokens, listas e relatórios</th>
+            <td>Usar as propriedades do plano na copy do e-mail, na segmentação e no dashboard de CS.</td>
+            <td><span class="have">nativo</span></td>
+          </tr>
+          <tr>
+            <th scope="row">Página do CMS</th>
+            <td>Servir o plano dentro do domínio da Rehagro, em vez de um link genérico de arquivo.</td>
+            <td><span class="have check">depende do CMS</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <caption>As portas marcadas para confirmar não bloqueiam nada: são melhorias, não pré-requisitos.</caption>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────────────────── -->
+  <section>
+    <h2>Os quatro caminhos</h2>
+    <p class="sub">
+      Mudam em três coisas: <b>quem dispara</b> a geração, <b>onde a regra mora</b> e
+      <b>quanta infraestrutura nova</b> entra. Todos entregam o mesmo resultado ao aluno.
+    </p>
+
+    <div class="paths">
+
+      <article class="path pick">
+        <div class="path-top">
+          <span class="path-letter">A</span>
+          <span class="path-title">
+            <span class="kicker">Um clique, sem CSV</span>
+            <h3>Assistido pelo CS</h3>
+          </span>
+          <span class="badge">Começar aqui</span>
+        </div>
+        <p>
+          A ferramenta passa a ler as respostas direto do HubSpot por API — acaba o CSV. O CS abre a
+          fila, confere o aluno e clica em <strong>gerar</strong>. A ferramenta publica a página e
+          grava as propriedades na matrícula; o workflow do HubSpot faz a entrega.
+        </p>
+        <div class="pros-cons">
+          <div class="pc-block up">
+            <h4>A favor</h4>
+            <ul>
+              <li>Menor esforço de todos</li>
+              <li>Zero infraestrutura nova</li>
+              <li>Mantém revisão humana antes do envio</li>
+              <li>Já elimina CSV, Ctrl+P e envio manual</li>
+            </ul>
+          </div>
+          <div class="pc-block down">
+            <h4>Contra</h4>
+            <ul>
+              <li>Ainda depende de alguém abrir a ferramenta</li>
+              <li>Sem ninguém, a fila para</li>
+            </ul>
+          </div>
+        </div>
+        <div class="path-foot">
+          <span><b>Esforço:</b> 1–2 dias</span>
+          <span><b>Latência:</b> humana</span>
+          <span><b>Custo:</b> R$ 0</span>
+        </div>
+      </article>
+
+      <article class="path">
+        <div class="path-top">
+          <span class="path-letter">B</span>
+          <span class="path-title">
+            <span class="kicker">Fila varrida de 15 em 15 min</span>
+            <h3>Robô de plantão</h3>
+          </span>
+        </div>
+        <p>
+          Um job agendado busca no HubSpot quem respondeu a pesquisa e ainda está sem plano, gera,
+          publica e grava. Roda no GitHub Actions, onde o código já vive. <strong>Não usa
+          Operations Hub</strong> — funciona mesmo que a licença mude no futuro.
+        </p>
+        <div class="pros-cons">
+          <div class="pc-block up">
+            <h4>A favor</h4>
+            <ul>
+              <li>Automático de ponta a ponta</li>
+              <li>Sem servidor no ar, sem custo fixo</li>
+              <li>Tolerante a falha: quem falhou volta na fila</li>
+            </ul>
+          </div>
+          <div class="pc-block down">
+            <h4>Contra</h4>
+            <ul>
+              <li>Até ~15 min de atraso</li>
+              <li>Um sistema a mais para monitorar</li>
+            </ul>
+          </div>
+        </div>
+        <div class="path-foot">
+          <span><b>Esforço:</b> +1 dia sobre A</span>
+          <span><b>Latência:</b> ~15 min</span>
+          <span><b>Custo:</b> R$ 0</span>
+        </div>
+      </article>
+
+      <article class="path pick">
+        <div class="path-top">
+          <span class="path-letter">C</span>
+          <span class="path-title">
+            <span class="kicker">Workflow chama a ferramenta</span>
+            <h3>Webhook em tempo real</h3>
+          </span>
+          <span class="badge">Destino</span>
+        </div>
+        <p>
+          O workflow dispara um webhook no instante em que o aluno responde; a ferramenta gera e
+          devolve as propriedades em segundos. <strong>Usa o Operations Hub Professional que já
+          temos.</strong> É o desenho que a Rehagro já aplica em outras automações do CRM.
+        </p>
+        <div class="pros-cons">
+          <div class="pc-block up">
+            <h4>A favor</h4>
+            <ul>
+              <li>Plano pronto em segundos</li>
+              <li>Gatilho e log visíveis dentro do HubSpot</li>
+              <li>O CRM comanda; a ferramenta obedece</li>
+            </ul>
+          </div>
+          <div class="pc-block down">
+            <h4>Contra</h4>
+            <ul>
+              <li>Exige um serviço sempre no ar</li>
+              <li>Custo pequeno de hospedagem</li>
+              <li>Precisa de retentativa para falha</li>
+            </ul>
+          </div>
+        </div>
+        <div class="path-foot">
+          <span><b>Esforço:</b> +2–3 dias sobre A</span>
+          <span><b>Latência:</b> segundos</span>
+          <span><b>Custo:</b> ~US$ 5–7/mês</span>
+        </div>
+      </article>
+
+      <article class="path">
+        <div class="path-top">
+          <span class="path-letter">D</span>
+          <span class="path-title">
+            <span class="kicker">Custom code action</span>
+            <h3>Tudo dentro do HubSpot</h3>
+          </span>
+        </div>
+        <p>
+          O Operations Hub permite rodar código dentro do próprio workflow. O plano seria montado
+          ali e publicado no File Manager, <strong>sem nenhum sistema externo</strong> — nem
+          Streamlit, nem servidor, nem GitHub.
+        </p>
+        <div class="pros-cons">
+          <div class="pc-block up">
+            <h4>A favor</h4>
+            <ul>
+              <li>Um sistema só — tudo no CRM</li>
+              <li>Sem dependência de TI para subir no ar</li>
+              <li>Instantâneo, como o C</li>
+            </ul>
+          </div>
+          <div class="pc-block down">
+            <h4>Contra</h4>
+            <ul>
+              <li>O catálogo de módulos passa a viver em dois lugares</li>
+              <li>Código sem versionamento nem revisão</li>
+              <li>Limite de execução; sem geração de PDF</li>
+              <li>Perde a tela de conferência do CS</li>
+            </ul>
+          </div>
+        </div>
+        <div class="path-foot">
+          <span><b>Esforço:</b> 3–4 dias</span>
+          <span><b>Latência:</b> segundos</span>
+          <span><b>Custo:</b> R$ 0</span>
+        </div>
+      </article>
+
+    </div>
+
+    <p style="margin-top:26px; max-width:var(--measure); color:var(--ink-2); font-size:14.5px;">
+      Uma nota sobre o caminho D, porque o risco não é teórico: <strong>nesta semana os dez links
+      dos módulos do GPL mudaram</strong> (as turmas foram republicadas no AVA). A correção levou
+      minutos porque o catálogo mora num arquivo só, versionado, com histórico de quem mudou o quê.
+      Se essa tabela passar a existir também dentro de um workflow, toda mudança de conteúdo vira
+      duas manutenções — e a segunda é a que se esquece.
+    </p>
+  </section>
+
+  <!-- ─────────────────────────────────────────────────────── -->
+  <section>
+    <h2>Comparação lado a lado</h2>
+    <p class="sub">A recomendação está destacada: começar em A e evoluir para C, sem retrabalho — o A já constrói tudo o que o C usa.</p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Caminho</th>
+            <th scope="col">Latência</th>
+            <th scope="col">Infra nova</th>
+            <th scope="col">Onde a regra mora</th>
+            <th scope="col">Quem opera</th>
+            <th scope="col">Esforço</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="row-pick">
+            <th scope="row">A · Assistido</th>
+            <td>humana</td>
+            <td>nenhuma</td>
+            <td>repositório Git</td>
+            <td>CS, 1 clique</td>
+            <td class="num">1–2 dias</td>
+          </tr>
+          <tr>
+            <th scope="row">B · Robô</th>
+            <td>~15 min</td>
+            <td>GitHub Actions</td>
+            <td>repositório Git</td>
+            <td>ninguém</td>
+            <td class="num">+1 dia</td>
+          </tr>
+          <tr class="row-pick">
+            <th scope="row">C · Webhook</th>
+            <td>segundos</td>
+            <td>1 serviço no ar</td>
+            <td>repositório Git</td>
+            <td>ninguém</td>
+            <td class="num">+2–3 dias</td>
+          </tr>
+          <tr>
+            <th scope="row">D · No HubSpot</th>
+            <td>segundos</td>
+            <td>nenhuma</td>
+            <td>dentro do workflow</td>
+            <td>ninguém</td>
+            <td class="num">3–4 dias</td>
+          </tr>
+        </tbody>
+      </table>
+      <caption>Esforço em dias de desenvolvimento, sem contar a configuração no HubSpot (meia diária em qualquer cenário).</caption>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────────────────── -->
+  <section>
+    <h2>O que precisa existir no HubSpot</h2>
+    <p class="sub">
+      Sete propriedades. São elas que tornam o plano visível para o CRM — e são as mesmas nos
+      quatro caminhos, então podem ser criadas antes da decisão.
+    </p>
+    <div class="concept" style="margin-bottom:26px;">
+      <p style="margin:0; color:var(--ink-2); max-width:64ch;">
+        <strong>Elas moram na matrícula, não no contato.</strong> Como as respostas da pesquisa já
+        ficam no objeto personalizado de matrícula, o plano deve ficar junto: um aluno pode ter
+        matrícula no GPL hoje e no GPC no ano que vem, e cada uma tem o seu plano, o seu catálogo de
+        módulos e a sua data. Guardar no contato faria o segundo plano apagar o primeiro. A chave de
+        controle passa a ser o registro da matrícula.
+      </p>
+      <p style="margin:14px 0 0; color:var(--ink-2); max-width:64ch;">
+        A ressalva prática: e-mail de marketing personaliza com folga a partir do contato, e nem
+        sempre a partir de objeto personalizado. Por isso a proposta <strong>espelha a URL do plano
+        também no contato</strong> — a matrícula é a verdade, o contato é a cópia que o e-mail e o
+        Treble consomem. Confirmar com o CRM se o token do objeto matrícula funciona no e-mail
+        dispensa o espelho.
+      </p>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Propriedade</th>
+            <th scope="col">Tipo</th>
+            <th scope="col">Para que serve</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row" class="mono">plano_estudos_url</th>
+            <td>texto</td>
+            <td>O link da página. É o que entra no e-mail e no template do Treble.</td>
+          </tr>
+          <tr>
+            <th scope="row" class="mono">plano_estudos_pdf_url</th>
+            <td>texto</td>
+            <td>Versão em PDF, para quem preferir anexar.</td>
+          </tr>
+          <tr>
+            <th scope="row" class="mono">plano_estudos_status</th>
+            <td>lista: pendente · gerado · enviado · erro</td>
+            <td>É o gatilho dos workflows e o painel de controle da fila.</td>
+          </tr>
+          <tr>
+            <th scope="row" class="mono">plano_estudos_gerado_em</th>
+            <td>data</td>
+            <td>Mede o SLA entre a resposta da pesquisa e a entrega do plano.</td>
+          </tr>
+          <tr>
+            <th scope="row" class="mono">plano_estudos_modulo_1/2/3</th>
+            <td>texto</td>
+            <td>Personaliza a copy do e-mail e do WhatsApp, e permite relatório de dores por turma.</td>
+          </tr>
+          <tr>
+            <th scope="row" class="mono">plano_estudos_versao</th>
+            <td>texto</td>
+            <td>Qual catálogo de links foi usado. Responde “quem recebeu plano apontando para a turma antiga?”.</td>
+          </tr>
+          <tr>
+            <th scope="row" class="mono">plano_estudos_erro</th>
+            <td>texto</td>
+            <td>O motivo, quando algo falha — vira tarefa para o CS com o problema descrito.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin-top:34px; font-size:16px;">E três workflows</h3>
+    <ul class="plain col" style="margin-top:10px;">
+      <li><b>Enfileirar</b> — pesquisa respondida marca <code>status = pendente</code> na matrícula. Deixa a fila visível dentro do CRM.</li>
+      <li><b>Entregar</b> — <code>status = gerado</code> envia o e-mail com o link; se não houver clique em 1 dia, dispara o template do Treble com a URL como variável.</li>
+      <li><b>Exceção</b> — <code>status = erro</code> cria tarefa para o CS com o motivo e o link direto para a ferramenta.</li>
+    </ul>
+    <p class="col" style="margin-top:14px; color:var(--ink-2); font-size:14.5px;">
+      Com template aprovado no Treble, o disparo por WhatsApp deixa de depender de haver conversa
+      aberta — hoje essa é a regra que faz parte dos alunos não receber o plano pelo canal em que
+      eles mais respondem.
+    </p>
+  </section>
+
+  <!-- ─────────────────────────────────────────────────────── -->
+  <section id="portal">
+    <h2>O que sabemos do portal — e o que foi suposto</h2>
+    <p class="sub">
+      Três fatos vieram do time de CS. Todo o resto foi deduzido do arquivo que a ferramenta consome
+      e do comportamento padrão do HubSpot. Separar as duas coisas agora é o que evita descobrir uma
+      suposição errada no meio da implementação.
+    </p>
+
+    <div class="duo">
+      <div class="duo-card go">
+        <h3>Confirmado pelo time</h3>
+        <ul>
+          <li><b>Operations Hub Professional.</b> É a licença que abre webhook e código dentro de workflow. Sem ela, sobram os caminhos A e B.</li>
+          <li><b>Treble integrado ao HubSpot.</b> O workflow consegue disparar template de WhatsApp usando propriedade do CRM como variável.</li>
+          <li><b>As respostas da pesquisa ficam na matrícula, que é objeto personalizado, e também no contato.</b> É daqui que sai toda a proposta de guardar o plano na matrícula.</li>
+        </ul>
+      </div>
+
+      <div class="duo-card assumed">
+        <h3>Suposto — ninguém verificou</h3>
+        <ul>
+          <li><b>Que a pesquisa é um formulário do HubSpot</b> cuja submissão serve de gatilho de workflow. Se for pesquisa de feedback ou formulário de terceiro, o gatilho muda de lugar.</li>
+          <li><b>Que dá para criar propriedades novas na matrícula</b> e workflows baseados nela — nem toda assinatura permite workflow sobre objeto personalizado.</li>
+          <li><b>Que existe, ou pode existir, um app privado</b> com escopo de leitura e escrita nesse objeto. É o único pré-requisito realmente bloqueante.</li>
+          <li><b>Que a matrícula está associada ao contato</b> por associação nativa, de modo que a ferramenta consiga ir de uma ao outro.</li>
+          <li><b>Que nenhuma propriedade de plano de estudos já existe</b> no portal, criada por outra pessoa com outro nome.</li>
+          <li><b>Que o volume comporta o caminho A.</b> Ninguém disse quantas matrículas entram por mês — e é esse número que decide se um clique por aluno se sustenta.</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="verdict">
+      Nenhuma dessas suposições é difícil de confirmar. Todas são caras de descobrir erradas depois.
+    </p>
+
+    <div class="answerbar">
+      <div>
+        <span class="ab-lab">As próximas seções podem ser respondidas aqui mesmo</span>
+        <p>
+          Escreva direto na página. Cada campo é salvo sozinho assim que você sai dele, e as respostas
+          voltam para quem está tocando o projeto — sem planilha de volta, sem anexo, sem e-mail.
+        </p>
+      </div>
+      <label class="ab-who">Quem está respondendo
+        <input class="field" id="who" data-doc="meta" data-key="quem" placeholder="seu nome" autocomplete="off">
+      </label>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────────────────── -->
+  <section id="campos">
+    <h2>O mapa que falta: os campos da pesquisa <span class="prog" id="prog-campos">0 de 14 mapeados</span></h2>
+    <p class="sub">
+      A ferramenta lê hoje estes quatorze campos do arquivo exportado, procurando pelo texto do
+      cabeçalho. Para ler direto por API, ela precisa do <b>nome interno</b> de cada propriedade e de
+      <b>qual objeto</b> a guarda. Esta é a tabela que destrava a Fase 1 — e a única coisa desta
+      proposta que ninguém consegue deduzir de fora do portal.
+    </p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Campo, como a ferramenta o conhece</th>
+            <th scope="col">Onde entra no plano</th>
+            <th scope="col">Nome interno da propriedade</th>
+            <th scope="col">Objeto</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Nome do matriculado</th>
+            <td>Cabeçalho e abertura do plano</td>
+            <td><input class="field mono-in" data-doc="campos" data-key="nome__interno" placeholder="ex: firstname" autocomplete="off"></td>
+            <td><input class="field" data-doc="campos" data-key="nome__objeto" placeholder="contato / matrícula" autocomplete="off"></td>
+          </tr>
+          <tr>
+            <th scope="row">Código da matrícula</th>
+            <td>Chave de controle — hoje é o que identifica o aluno</td>
+            <td><input class="field mono-in" data-doc="campos" data-key="codigo__interno" placeholder="nome interno" autocomplete="off"></td>
+            <td><input class="field" data-doc="campos" data-key="codigo__objeto" placeholder="contato / matrícula" autocomplete="off"></td>
+          </tr>
+          <tr>
+            <th scope="row">Nome do curso</th>
+            <td>Decide o catálogo de módulos — GPL ou GPC</td>
+            <td><input class="field mono-in" data-doc="campos" data-key="curso__interno" placeholder="nome interno" autocomplete="off"></td>
+            <td><input class="field" data-doc="campos" data-key="curso__objeto" placeholder="contato / matrícula" autocomplete="off"></td>
+          </tr>
+          <tr>
+            <th scope="row">Com qual perfil se encaixa melhor</th>
+            <td>Ajusta o tom do texto de abertura</td>
+            <td><input class="field mono-in" data-doc="campos" data-key="perfil__interno" placeholder="nome interno" autocomplete="off"></td>
+            <td><input class="field" data-doc="campos" data-key="perfil__objeto" placeholder="contato / matrícula" autocomplete="off"></td>
+          </tr>
+          <tr>
+            <th scope="row">Formação</th>
+            <td>Contexto do bloco de perfil</td>
+            <td><input class="field mono-in" data-doc="campos" data-key="formacao__interno" placeholder="nome interno" autocomplete="off"></td>
+            <td><input class="field" data-doc="campos" data-key="formacao__objeto" placeholder="contato / matrícula" autocomplete="off"></td>
+          </tr>
+          <tr>
+            <th scope="row">Volume de produção</th>
+            <td>Bloco de diagnóstico da fazenda</td>
+            <td><input class="field mono-in" data-doc="campos" data-key="producao__interno" placeholder="nome interno" autocomplete="off"></td>
+            <td><input class="field" data-doc="campos" data-key="producao__objeto" placeholder="contato / matrícula" autocomplete="off"></td>
+          </tr>
+          <tr>
+            <th scope="row">Número médio de animais</th>
+            <td>Bloco de diagnóstico da fazenda</td>
+            <td><input class="field mono-in" data-doc="campos" data-key="animais__interno" placeholder="qtd_animais?" autocomplete="off"></td>
+            <td><input class="field" data-doc="campos" data-key="animais__objeto" placeholder="contato / matrícula" autocomplete="off"></td>
+          </tr>
+          <tr>
+            <th scope="row">Média de produção por vaca</th>
+            <td>Bloco de diagnóstico da fazenda</td>
+            <td><input class="field mono-in" data-doc="campos" data-key="media_vaca__interno" placeholder="nome interno" autocomplete="off"></td>
+            <td><input class="field" data-doc="campos" data-key="media_vaca__objeto" placeholder="contato / matrícula" autocomplete="off"></td>
+          </tr>
+          <tr>
+            <th scope="row">O que faria o curso valer a pena</th>
+            <td>Citado no plano como o objetivo declarado pelo aluno</td>
+            <td><input class="field mono-in" data-doc="campos" data-key="valeu__interno" placeholder="nome interno" autocomplete="off"></td>
+            <td><input class="field" data-doc="campos" data-key="valeu__objeto" placeholder="contato / matrícula" autocomplete="off"></td>
+          </tr>
+          <tr>
+            <th scope="row">Onde quer estar daqui a 5 anos</th>
+            <td>Citado no plano como a meta de longo prazo</td>
+            <td><input class="field mono-in" data-doc="campos" data-key="meta__interno" placeholder="nome interno" autocomplete="off"></td>
+            <td><input class="field" data-doc="campos" data-key="meta__objeto" placeholder="contato / matrícula" autocomplete="off"></td>
+          </tr>
+          <tr>
+            <th scope="row">Primeira prioridade</th>
+            <td>Primeiro módulo do plano</td>
+            <td><input class="field mono-in" data-doc="campos" data-key="prio1__interno" placeholder="nome interno" autocomplete="off"></td>
+            <td><input class="field" data-doc="campos" data-key="prio1__objeto" placeholder="contato / matrícula" autocomplete="off"></td>
+          </tr>
+          <tr>
+            <th scope="row">Segunda prioridade</th>
+            <td>Segundo módulo do plano</td>
+            <td><input class="field mono-in" data-doc="campos" data-key="prio2__interno" placeholder="nome interno" autocomplete="off"></td>
+            <td><input class="field" data-doc="campos" data-key="prio2__objeto" placeholder="contato / matrícula" autocomplete="off"></td>
+          </tr>
+          <tr>
+            <th scope="row">Terceira prioridade</th>
+            <td>Terceiro módulo do plano</td>
+            <td><input class="field mono-in" data-doc="campos" data-key="prio3__interno" placeholder="nome interno" autocomplete="off"></td>
+            <td><input class="field" data-doc="campos" data-key="prio3__objeto" placeholder="contato / matrícula" autocomplete="off"></td>
+          </tr>
+          <tr>
+            <th scope="row">E-mail do aluno</th>
+            <td>Destinatário da entrega</td>
+            <td><input class="field mono-in" data-doc="campos" data-key="email__interno" placeholder="ex: email" autocomplete="off"></td>
+            <td><input class="field" data-doc="campos" data-key="email__objeto" placeholder="contato / matrícula" autocomplete="off"></td>
+          </tr>
+        </tbody>
+      </table>
+      <caption>
+        Um export de <b>Configurações → Propriedades</b>, para contato e para matrícula, já traz nome
+        interno, tipo e objeto de todas de uma vez — e resolve esta tabela inteira sem preencher campo
+        por campo. O único indício que temos hoje é que o cabeçalho do arquivo atual traz
+        <code>qtd_animais</code>, o que sugere que o padrão de nomenclatura do portal é esse.
+      </caption>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────────────────── -->
+  <section id="perguntas">
+    <h2>Doze perguntas sobre o portal <span class="prog" id="prog-perguntas">0 de 12 respondidas</span></h2>
+    <p class="sub">
+      Cada uma muda alguma coisa concreta no desenho. Estão em ordem de impacto: as primeiras podem
+      invalidar um caminho inteiro, as últimas só ajustam detalhe. Resposta curta serve — inclusive
+      “não sei”, que também é informação.
+    </p>
+
+    <div class="qgrid">
+
+      <div class="question">
+        <h3><span class="n">01</span> Qual o nome interno do objeto matrícula, e qual assinatura o sustenta?</h3>
+        <p class="why">Se “matrícula” for na verdade um negócio, ou um objeto padrão com outro rótulo, muda o alvo das sete propriedades e muda a chave de controle da automação inteira.</p>
+        <textarea class="field" data-doc="perguntas" data-key="q01" rows="2" placeholder="resposta"></textarea>
+      </div>
+
+      <div class="question">
+        <h3><span class="n">02</span> Workflows podem ser baseados no objeto matrícula, ou só em contato?</h3>
+        <p class="why">É o que decide se o gatilho “pesquisa respondida → status pendente” pode existir. Se não puder, tudo volta a girar em torno do contato — e o aluno com dois cursos vira problema de novo.</p>
+        <textarea class="field" data-doc="perguntas" data-key="q02" rows="2" placeholder="resposta"></textarea>
+      </div>
+
+      <div class="question">
+        <h3><span class="n">03</span> A pesquisa de onboarding é formulário do HubSpot, pesquisa de feedback ou formulário externo?</h3>
+        <p class="why">Define o gatilho e como as respostas chegam às propriedades. Se for formulário externo, pode ser que hoje ninguém dispare nada automaticamente quando o aluno responde.</p>
+        <textarea class="field" data-doc="perguntas" data-key="q03" rows="2" placeholder="resposta"></textarea>
+      </div>
+
+      <div class="question">
+        <h3><span class="n">04</span> Já existe app privado no portal? Quem pode criar, e com quais escopos?</h3>
+        <p class="why">Sem escopo de leitura e escrita no objeto matrícula, nenhum dos quatro caminhos funciona. É o único item verdadeiramente bloqueante da lista.</p>
+        <textarea class="field" data-doc="perguntas" data-key="q04" rows="2" placeholder="resposta"></textarea>
+      </div>
+
+      <div class="question">
+        <h3><span class="n">05</span> A matrícula está associada ao contato por associação nativa?</h3>
+        <p class="why">É por esse caminho que a ferramenta vai do registro do aluno até o e-mail dele, e é assim que o espelho no contato seria escrito.</p>
+        <textarea class="field" data-doc="perguntas" data-key="q05" rows="2" placeholder="resposta"></textarea>
+      </div>
+
+      <div class="question">
+        <h3><span class="n">06</span> Quantas matrículas novas entram por mês, e como se distribuem no tempo?</h3>
+        <p class="why">Vinte por mês e o caminho A basta, talvez para sempre. Duzentas concentradas na abertura de turma e o clique manual vira gargalo justamente no pior dia.</p>
+        <textarea class="field" data-doc="perguntas" data-key="q06" rows="2" placeholder="resposta"></textarea>
+      </div>
+
+      <div class="question">
+        <h3><span class="n">07</span> Já existe alguma propriedade de plano ou de onboarding criada no portal?</h3>
+        <p class="why">Para não criar uma propriedade que duplica outra que já existe, já tem histórico e já alimenta algum relatório.</p>
+        <textarea class="field" data-doc="perguntas" data-key="q07" rows="2" placeholder="resposta"></textarea>
+      </div>
+
+      <div class="question">
+        <h3><span class="n">08</span> Que workflows já rodam hoje quando a pesquisa é respondida?</h3>
+        <p class="why">Para o novo entrar sem colidir com o que já manda e-mail — e para não haver duas mensagens disputando o mesmo momento da jornada.</p>
+        <textarea class="field" data-doc="perguntas" data-key="q08" rows="2" placeholder="resposta"></textarea>
+      </div>
+
+      <div class="question">
+        <h3><span class="n">09</span> O token de objeto personalizado funciona na copy do e-mail de marketing?</h3>
+        <p class="why">Se funcionar, o espelho no contato deixa de existir: uma propriedade a menos para manter sincronizada, e um jeito a menos de o dado ficar velho.</p>
+        <textarea class="field" data-doc="perguntas" data-key="q09" rows="2" placeholder="resposta"></textarea>
+      </div>
+
+      <div class="question">
+        <h3><span class="n">10</span> O File Manager exibe um arquivo <code>.html</code> na tela, ou força download?</h3>
+        <p class="why">Decide entre hospedagem sem custo nenhum e um armazenamento externo de centavos por mês. É um teste de quinze minutos: subir um HTML qualquer e abrir o link.</p>
+        <textarea class="field" data-doc="perguntas" data-key="q10" rows="2" placeholder="resposta"></textarea>
+      </div>
+
+      <div class="question">
+        <h3><span class="n">11</span> Existe CMS contratado, com domínio conectado?</h3>
+        <p class="why">Se existir, o plano pode morar dentro do domínio da Rehagro em vez de um link genérico de arquivo. Muda a percepção do aluno, não o esforço.</p>
+        <textarea class="field" data-doc="perguntas" data-key="q11" rows="2" placeholder="resposta"></textarea>
+      </div>
+
+      <div class="question">
+        <h3><span class="n">12</span> Existe template de WhatsApp aprovado no Treble para o plano? Quem aprova?</h3>
+        <p class="why">O disparo automático depende de template aprovado, e a aprovação tem prazo próprio, fora do controle do projeto. Se ainda não existe, é a fila mais longa da Fase 0.</p>
+        <textarea class="field" data-doc="perguntas" data-key="q12" rows="2" placeholder="resposta"></textarea>
+      </div>
+
+    </div>
+
+    <div class="concept" style="margin-top:26px;">
+      <p class="lead">Três formas de responder isso tudo — a mais rápida leva vinte minutos.</p>
+      <ul class="plain" style="margin-bottom:0;">
+        <li><b>Um export de propriedades.</b> Configurações → Propriedades → Exportar, para contato e para matrícula. Resolve a tabela dos quatorze campos e as perguntas 1, 5 e 7 de uma vez só.</li>
+        <li><b>Um token só de leitura.</b> Um app privado com escopos de leitura permite mapear o portal sem ocupar o time de CRM — e já responde a pergunta 4, que é a bloqueante.</li>
+        <li><b>Vinte minutos de tela compartilhada.</b> Ver a ficha de uma matrícula real e a lista de workflows do onboarding responde quase tudo o que sobrar.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────────────────── -->
+  <section id="decisoes">
+    <h2>As seis decisões que dependem do CRM <span class="prog" id="prog-decisoes">0 de 6 decididas</span></h2>
+    <p class="sub">
+      São as escolhas que travam o desenho técnico. Nenhuma é reversível de graça depois — por isso
+      vêm antes do código. Podem ser marcadas aqui mesmo, e a marcação fica salva. As decisões 1, 2 e
+      4 dependem das respostas da seção anterior; as outras três são de critério, não de informação.
+    </p>
+
+    <div class="decisions">
+
+      <div class="decision">
+        <h3>1. Qual caminho, e em quantas etapas</h3>
+        <p>A recomendação é A agora e C depois, porque o A constrói exatamente as peças que o C reaproveita — nada é jogado fora. Mas se a prioridade for não depender de sistema externo, o D é uma escolha legítima.</p>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="d1" data-doc="decisoes" data-key="d1" value="A → C"><span><b>A → C</b> (recomendado)</span></label>
+          <label class="opt"><input type="radio" name="d1" data-doc="decisoes" data-key="d1" value="A → B"><span><b>A → B</b> sem servidor</span></label>
+          <label class="opt"><input type="radio" name="d1" data-doc="decisoes" data-key="d1" value="D"><span><b>D</b> tudo no HubSpot</span></label>
+        </div>
+      </div>
+
+      <div class="decision">
+        <h3>2. O plano mora na matrícula, com espelho no contato?</h3>
+        <p>A matrícula é o lugar certo — cada curso tem o seu plano, e o histórico não se perde quando o aluno se matricula de novo. O espelho no contato existe só para o e-mail e o Treble conseguirem ler a URL com facilidade. Se o CRM confirmar que o token do objeto matrícula funciona na copy, o espelho some.</p>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="d2" data-doc="decisoes" data-key="d2" value="Matrícula + espelho no contato"><span><b>Matrícula + espelho no contato</b> (proposto)</span></label>
+          <label class="opt"><input type="radio" name="d2" data-doc="decisoes" data-key="d2" value="Só matrícula"><span><b>Só matrícula</b></span></label>
+          <label class="opt"><input type="radio" name="d2" data-doc="decisoes" data-key="d2" value="Só contato"><span><b>Só contato</b></span></label>
+        </div>
+      </div>
+
+      <div class="decision">
+        <h3>3. O CS confere antes de enviar, ou o plano sai sozinho?</h3>
+        <p>Não é uma questão técnica, é de risco. O plano leva o nome do aluno e as dores que ele declarou; um dado errado na pesquisa vira um plano errado na mão do aluno. Hoje há conferência humana implícita.</p>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="d3" data-doc="decisoes" data-key="d3" value="Sempre automático"><span><b>Sempre automático</b></span></label>
+          <label class="opt"><input type="radio" name="d3" data-doc="decisoes" data-key="d3" value="Automático com aviso ao CS"><span><b>Automático com aviso ao CS</b></span></label>
+          <label class="opt"><input type="radio" name="d3" data-doc="decisoes" data-key="d3" value="Só após aprovação"><span><b>Só após aprovação</b></span></label>
+        </div>
+      </div>
+
+      <div class="decision">
+        <h3>4. Onde a página do plano fica hospedada</h3>
+        <p>A opção sem custo é o File Manager do próprio HubSpot. Falta confirmar se ele exibe um arquivo <code>.html</code> na tela ou força download — teste de 15 minutos, e o resultado decide entre File Manager e um armazenamento externo de centavos por mês.</p>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="d4" data-doc="decisoes" data-key="d4" value="File Manager"><span><b>File Manager</b> do HubSpot</span></label>
+          <label class="opt"><input type="radio" name="d4" data-doc="decisoes" data-key="d4" value="Armazenamento externo"><span><b>Armazenamento externo</b> (S3 / R2)</span></label>
+          <label class="opt"><input type="radio" name="d4" data-doc="decisoes" data-key="d4" value="Página do CMS"><span><b>Página do CMS</b></span></label>
+        </div>
+      </div>
+
+      <div class="decision">
+        <h3>5. O link é público não listado, ou protegido?</h3>
+        <p>A página traz nome do aluno, as dores declaradas e o porte do rebanho. O padrão proposto é URL longa e não adivinhável, fora do Google. Se o CRM entender que isso é dado sensível, a alternativa é área logada — o que muda o esforço e a experiência.</p>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="d5" data-doc="decisoes" data-key="d5" value="Link não listado"><span><b>Link não listado</b> (proposto)</span></label>
+          <label class="opt"><input type="radio" name="d5" data-doc="decisoes" data-key="d5" value="Área com login"><span><b>Área com login</b></span></label>
+          <label class="opt"><input type="radio" name="d5" data-doc="decisoes" data-key="d5" value="Link que expira"><span><b>Link que expira</b></span></label>
+        </div>
+      </div>
+
+      <div class="decision">
+        <h3>6. Quem é o dono do processo depois de pronto</h3>
+        <p>Os workflows, as propriedades e o template do Treble passam a fazer parte da operação do CRM. Vale definir quem edita a copy do e-mail, quem monitora a fila de erro e quem avisa quando a pesquisa mudar de redação — hoje é a mudança que mais quebra a ferramenta.</p>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="d6" data-doc="decisoes" data-key="d6" value="CRM é dono"><span><b>CRM</b> é dono</span></label>
+          <label class="opt"><input type="radio" name="d6" data-doc="decisoes" data-key="d6" value="CS é dono"><span><b>CS</b> é dono</span></label>
+          <label class="opt"><input type="radio" name="d6" data-doc="decisoes" data-key="d6" value="Dividido por camada"><span><b>Dividido</b> por camada</span></label>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="question" style="margin-top:16px; border-left-color: var(--gold);">
+      <h3>Ressalvas, contexto ou uma sétima decisão que ficou de fora</h3>
+      <p class="why">Espaço livre — inclusive para discordar do desenho proposto. Fica salvo junto com o resto.</p>
+      <textarea class="field" data-doc="decisoes" data-key="observacoes" rows="3" placeholder="opcional"></textarea>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────────────────── -->
+  <section>
+    <h2>Como isso avança</h2>
+    <p class="sub">Sequência real: cada fase só começa quando a anterior está no ar. A Fase 1 sozinha já resolve quase toda a dor operacional.</p>
+
+    <ol class="phases">
+      <li>
+        <span class="phase-n">Fase 0</span>
+        <div class="phase-body">
+          <h3>Preparar o terreno</h3>
+          <p>Criar as sete propriedades na matrícula e o app privado de integração. Testar o File Manager com um HTML e conferir se o e-mail puxa token do objeto matrícula. Nada aqui depende do caminho escolhido — pode começar hoje.</p>
+          <p class="phase-cost">meia diária · CRM + CS</p>
+        </div>
+      </li>
+      <li>
+        <span class="phase-n">Fase 1</span>
+        <div class="phase-body">
+          <h3>Acabar com o CSV e com o envio manual</h3>
+          <p>A ferramenta lê o HubSpot, publica a página e grava as propriedades. O workflow de entrega entra no ar. O CS ainda clica, mas o exportar-salvar-anexar-enviar acaba.</p>
+          <p class="phase-cost">1–2 dias · desenvolvimento</p>
+        </div>
+      </li>
+      <li>
+        <span class="phase-n">Fase 2</span>
+        <div class="phase-body">
+          <h3>Tirar a pessoa do caminho</h3>
+          <p>Webhook ou robô agendado, conforme a decisão 1. A ferramenta vira painel de acompanhamento e exceção, não mais estação de trabalho.</p>
+          <p class="phase-cost">1–3 dias · desenvolvimento</p>
+        </div>
+      </li>
+      <li>
+        <span class="phase-n">Fase 3</span>
+        <div class="phase-body">
+          <h3>Medir e refinar</h3>
+          <p>Acompanhamento de abertura do plano, follow-up de quem não abriu, e relatório de dores por turma alimentando a área de conteúdo. É aqui que o dado começa a devolver valor para o produto.</p>
+          <p class="phase-cost">a definir · CRM</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ─────────────────────────────────────────────────────── -->
+  <section>
+    <h2>Pontos em aberto</h2>
+    <p class="sub">Registrados aqui em vez de assumidos. Nenhum bloqueia a Fase 0.</p>
+    <div class="risks">
+      <div class="risk">
+        <span class="lab confirmar">A confirmar</span>
+        <h3>Token de matrícula no e-mail</h3>
+        <p>Se a copy do e-mail conseguir puxar a URL direto do objeto matrícula, o espelho no contato deixa de ser necessário — uma propriedade a menos para manter em dia.</p>
+      </div>
+      <div class="risk">
+        <span class="lab confirmar">A confirmar</span>
+        <h3>HTML no File Manager</h3>
+        <p>Se o File Manager forçar download em vez de exibir a página, o plano B é armazenamento externo. Custo de centavos, meio dia a mais.</p>
+      </div>
+      <div class="risk">
+        <span class="lab risco">Risco conhecido</span>
+        <h3>Mudança de redação na pesquisa</h3>
+        <p>Alterar o texto das opções já quebrou a ferramenta antes. Hoje a proteção existe no código, mas depende de alguém avisar. Vale virar regra do CRM: mexeu na pesquisa, avisa o CS.</p>
+      </div>
+      <div class="risk">
+        <span class="lab risco">Risco conhecido</span>
+        <h3>Dor sem módulo correspondente</h3>
+        <p>Se uma opção da pesquisa não tiver módulo no GPL, o aluno recebe um plano mais curto. O princípio já acordado — dor sem módulo não entra na pesquisa — precisa valer também no GPC.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────────────────── -->
+  <section class="closing">
+    <p class="lead">O que muda para o aluno: o plano chega no mesmo dia da pesquisa, pelo canal em que ele responde.</p>
+    <p class="col" style="color:var(--ink-2);">
+      E o que muda para a operação: deixa de haver uma etapa da jornada que só existe se alguém
+      lembrar. O desenho do plano, o catálogo de módulos e a pesquisa continuam exatamente como
+      estão — a proposta não mexe em conteúdo, mexe em quem carrega o arquivo de um lado para o outro.
+    </p>
+  </section>
+
+  <footer>
+    <span>Proposta preparada pelo time de CS</span>
+    <span>Ferramenta: gerador de Plano de Estudos GPL</span>
+    <span>01/09/2026 · revisto em 04/09/2026</span>
+  </footer>
+
+</div>
+
+<div class="saver" id="saver" role="status" aria-live="polite">conectando…</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var DOCS = ["meta", "campos", "perguntas", "decisoes"];
+  var db = null;
+  var timers = {};
+  var muted = false;              // true enquanto aplicamos dados vindos do servidor
+  var saver = document.getElementById("saver");
+
+  function status(texto, tipo) {
+    saver.textContent = texto;
+    saver.className = "saver" + (tipo ? " " + tipo : "");
+  }
+
+  function hora() {
+    var d = new Date();
+    return ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
+  }
+
+  function controles(nome) {
+    return Array.prototype.slice.call(
+      document.querySelectorAll('[data-doc="' + nome + '"]')
+    );
+  }
+
+  function coletar(nome) {
+    var corpo = {};
+    controles(nome).forEach(function (el) {
+      if (el.type === "radio") {
+        if (el.checked) corpo[el.dataset.key] = el.value;
+      } else {
+        var v = (el.value || "").trim();
+        if (v) corpo[el.dataset.key] = v;
+      }
+    });
+    corpo.atualizadoEm = new Date().toISOString();
+    var quem = document.getElementById("who");
+    if (quem && quem.value.trim()) corpo.respondidoPor = quem.value.trim();
+    return corpo;
+  }
+
+  function aplicar(nome, corpo) {
+    muted = true;
+    controles(nome).forEach(function (el) {
+      var v = corpo[el.dataset.key];
+      if (el.type === "radio") {
+        el.checked = v === el.value;
+      } else if (document.activeElement !== el) {
+        el.value = typeof v === "string" ? v : "";
+      }
+    });
+    muted = false;
+    progresso();
+  }
+
+  function progresso() {
+    var pares = [
+      ["prog-campos", "campos", 14, "mapeados", 2],
+      ["prog-perguntas", "perguntas", 12, "respondidas", 1],
+      ["prog-decisoes", "decisoes", 6, "decididas", 1]
+    ];
+    pares.forEach(function (p) {
+      var el = document.getElementById(p[0]);
+      if (!el) return;
+      var preenchidos = 0;
+      var vistos = {};
+      controles(p[1]).forEach(function (c) {
+        if (c.type === "radio") {
+          if (c.checked && !vistos[c.name]) { vistos[c.name] = 1; preenchidos++; }
+        } else if ((c.value || "").trim()) {
+          preenchidos++;
+        }
+      });
+      var n = p[4] === 2 ? Math.floor(preenchidos / 2) : preenchidos;
+      if (n > p[2]) n = p[2];
+      el.textContent = n + " de " + p[2] + " " + p[3];
+      el.className = "prog" + (n >= p[2] ? " done" : "");
+    });
+  }
+
+  function salvar(nome) {
+    progresso();
+    if (!db || muted) return;
+    clearTimeout(timers[nome]);
+    timers[nome] = setTimeout(function () {
+      status("salvando…");
+      db.doc("respostas/" + nome).set(coletar(nome)).then(function () {
+        status("salvo às " + hora(), "ok");
+      }).catch(function (e) {
+        var codigo = (e && e.code) || "desconhecido";
+        status(
+          codigo === "not_granted" || codigo === "capability_disabled"
+            ? "esta visualização não salva respostas"
+            : "não foi possível salvar — " + codigo,
+          "bad"
+        );
+      });
+    }, 600);
+  }
+
+  // Um handler só, para tudo.
+  document.addEventListener("input", function (ev) {
+    var el = ev.target;
+    if (el && el.dataset && el.dataset.doc) salvar(el.dataset.doc);
+  });
+  document.addEventListener("change", function (ev) {
+    var el = ev.target;
+    if (el && el.dataset && el.dataset.doc) salvar(el.dataset.doc);
+  });
+
+  progresso();
+
+  if (typeof claude === "undefined" || !claude || typeof claude.use !== "function") {
+    status("respostas não são salvas nesta visualização", "bad");
+    return;
+  }
+
+  claude.use("db").then(function (store) {
+    if (!store) {
+      status("respostas não são salvas nesta visualização", "bad");
+      return;
+    }
+    db = store;
+    status("pronto — as respostas são salvas sozinhas", "ok");
+    DOCS.forEach(function (nome) {
+      db.doc("respostas/" + nome).onSnapshot(
+        function (snap) {
+          if (snap.exists) aplicar(nome, snap.data() || {});
+        },
+        function (e) {
+          status("sincronização interrompida — " + ((e && e.code) || "erro"), "bad");
+        }
+      );
+    });
+  }).catch(function () {
+    status("respostas não são salvas nesta visualização", "bad");
+  });
+})();
+</script>
+
