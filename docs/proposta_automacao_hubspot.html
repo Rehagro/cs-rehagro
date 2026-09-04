@@ -718,6 +718,29 @@
   .question .why { font-size: 13px; color: var(--ink-2); margin: 0; }
   .question textarea { margin-top: auto; }
 
+  .btn {
+    font-family: var(--f-body);
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--surface);
+    background: var(--green);
+    border: 1px solid var(--green);
+    border-radius: 7px;
+    padding: 10px 18px;
+    cursor: pointer;
+    line-height: 1.3;
+  }
+  .btn:hover { filter: brightness(1.1); }
+  .btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+  #saida {
+    font-family: var(--f-mono);
+    font-size: 12px;
+    line-height: 1.55;
+    margin-top: 14px;
+    background: var(--surface-2);
+  }
+
   .saver {
     position: fixed;
     right: 14px;
@@ -772,7 +795,8 @@
       alguma estiver errada, o desenho muda — e é muito mais barato descobrir agora.
       <b>As respostas podem ser escritas nesta própria página</b>: os campos das seções
       <a href="#campos">o mapa dos campos</a>, <a href="#perguntas">as doze perguntas</a> e
-      <a href="#decisoes">as seis decisões</a> salvam sozinhos e voltam para o time de CS.
+      <a href="#decisoes">as seis decisões</a> ficam guardados no seu navegador, e o botão em
+      <a href="#entregar">devolva as respostas</a> junta tudo num texto para colar de volta.
     </p>
   </div>
 
@@ -1301,8 +1325,9 @@
       <div>
         <span class="ab-lab">As próximas seções podem ser respondidas aqui mesmo</span>
         <p>
-          Escreva direto na página. Cada campo é salvo sozinho assim que você sai dele, e as respostas
-          voltam para quem está tocando o projeto — sem planilha de volta, sem anexo, sem e-mail.
+          Escreva direto na página — sem planilha, sem anexo. O que você digita fica guardado neste
+          navegador enquanto responde, e no fim um botão reúne tudo num texto só para devolver ao CS.
+          Resposta parcial já ajuda: o que estiver em branco volta como “sem resposta”.
         </p>
       </div>
       <label class="ab-who">Quem está respondendo
@@ -1602,6 +1627,18 @@
   </section>
 
   <!-- ─────────────────────────────────────────────────────── -->
+  <section id="entregar">
+    <h2>Terminou? Devolva as respostas</h2>
+    <p class="sub">
+      O botão junta tudo o que foi preenchido — as seis decisões, as doze perguntas e o mapa dos
+      campos — num texto só, pronto para colar na resposta do e-mail ou no WhatsApp. Enquanto isso,
+      o que você escreve fica guardado neste navegador, então dá para fechar a página e voltar depois.
+    </p>
+    <p><button class="btn" id="copiar" type="button">Copiar todas as respostas</button></p>
+    <textarea class="field" id="saida" rows="14" readonly hidden aria-label="Respostas reunidas em texto"></textarea>
+  </section>
+
+  <!-- ─────────────────────────────────────────────────────── -->
   <section>
     <h2>Como isso avança</h2>
     <p class="sub">Sequência real: cada fase só começa quando a anterior está no ar. A Fase 1 sozinha já resolve quase toda a dor operacional.</p>
@@ -1688,17 +1725,19 @@
 
 </div>
 
-<div class="saver" id="saver" role="status" aria-live="polite">conectando…</div>
+<div class="saver" id="saver" role="status" aria-live="polite">as respostas ficam guardadas neste navegador</div>
 
 <script>
 (function () {
   "use strict";
 
-  var DOCS = ["meta", "campos", "perguntas", "decisoes"];
-  var db = null;
-  var timers = {};
-  var muted = false;              // true enquanto aplicamos dados vindos do servidor
+  var CHAVE = "plano-estudos-hubspot-respostas";
   var saver = document.getElementById("saver");
+  var guardando = null;
+
+  function qsa(sel, raiz) {
+    return Array.prototype.slice.call((raiz || document).querySelectorAll(sel));
+  }
 
   function status(texto, tipo) {
     saver.textContent = texto;
@@ -1710,124 +1749,145 @@
     return ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
   }
 
-  function controles(nome) {
-    return Array.prototype.slice.call(
-      document.querySelectorAll('[data-doc="' + nome + '"]')
-    );
-  }
-
-  function coletar(nome) {
-    var corpo = {};
-    controles(nome).forEach(function (el) {
+  // ── Rascunho no proprio navegador de quem responde ───────────
+  function guardar() {
+    var o = {};
+    qsa("[data-doc]").forEach(function (el) {
       if (el.type === "radio") {
-        if (el.checked) corpo[el.dataset.key] = el.value;
-      } else {
-        var v = (el.value || "").trim();
-        if (v) corpo[el.dataset.key] = v;
+        if (el.checked) o[el.dataset.key] = el.value;
+      } else if ((el.value || "").trim()) {
+        o[el.dataset.key] = el.value.trim();
       }
     });
-    corpo.atualizadoEm = new Date().toISOString();
-    var quem = document.getElementById("who");
-    if (quem && quem.value.trim()) corpo.respondidoPor = quem.value.trim();
-    return corpo;
+    try {
+      localStorage.setItem(CHAVE, JSON.stringify(o));
+      status("rascunho guardado às " + hora(), "ok");
+    } catch (e) {
+      status("este navegador não guarda rascunho — copie antes de fechar", "bad");
+    }
   }
 
-  function aplicar(nome, corpo) {
-    muted = true;
-    controles(nome).forEach(function (el) {
-      var v = corpo[el.dataset.key];
-      if (el.type === "radio") {
-        el.checked = v === el.value;
-      } else if (document.activeElement !== el) {
-        el.value = typeof v === "string" ? v : "";
-      }
+  function restaurar() {
+    var bruto = null;
+    try { bruto = localStorage.getItem(CHAVE); } catch (e) { return; }
+    if (!bruto) return;
+    var o;
+    try { o = JSON.parse(bruto); } catch (e) { return; }
+    qsa("[data-doc]").forEach(function (el) {
+      var v = o[el.dataset.key];
+      if (el.type === "radio") el.checked = v === el.value;
+      else if (typeof v === "string") el.value = v;
     });
-    muted = false;
-    progresso();
+    status("rascunho anterior recuperado", "ok");
   }
 
+  // ── Contadores ───────────────────────────────────────────────
   function progresso() {
-    var pares = [
-      ["prog-campos", "campos", 14, "mapeados", 2],
-      ["prog-perguntas", "perguntas", 12, "respondidas", 1],
-      ["prog-decisoes", "decisoes", 6, "decididas", 1]
-    ];
-    pares.forEach(function (p) {
+    [
+      ["prog-campos", "campos", 14, "mapeados", true],
+      ["prog-perguntas", "perguntas", 12, "respondidas", false],
+      ["prog-decisoes", "decisoes", 6, "decididas", false]
+    ].forEach(function (p) {
       var el = document.getElementById(p[0]);
       if (!el) return;
-      var preenchidos = 0;
+      var conta = 0;
       var vistos = {};
-      controles(p[1]).forEach(function (c) {
+      qsa('[data-doc="' + p[1] + '"]').forEach(function (c) {
         if (c.type === "radio") {
-          if (c.checked && !vistos[c.name]) { vistos[c.name] = 1; preenchidos++; }
+          if (c.checked && !vistos[c.name]) { vistos[c.name] = 1; conta++; }
         } else if ((c.value || "").trim()) {
-          preenchidos++;
+          conta++;
         }
       });
-      var n = p[4] === 2 ? Math.floor(preenchidos / 2) : preenchidos;
+      var n = p[4] ? Math.floor(conta / 2) : conta;
       if (n > p[2]) n = p[2];
       el.textContent = n + " de " + p[2] + " " + p[3];
       el.className = "prog" + (n >= p[2] ? " done" : "");
     });
   }
 
-  function salvar(nome) {
+  function aoMudar(ev) {
+    var el = ev.target;
+    if (!el || !el.dataset || !el.dataset.doc) return;
     progresso();
-    if (!db || muted) return;
-    clearTimeout(timers[nome]);
-    timers[nome] = setTimeout(function () {
-      status("salvando…");
-      db.doc("respostas/" + nome).set(coletar(nome)).then(function () {
-        status("salvo às " + hora(), "ok");
-      }).catch(function (e) {
-        var codigo = (e && e.code) || "desconhecido";
-        status(
-          codigo === "not_granted" || codigo === "capability_disabled"
-            ? "esta visualização não salva respostas"
-            : "não foi possível salvar — " + codigo,
-          "bad"
-        );
-      });
-    }, 600);
+    clearTimeout(guardando);
+    guardando = setTimeout(guardar, 500);
   }
 
-  // Um handler só, para tudo.
-  document.addEventListener("input", function (ev) {
-    var el = ev.target;
-    if (el && el.dataset && el.dataset.doc) salvar(el.dataset.doc);
-  });
-  document.addEventListener("change", function (ev) {
-    var el = ev.target;
-    if (el && el.dataset && el.dataset.doc) salvar(el.dataset.doc);
-  });
+  document.addEventListener("input", aoMudar);
+  document.addEventListener("change", aoMudar);
 
-  progresso();
-
-  if (typeof claude === "undefined" || !claude || typeof claude.use !== "function") {
-    status("respostas não são salvas nesta visualização", "bad");
-    return;
+  // ── O texto que volta para o time ────────────────────────────
+  function limpo(el) {
+    return el ? el.textContent.replace(/\s+/g, " ").trim() : "";
   }
 
-  claude.use("db").then(function (store) {
-    if (!store) {
-      status("respostas não são salvas nesta visualização", "bad");
-      return;
-    }
-    db = store;
-    status("pronto — as respostas são salvas sozinhas", "ok");
-    DOCS.forEach(function (nome) {
-      db.doc("respostas/" + nome).onSnapshot(
-        function (snap) {
-          if (snap.exists) aplicar(nome, snap.data() || {});
-        },
-        function (e) {
-          status("sincronização interrompida — " + ((e && e.code) || "erro"), "bad");
-        }
-      );
+  function montarTexto() {
+    var L = [];
+    var quem = document.getElementById("who");
+    L.push("RESPOSTAS — Plano de Estudos dentro da jornada do HubSpot");
+    L.push("Respondido por: " + ((quem && quem.value.trim()) || "(não informado)"));
+    L.push("Em: " + new Date().toLocaleString("pt-BR"));
+    L.push("");
+
+    L.push("=== AS SEIS DECISÕES ===");
+    L.push("");
+    qsa("#decisoes .decision").forEach(function (d) {
+      var marcado = d.querySelector("input:checked");
+      L.push(limpo(d.querySelector("h3")));
+      L.push("    -> " + (marcado ? marcado.value : "(sem resposta)"));
+      L.push("");
     });
-  }).catch(function () {
-    status("respostas não são salvas nesta visualização", "bad");
+    var obs = document.querySelector('[data-key="observacoes"]');
+    L.push("Ressalvas: " + ((obs && obs.value.trim()) || "(nenhuma)"));
+    L.push("");
+
+    L.push("=== AS DOZE PERGUNTAS SOBRE O PORTAL ===");
+    L.push("");
+    qsa("#perguntas .question").forEach(function (q) {
+      var a = q.querySelector("textarea");
+      L.push(limpo(q.querySelector("h3")));
+      L.push("    -> " + ((a && a.value.trim()) || "(sem resposta)"));
+      L.push("");
+    });
+
+    L.push("=== O MAPA DOS CAMPOS DA PESQUISA ===");
+    L.push("");
+    qsa("#campos tbody tr").forEach(function (tr) {
+      var ins = tr.querySelectorAll("input");
+      var interno = ((ins[0] && ins[0].value.trim()) || "?");
+      var objeto = ((ins[1] && ins[1].value.trim()) || "?");
+      L.push(limpo(tr.querySelector("th")) + "  |  interno: " + interno + "  |  objeto: " + objeto);
+    });
+
+    return L.join("\n");
+  }
+
+  var botao = document.getElementById("copiar");
+  var saida = document.getElementById("saida");
+
+  botao.addEventListener("click", function () {
+    var texto = montarTexto();
+    saida.value = texto;
+    saida.hidden = false;
+    saida.focus();
+    saida.select();
+
+    var copiou = false;
+    try { copiou = document.execCommand("copy"); } catch (e) { copiou = false; }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(texto).then(function () {
+        status("respostas copiadas — cole na resposta ao CS", "ok");
+      }).catch(function () {
+        status(copiou ? "respostas copiadas" : "o texto está aí embaixo: selecione e copie", copiou ? "ok" : "bad");
+      });
+    } else {
+      status(copiou ? "respostas copiadas" : "o texto está aí embaixo: selecione e copie", copiou ? "ok" : "bad");
+    }
   });
+
+  restaurar();
+  progresso();
 })();
 </script>
-

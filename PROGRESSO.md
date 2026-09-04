@@ -18,9 +18,11 @@ O artefato foi revisado (mesma URL, `docs/proposta_automacao_hubspot.html`) para
 
 ### Como as respostas voltam para cá
 
-O artefato foi publicado com a capacidade **`db`** (contrato 0.2.41). Cada campo salva sozinho em `respostas/{meta,campos,perguntas,decisoes}` e é lido de volta desta sessão com a ação `read_db` do Artifact, coleção `respostas`. Não há planilha de volta, anexo nem e-mail.
+Primeira tentativa: publicar com a capacidade **`db`**, para os campos salvarem no servidor e serem lidos de volta com `read_db`. **Não deu** — artefato que declara `db` é interno à organização e **não aceita compartilhamento por link**, que é exatamente o que precisava para chegar ao head de CRM. As duas coisas são mutuamente exclusivas.
 
-**Limite a saber:** artefato que declara `db` é **interno à organização** — quem responder precisa estar no mesmo workspace do Claude. Se o head de CRM não estiver, a página vira documento de leitura (os campos continuam funcionando na tela, mas não salvam) e as respostas voltam por outro canal.
+Desenho final, que funciona em qualquer cenário: a página não declara capacidade nenhuma. O que é digitado fica no `localStorage` do navegador de quem responde (dá para fechar e voltar depois), e a seção `#entregar` tem um botão que reúne decisões, perguntas e mapa dos campos num texto único, copiado para a área de transferência — colado de volta por e-mail ou WhatsApp. Campo em branco sai como `(sem resposta)`, então resposta parcial também volta.
+
+**Consequência para retomar o assunto:** as respostas chegam como texto colado na conversa, não por `read_db`. Não adianta procurar a coleção `respostas` — ela não existe mais.
 
 ## 🔌 Proposta: colocar o plano na jornada automatizada do HubSpot — 2026-09-01
 
