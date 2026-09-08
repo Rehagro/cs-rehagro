@@ -7,9 +7,10 @@ A pesquisa de início de curso é feita no **HubSpot Survey**. Esta ferramenta r
 ## Fluxo (uso interno CS)
 
 1. **Login** com a senha do time CS.
-2. **Upload** do CSV exportado do HubSpot Survey.
-3. **Seleção** do aluno (o CSV pode trazer a turma inteira). A tela avisa, antes de gerar, se algum dado necessário não veio no arquivo.
-4. **Baixar o plano** (arquivo HTML, design Rehagro) → o CS abre e salva como PDF pelo navegador (`Ctrl + P → Salvar como PDF`; o layout A4 já está pronto).
+2. **Plataforma do aluno** — `Studio` (turmas atuais) ou `Videoteca` (turmas antigas). Os mesmos módulos existem nas duas turmas do Instructure com ids diferentes, e o aluno só acessa pela sua: o plano sai com os links da plataforma escolhida aqui.
+3. **Upload** do CSV exportado do HubSpot Survey.
+4. **Seleção** do aluno (o CSV pode trazer a turma inteira). A tela avisa, antes de gerar, se algum dado necessário não veio no arquivo.
+5. **Baixar o plano** (arquivo HTML, design Rehagro) → o CS abre e salva como PDF pelo navegador (`Ctrl + P → Salvar como PDF`; o layout A4 já está pronto).
 
 > O HTML é **self-contained** (fontes e logo embutidos) e o PDF gerado pelo navegador sai idêntico ao design. Esse PDF substitui o antigo `.docx` — vai direto pro aluno (link/anexo no AVA/e-mail). Há um **Pré-visualizar** na própria tela.
 

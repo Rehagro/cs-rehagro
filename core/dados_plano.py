@@ -6,7 +6,13 @@ dados que o template do plano de aula espera (ver design_handoff_plano_de_aula
 from datetime import datetime
 from urllib.parse import quote
 
-from core.mapeamento import MODULO_BOASVINDAS
+from core.mapeamento import (
+    MODULO_BOASVINDAS,
+    PLATAFORMA_PADRAO,
+    link_boas_vindas,
+    link_modulo,
+    plataforma_valida,
+)
 
 # WhatsApp do time de Sucesso do Cliente (formato internacional, só dígitos).
 # Abre a conversa já com uma mensagem pronta que o aluno só envia.
@@ -40,13 +46,14 @@ def _fmt_tempo(tempo) -> str:
     return t if t.startswith("~") else f"~{t}"
 
 
-def _modulo_para_template(dor: dict, indice: int) -> dict:
+def _modulo_para_template(dor: dict, plataforma: str) -> dict:
     return {
         "titulo": dor.get("modulo", "—"),
         # Subtítulo do card = a dor que o aluno apontou (redação de exibição do
         # arquivo 3; cai para "dor" se não houver versão de exibição).
         "descricao": dor.get("dor_exibicao") or dor.get("dor", ""),
-        "url": dor.get("link", ""),
+        # O link muda conforme a plataforma em que o aluno tem acesso.
+        "url": link_modulo(dor, plataforma),
         "qtd_aulas": str(dor["aulas"]) if dor.get("aulas") else "—",
         "tempo_aula": _fmt_tempo(dor.get("tempo")),
         "atividades": dor.get("atividades") or "—",
@@ -54,12 +61,20 @@ def _modulo_para_template(dor: dict, indice: int) -> dict:
     }
 
 
-def montar_dados(registro: dict, data_geracao: str | None = None) -> dict:
+def montar_dados(
+    registro: dict,
+    data_geracao: str | None = None,
+    plataforma: str | None = PLATAFORMA_PADRAO,
+) -> dict:
     """
     registro: dict de core.hubspot_csv.parse_hubspot_csv (tem 'nome', 'curso',
               'modulos' = lista de dores casadas).
+    plataforma: 'studio' (turmas atuais) ou 'videoteca' (turmas antigas) —
+              decide para qual turma do AVA os links do plano apontam.
     Retorna o dict pronto para o template Jinja2.
     """
+    plataforma = plataforma_valida(plataforma)
+
     if data_geracao is None:
         data_geracao = datetime.now().strftime("%d/%m/%Y")
 
@@ -72,8 +87,8 @@ def montar_dados(registro: dict, data_geracao: str | None = None) -> dict:
         "boas_vindas": {
             "titulo": MODULO_BOASVINDAS.get("modulo", "Boas-vindas"),
             "descricao": _BOAS_VINDAS_DESC,
-            "url": MODULO_BOASVINDAS.get("link", ""),
+            "url": link_boas_vindas(plataforma),
         },
-        "modulos": [_modulo_para_template(d, i) for i, d in enumerate(modulos)],
+        "modulos": [_modulo_para_template(d, plataforma) for d in modulos],
         "encerramento": dict(_ENCERRAMENTO),
     }

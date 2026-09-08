@@ -3,7 +3,8 @@ CS Rehagro — Gerador de Plano de Aula a partir do CSV do HubSpot Survey.
 
 Duas telas (uso interno do time CS), no design Rehagro:
     1. Login (senha CS)
-    2. Gerador: upload do CSV → seleção do aluno → geração do plano
+    2. Gerador: plataforma do aluno → upload do CSV → seleção do aluno →
+       geração do plano
        - PDF automático (Chromium headless) quando disponível;
        - fallback: download do HTML (o CS salva como PDF pelo navegador).
 """
@@ -17,7 +18,14 @@ sys.path.insert(0, os.path.dirname(__file__))
 from core.hubspot_csv import colunas_reconhecidas, parse_hubspot_csv
 from core.dados_plano import montar_dados
 from core.render_plano import render_html
-from core.styles import BRAND_CSS, masthead_html, step_html, card_prioridade_html
+from core.mapeamento import PLATAFORMAS, get_plataforma, link_boas_vindas
+from core.styles import (
+    BRAND_CSS,
+    aviso_plataforma_html,
+    card_prioridade_html,
+    masthead_html,
+    step_html,
+)
 from core.validacao import diagnosticar_aluno, diagnosticar_arquivo
 from config import CS_PASSWORD
 
@@ -113,13 +121,37 @@ def tela_login():
 # ──────────────────────────────────────────────────────────────────────────
 def tela_gerador():
     st.markdown(
-        masthead_html("Suba o CSV do HubSpot, escolha o aluno e gere o plano no design Rehagro."),
+        masthead_html(
+            "Escolha a plataforma do aluno, suba o CSV do HubSpot e gere o plano "
+            "no design Rehagro."
+        ),
         unsafe_allow_html=True,
     )
     st.write("")
 
-    # ── Etapa 1 — CSV ─────────────────────────────────────────────────────
-    st.markdown(step_html(1, "Arquivo CSV exportado do HubSpot Survey"), unsafe_allow_html=True)
+    # ── Etapa 1 — Plataforma ──────────────────────────────────────────────
+    # Os módulos existem em duas turmas do AVA (ids diferentes). Quem se
+    # matriculou antes da republicação só acessa pela Videoteca; quem entrou
+    # depois, pelo Studio. O plano precisa sair com os links certos.
+    st.markdown(step_html(1, "Plataforma em que o aluno acessa as aulas"), unsafe_allow_html=True)
+    plataforma = st.radio(
+        "Plataforma",
+        options=[p["id"] for p in PLATAFORMAS],
+        captions=[p["descricao"] for p in PLATAFORMAS],
+        format_func=lambda pid: get_plataforma(pid)["rotulo"],
+        horizontal=True,
+        label_visibility="collapsed",
+        key="plataforma",
+    )
+    info_plataforma = get_plataforma(plataforma)
+    st.caption(
+        "Na dúvida, confira no Instructure por qual turma o aluno está matriculado — "
+        "um link da plataforma errada abre uma página sem acesso para ele."
+    )
+    st.divider()
+
+    # ── Etapa 2 — CSV ─────────────────────────────────────────────────────
+    st.markdown(step_html(2, "Arquivo CSV exportado do HubSpot Survey"), unsafe_allow_html=True)
     arquivo = st.file_uploader(
         "CSV", type=["csv"], label_visibility="collapsed",
         help="Exporte as respostas da pesquisa de início de curso no HubSpot e suba aqui.",
@@ -142,8 +174,8 @@ def tela_gerador():
     _mostrar_diagnostico(diag)
     st.divider()
 
-    # ── Etapa 2 — Aluno ───────────────────────────────────────────────────
-    st.markdown(step_html(2, "Selecione o aluno"), unsafe_allow_html=True)
+    # ── Etapa 3 — Aluno ───────────────────────────────────────────────────
+    st.markdown(step_html(3, "Selecione o aluno"), unsafe_allow_html=True)
     idx = st.selectbox(
         "Aluno", range(len(alunos)), label_visibility="collapsed",
         format_func=lambda i: (
@@ -175,12 +207,24 @@ def tela_gerador():
 
     st.divider()
 
-    # ── Etapa 3 — Baixar e enviar ─────────────────────────────────────────
-    st.markdown(step_html(3, "Baixe o plano e envie ao aluno"), unsafe_allow_html=True)
+    # ── Etapa 4 — Baixar e enviar ─────────────────────────────────────────
+    st.markdown(step_html(4, "Baixe o plano e envie ao aluno"), unsafe_allow_html=True)
+    st.markdown(
+        aviso_plataforma_html(
+            info_plataforma["rotulo"],
+            info_plataforma["resumo"],
+            link_boas_vindas(plataforma),
+        ),
+        unsafe_allow_html=True,
+    )
 
     pode_gerar = bool(modulos) and not bloqueios_aluno
-    html = render_html(montar_dados(aluno)) if pode_gerar else ""
-    nome_base = f"Plano_de_Estudos_{_slug(aluno.get('nome'))}"
+    html = render_html(montar_dados(aluno, plataforma=plataforma)) if pode_gerar else ""
+    # A plataforma entra no nome do arquivo: se o mesmo aluno for gerado nas
+    # duas, um download não sobrescreve o outro na pasta do CS.
+    nome_base = (
+        f"Plano_de_Estudos_{_slug(aluno.get('nome'))}_{_slug(info_plataforma['rotulo'])}"
+    )
 
     st.download_button(
         "⬇  Baixar plano de estudos",

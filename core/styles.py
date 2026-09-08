@@ -90,6 +90,25 @@ header[data-testid="stHeader"]{
   background:#fff !important; min-height:48px; padding:4px 6px;
 }
 
+/* ---- SELETOR DE PLATAFORMA (st.radio horizontal como "pílulas") ---- */
+[data-testid="stRadio"] div[role="radiogroup"]{ display:flex; flex-wrap:wrap; gap:12px; }
+[data-testid="stRadio"] div[role="radiogroup"] > label{
+  flex:1 1 260px; margin:0 !important; padding:14px 18px; cursor:pointer;
+  background:#fff; border:1.5px solid var(--line-input); border-radius:14px;
+  transition:border-color .15s, box-shadow .15s, background .15s;
+}
+[data-testid="stRadio"] div[role="radiogroup"] > label:hover{ border-color:var(--gold); }
+[data-testid="stRadio"] div[role="radiogroup"] > label:has(input:checked){
+  border-color:var(--forest); background:#F5F9F6;
+  box-shadow:0 4px 14px rgba(15,70,48,.10);
+}
+[data-testid="stRadio"] div[role="radiogroup"] > label p{
+  font-family:'Poppins'; font-weight:600; font-size:14.5px; color:var(--forest); margin:0;
+}
+[data-testid="stRadio"] [data-testid="stCaptionContainer"] p{
+  font-family:'Mulish'; font-weight:400; font-size:12.5px; color:var(--muted);
+}
+
 /* ---- FILE UPLOADER ---- */
 [data-testid="stFileUploader"] section{
   border:1.5px dashed #C9C2B0 !important; border-radius:14px !important;
@@ -168,6 +187,25 @@ def masthead_html(subtitulo: str = "", com_logo: bool = True, titulo: str = "Ger
         {sub}
       </div>
       {logo}
+    </div>
+    """
+
+
+def aviso_plataforma_html(rotulo: str, descricao: str, exemplo_url: str) -> str:
+    """Faixa que confirma, antes do download, para qual turma os links apontam."""
+    return f"""
+    <div style="display:flex;align-items:center;gap:14px;background:#fff;
+         border:1px solid #E7E1D3;border-left:4px solid #0F4630;border-radius:12px;
+         padding:13px 18px;margin-bottom:6px;">
+      <span style="font-family:'Poppins';font-size:9.5px;font-weight:600;letter-spacing:.1em;
+           text-transform:uppercase;color:#9A7626;background:#FBF3DE;padding:4px 10px;
+           border-radius:999px;flex:none;">Plataforma</span>
+      <div style="font-size:13px;color:#5A6B61;line-height:1.6;">
+        Os links deste plano apontam para
+        <strong style="color:#0F4630;">{rotulo}</strong> — {descricao}.<br>
+        <span style="color:#8A8270;font-size:12px;">
+          Ex.: módulo de Boas-vindas → <code>{exemplo_url}</code></span>
+      </div>
     </div>
     """
 

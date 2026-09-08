@@ -1,6 +1,23 @@
 # Progresso e próximos passos — CS Rehagro
 
-Último marco: **Proposta do HubSpot virou questionário respondível, com as suposições sobre o portal declaradas — 2026-09-04.**
+Último marco: **O gerador escolhe a plataforma do aluno (Studio ou Videoteca) e o plano sai com os links daquela turma — 2026-09-08.**
+
+## 🔀 Duas plataformas convivendo: o CS escolhe a do aluno — 2026-09-08
+
+A republicação dos módulos (marco de 01/09) não migrou quem já estava matriculado. Hoje o time atende **duas populações ao mesmo tempo**: aluno antigo, que só acessa pela **Videoteca** (course_id 28xx), e aluno novo, que só enxerga o **Studio** (31xx). Um plano com o link da plataforma errada leva o aluno para uma página sem acesso — e o CS não tinha como escolher.
+
+**O que mudou**
+
+- `core/mapeamento.py` — o campo `link` de cada módulo virou `links`, com **as duas turmas lado a lado** (`studio` e `videoteca`). Nenhum link foi perdido: o de-para veio do commit `7148ced`, conferido módulo a módulo. Junto vieram a tabela `PLATAFORMAS` (id, rótulo, descrição — a ordem dela é a ordem dos botões na tela) e os resolvedores `link_modulo()` / `link_boas_vindas()` / `plataforma_valida()`. Plataforma desconhecida ou vazia cai no padrão (Studio), nunca em link vazio.
+- `core/dados_plano.py` — `montar_dados(registro, data_geracao, plataforma)`. O padrão continua Studio, então qualquer chamada antiga segue funcionando igual.
+- `app.py` — nova **Etapa 1: "Plataforma em que o aluno acessa as aulas"**, dois botões em pílula (Studio / Videoteca), antes do upload. As demais etapas viraram 2, 3 e 4. Acima do botão de download, uma faixa confirma para qual turma os links vão e mostra o link de Boas-vindas como amostra.
+- **Nome do arquivo agora inclui a plataforma** (`Plano_de_Estudos_Ruan_Studio.html`): gerar o mesmo aluno nas duas não sobrescreve um arquivo com o outro na pasta de downloads.
+- `core/styles.py` — CSS das pílulas (selecionada fica com borda verde e fundo claro) e o helper `aviso_plataforma_html()`.
+- `tools/gerador_plano_pdf/gerar_plano.py` — mesma escolha no gerador avulso: a constante `PLATAFORMA` no topo e o de-para `EQUIV_VIDEOTECA`. Em "videoteca", a saída sai nomeada `Plano de Estudos - Nome (videoteca).pdf`.
+
+**Testado:** `streamlit.testing` roda a tela sem exceção e troca a plataforma; o HTML renderizado sai com `2850/2852/2854/2859` em Videoteca e `3133/3142/3135/3136` em Studio.
+
+**Suposição declarada, ainda não confirmada pela área de conteúdo:** que **só os links** diferem entre as duas turmas. Quantidade de aulas, tempo, programação e atividades continuam iguais nas duas, porque o arquivo 3 (CEIGPL) trouxe esses números como "iguais ao arquivo 2". Se a turma antiga tiver grade diferente, é preciso desdobrar esses campos por plataforma também — hoje eles são únicos.
 
 ## ❓ A proposta passa a declarar o que foi suposto — e a coletar as respostas — 2026-09-04
 

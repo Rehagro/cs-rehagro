@@ -8,8 +8,43 @@
 #    redação no HubSpot não derruba o gerador — basta acrescentar aqui.
 #  - "dor_exibicao": texto MOSTRADO no card do plano (redação oficial do
 #    "Plano de aula - arquivo 3 CEIGPL.docx").
+#  - "links": o MESMO módulo em cada plataforma do AVA (ver PLATAFORMAS
+#    abaixo). O plano sai com o link da plataforma escolhida no gerador.
 # ─────────────────────────────────────────
 import unicodedata
+
+# ─────────────────────────────────────────
+#  Plataformas do AVA (Instructure)
+#  Os 10 módulos do GPL foram republicados: cada um existe hoje em duas
+#  turmas, com course_id diferente. Quem se matriculou antes da republicação
+#  continua com acesso apenas pela turma antiga (Videoteca), e quem entrou
+#  depois só enxerga a nova (Studio) — por isso o plano precisa sair com os
+#  links da plataforma de cada aluno.
+#  Ordem desta lista = ordem dos botões no gerador; a primeira é o padrão.
+# ─────────────────────────────────────────
+PLATAFORMAS = [
+    {
+        "id": "studio",
+        "rotulo": "Studio",
+        "descricao": "Alunos que entraram depois da republicação dos módulos",
+        "resumo": "turmas atuais (courses/31xx)",
+    },
+    {
+        "id": "videoteca",
+        "rotulo": "Videoteca",
+        "descricao": "Alunos que já estavam matriculados antes da republicação",
+        "resumo": "turmas antigas (courses/28xx)",
+    },
+]
+
+PLATAFORMA_PADRAO = PLATAFORMAS[0]["id"]
+
+_BASE_AVA = "https://rehagro.instructure.com/courses"
+
+
+def _url(course_id: str) -> str:
+    return f"{_BASE_AVA}/{course_id}"
+
 
 DORES = [
     {
@@ -21,7 +56,10 @@ DORES = [
         "dor_exibicao": "Definir o melhor sistema de produção, instalações e raças para a minha realidade",
         "dor_curta": "Sistema de produção e instalações",
         "modulo": "Sistemas de produção e visão estratégica do negócio leite",
-        "link": "https://rehagro.instructure.com/courses/3142",
+        "links": {
+            "studio": _url("3142"),
+            "videoteca": _url("2852"),
+        },
         "aulas": 16,
         "tempo": "2,5h",
         "programacao": "3 semanas (1h por semana – 5 videoaulas por semana)",
@@ -36,7 +74,10 @@ DORES = [
         "dor_exibicao": "Reduzir doenças pós-parto, estabelecer estratégias para emprenhar vacas rapidamente",
         "dor_curta": "Reprodução e eficiência produtiva",
         "modulo": "Estratégias para eficiência produtiva",
-        "link": "https://rehagro.instructure.com/courses/3135",
+        "links": {
+            "studio": _url("3135"),
+            "videoteca": _url("2854"),
+        },
         "aulas": 21,
         "tempo": "3,5h",
         "programacao": "3 semanas (1h por semana – 7 videoaulas por semana)",
@@ -51,7 +92,10 @@ DORES = [
         "dor_exibicao": "Organizar os gastos, saber o custo do litro de leite para atuar no aumento do lucro",
         "dor_curta": "Gestão financeira e custos",
         "modulo": "Gestão financeira e econômica",
-        "link": "https://rehagro.instructure.com/courses/3136",
+        "links": {
+            "studio": _url("3136"),
+            "videoteca": _url("2859"),
+        },
         "aulas": 31,
         "tempo": "4h",
         "programacao": "4 semanas (1h por semana – 8 videoaulas por semana)",
@@ -66,7 +110,10 @@ DORES = [
         "dor_exibicao": "Reduzir doenças e mortalidade das bezerras e definir protocolos de tratamento",
         "dor_curta": "Sanidade de bezerras e novilhas",
         "modulo": "Sanidade de bezerras e novilhas",
-        "link": "https://rehagro.instructure.com/courses/3141",
+        "links": {
+            "studio": _url("3141"),
+            "videoteca": _url("2855"),
+        },
         "aulas": 21,
         "tempo": "2,5h",
         "programacao": "3 semanas (1h por semana – 7 videoaulas por semana)",
@@ -81,7 +128,10 @@ DORES = [
         "dor_exibicao": "Melhorar o ganho de peso e definir alimentação das bezerras nas diferentes categorias",
         "dor_curta": "Criação e alimentação de bezerras",
         "modulo": "Criação de bezerras e novilhas",
-        "link": "https://rehagro.instructure.com/courses/3134",
+        "links": {
+            "studio": _url("3134"),
+            "videoteca": _url("2851"),
+        },
         "aulas": 18,
         "tempo": "3h",
         "programacao": "3 semanas (1h por semana – 6 videoaulas por semana)",
@@ -96,7 +146,10 @@ DORES = [
         "dor_exibicao": "Reduzir gastos com medicamento de mastite, reduzir CCS e CBT do leite do tanque",
         "dor_curta": "Qualidade do leite e mastite",
         "modulo": "Produção de leite de qualidade",
-        "link": "https://rehagro.instructure.com/courses/3140",
+        "links": {
+            "studio": _url("3140"),
+            "videoteca": _url("2858"),
+        },
         "aulas": 35,
         "tempo": "3,5h",
         "programacao": "4 semanas (1h por semana – 9 videoaulas por semana)",
@@ -111,7 +164,10 @@ DORES = [
         "dor_exibicao": "Saber a quantidade de animais no próximo ano e quanto de forragem preciso produzir",
         "dor_curta": "Indicadores reprodutivos e evolução do rebanho",
         "modulo": "Indicadores reprodutivos e Evolução de rebanho",
-        "link": "https://rehagro.instructure.com/courses/3137",
+        "links": {
+            "studio": _url("3137"),
+            "videoteca": _url("2853"),
+        },
         "aulas": 20,
         "tempo": "3h",
         "programacao": "3 semanas (1h por semana – 7 videoaulas por semana)",
@@ -126,7 +182,10 @@ DORES = [
         "dor_exibicao": "Produzir silagem de milho ou sorgo de qualidade e em quantidade adequada para o rebanho",
         "dor_curta": "Silagem de milho e sorgo",
         "modulo": "Manejo da cultura do milho",
-        "link": "https://rehagro.instructure.com/courses/3138",
+        "links": {
+            "studio": _url("3138"),
+            "videoteca": _url("2856"),
+        },
         "aulas": 16,
         "tempo": "3h",
         "programacao": "3 semanas (1h por semana – 5 videoaulas por semana)",
@@ -141,7 +200,10 @@ DORES = [
         "dor_exibicao": "Estruturar manejo alimentar para otimizar produção de leite",
         "dor_curta": "Manejo alimentar e planejamento forrageiro",
         "modulo": "Planejamento forrageiro e manejo alimentar",
-        "link": "https://rehagro.instructure.com/courses/3139",
+        "links": {
+            "studio": _url("3139"),
+            "videoteca": _url("2857"),
+        },
         "aulas": 28,
         "tempo": "3,5h",
         "programacao": "4 semanas (1h por semana – 7 videoaulas por semana)",
@@ -152,12 +214,43 @@ DORES = [
 # Módulo de boas-vindas (sempre incluído no início do plano)
 MODULO_BOASVINDAS = {
     "modulo": "Boas-vindas",
-    "link": "https://rehagro.instructure.com/courses/3133",
+    "links": {
+        "studio": _url("3133"),
+        "videoteca": _url("2850"),
+    },
     "aulas": None,
     "tempo": None,
     "programacao": None,
     "atividades": None,
 }
+
+
+# ─────────────────────────────────────────
+#  Resolução de link por plataforma
+# ─────────────────────────────────────────
+def plataforma_valida(plataforma: str | None) -> str:
+    """Devolve o id de plataforma pedido, ou o padrão se vier vazio/desconhecido."""
+    ids = [p["id"] for p in PLATAFORMAS]
+    return plataforma if plataforma in ids else PLATAFORMA_PADRAO
+
+
+def get_plataforma(plataforma: str | None) -> dict:
+    alvo = plataforma_valida(plataforma)
+    return next(p for p in PLATAFORMAS if p["id"] == alvo)
+
+
+def link_modulo(modulo: dict, plataforma: str | None = None) -> str:
+    """Link do módulo (dor ou boas-vindas) na plataforma pedida.
+
+    Cai para o link da plataforma padrão se o módulo ainda não tiver o par
+    cadastrado — melhor um link válido da turma nova do que string vazia.
+    """
+    links = modulo.get("links") or {}
+    return links.get(plataforma_valida(plataforma)) or links.get(PLATAFORMA_PADRAO, "")
+
+
+def link_boas_vindas(plataforma: str | None = None) -> str:
+    return link_modulo(MODULO_BOASVINDAS, plataforma)
 
 
 def get_dor_por_id(dor_id: str) -> dict | None:

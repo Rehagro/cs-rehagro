@@ -11,7 +11,8 @@ cada card e prazo de acesso opcional no hero.
 Como usar
 ---------
 1. Extraia os dados do Word do aluno (ver README.md — snippet com python-docx).
-2. Edite o bloco DADOS abaixo (nome, curso, datas, módulos).
+2. Edite o bloco DADOS abaixo (nome, curso, datas, módulos) e confira
+   PLATAFORMA ("studio" ou "videoteca") conforme o acesso do aluno.
 3. Rode:  python gerar_plano.py
    Saída: ./saida/Plano de Estudos - <Nome>.pdf  (+ .html e preview.png)
 
@@ -35,7 +36,31 @@ sys.path.insert(0, PROJETO)
 from core.render_plano import _FONT_FACE_CSS, _logo_data_uri  # noqa: E402
 
 
+# Plataforma do AVA em que ESTE aluno tem acesso às aulas:
+#   "studio"    -> turmas atuais (course_id 31xx), padrão;
+#   "videoteca" -> turmas antigas (28xx), para quem se matriculou antes da
+#                  republicação dos módulos e só acessa por lá.
+PLATAFORMA = "studio"
+
+# Mesmo módulo nas duas turmas: course_id do Studio -> course_id da Videoteca.
+EQUIV_VIDEOTECA = {
+    "3133": "2850",  # Boas-vindas
+    "3134": "2851",  # Criação de bezerras e novilhas
+    "3135": "2854",  # Estratégias para eficiência produtiva
+    "3136": "2859",  # Gestão financeira e econômica
+    "3137": "2853",  # Indicadores reprodutivos e Evolução de rebanho
+    "3138": "2856",  # Manejo da cultura do milho
+    "3139": "2857",  # Planejamento forrageiro e manejo alimentar
+    "3140": "2858",  # Produção de leite de qualidade
+    "3141": "2855",  # Sanidade de bezerras e novilhas
+    "3142": "2852",  # Sistemas de produção e visão estratégica
+}
+
+
 def _url(course_id: str) -> str:
+    """Monta o link do módulo já na plataforma escolhida em PLATAFORMA."""
+    if PLATAFORMA == "videoteca":
+        course_id = EQUIV_VIDEOTECA.get(course_id, course_id)
     return f"https://rehagro.instructure.com/courses/{course_id}"
 
 
@@ -158,6 +183,8 @@ def gerar_pdf(html: str, destino: str, preview_png: str) -> str:
 def main() -> None:
     os.makedirs(SAIDA_DIR, exist_ok=True)
     slug = re.sub(r"\s+", " ", NOME).strip()
+    if PLATAFORMA != "studio":
+        slug = f"{slug} ({PLATAFORMA})"
     dados = montar_dados()
     html = render_html(dados)
 
