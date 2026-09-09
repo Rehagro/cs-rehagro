@@ -16,6 +16,8 @@ Uma exportação real (`hubspot-crm-exports-cs-gabriela-2026-09-08.csv`, 2 aluno
 - `core/validacao.py` — a mensagem de bloqueio cita os dois cabeçalhos possíveis, e o rótulo das colunas ficou genérico (“1ª prioridade”), já que o texto muda conforme a origem da exportação. **Aluno sem módulo agora é separado em duas causas:** quem *não respondeu* a pesquisa (nada a corrigir no arquivo) e quem *respondeu e o texto não casou* (aí sim é redação divergente). Antes as duas viravam a mesma linha vermelha, que sugeria erro de exportação mesmo quando o aluno simplesmente não tinha respondido.
 - `app.py` — o detalhamento lista as duas situações em blocos separados.
 
+**Nova redação cadastrada:** a exportação de 09/09 trouxe a opção *“Reduzir perdas no processo da ensilagem e desensilagem”*, que não existia no gerador — entrou como **variante** de `manejo_milho` (Manejo da cultura do milho), confirmado pelo usuário. A redação canônica não foi tocada, como manda a convenção do arquivo.
+
 **Testado** com o arquivo que falhou: as 7 colunas são reconhecidas e a aluna que respondeu sai com os 3 módulos na ordem dela (Sistemas de produção → Gestão financeira → Criação de bezerras); o outro aluno aparece como *não respondeu*, não mais como erro de arquivo. Os formatos anteriores (ranqueado com a pergunta do formulário, inclusive com HTML no cabeçalho, e o combinado antigo) continuam casando.
 
 ## 🔀 Duas plataformas convivendo: o CS escolhe a do aluno — 2026-09-08

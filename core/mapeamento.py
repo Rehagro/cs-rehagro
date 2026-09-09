@@ -177,6 +177,7 @@ DORES = [
         "id": "manejo_milho",
         "variantes": [
             "Produzir silagem de milho ou sorgo de qualidade e em quantidade adequada para o rebanho.",
+            "Reduzir perdas no processo da ensilagem e desensilagem",
         ],
         "dor": "Produzir silagem de milho ou sorgo de qualidade e em quantidade adequada para o rebanho.",
         "dor_exibicao": "Produzir silagem de milho ou sorgo de qualidade e em quantidade adequada para o rebanho",
