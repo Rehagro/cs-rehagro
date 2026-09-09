@@ -1,6 +1,22 @@
 # Progresso e próximos passos — CS Rehagro
 
-Último marco: **O gerador escolhe a plataforma do aluno (Studio ou Videoteca) e o plano sai com os links daquela turma — 2026-09-08.**
+Último marco: **O parser reconhece o cabeçalho da exportação do CRM (“Melhoria na fazenda (Prioridade 1/2/3)”) — 2026-09-09.**
+
+## 🏷️ O CSV do CRM tem outro cabeçalho — o parser passou a reconhecer os dois — 2026-09-09
+
+Uma exportação real (`hubspot-crm-exports-cs-gabriela-2026-09-08.csv`, 2 alunos) foi recusada com **"Nenhuma coluna de prioridade foi encontrada"**, embora o registro no HubSpot mostrasse as três respostas preenchidas na tela.
+
+**Causa:** o gerador procurava as colunas pelo texto da *pergunta do formulário* (“Qual a primeira prioridade?”). Quando a exportação sai pela **lista de registros do CRM**, o cabeçalho vem com o *nome da propriedade*: `Melhoria na fazenda (Prioridade 1) (Leite)`, `(Prioridade 2)`, `(Prioridade 3)`. Nenhuma palavra-chave batia, as três colunas eram descartadas e todo aluno ficava sem trilha. O arquivo estava certo; a busca é que era estreita.
+
+**O que mudou**
+
+- `core/hubspot_csv.py` — `_COLUNAS_RANQUEADAS` aceita agora as duas redações (`primeira prioridade` e `prioridade 1`, e assim por diante), e o casamento passou a testar **as ranqueadas primeiro**, porque um rótulo genérico pode ser prefixo do ranqueado (`Melhoria na fazenda` vs. `Melhoria na fazenda (Prioridade 1)`) e engoli-lo.
+
+`Melhoria na fazenda (Leite)`, sem número, ficou **deliberadamente fora** do mapeamento: o time confirmou que é **campo de resposta aberta**, não a lista de opções do formato combinado antigo. Se fosse mapeada, um arquivo que trouxesse só ela pareceria ter prioridades e o bloqueio vermelho deixaria de aparecer. As três chaves de prioridade viraram a constante `_CHAVES_PRIORIDADE`, para a lista com redações repetidas não gerar leitura em dobro.
+- `core/validacao.py` — a mensagem de bloqueio cita os dois cabeçalhos possíveis, e o rótulo das colunas ficou genérico (“1ª prioridade”), já que o texto muda conforme a origem da exportação. **Aluno sem módulo agora é separado em duas causas:** quem *não respondeu* a pesquisa (nada a corrigir no arquivo) e quem *respondeu e o texto não casou* (aí sim é redação divergente). Antes as duas viravam a mesma linha vermelha, que sugeria erro de exportação mesmo quando o aluno simplesmente não tinha respondido.
+- `app.py` — o detalhamento lista as duas situações em blocos separados.
+
+**Testado** com o arquivo que falhou: as 7 colunas são reconhecidas e a aluna que respondeu sai com os 3 módulos na ordem dela (Sistemas de produção → Gestão financeira → Criação de bezerras); o outro aluno aparece como *não respondeu*, não mais como erro de arquivo. Os formatos anteriores (ranqueado com a pergunta do formulário, inclusive com HTML no cabeçalho, e o combinado antigo) continuam casando.
 
 ## 🔀 Duas plataformas convivendo: o CS escolhe a do aluno — 2026-09-08
 

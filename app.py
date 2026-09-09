@@ -72,8 +72,12 @@ def _mostrar_diagnostico(diag: dict) -> None:
             )
 
         if diag["alunos_sem_trilha"]:
-            st.markdown("**Alunos sem nenhum módulo (plano não pode ser gerado)**")
+            st.markdown("**Alunos cujas respostas não casaram com nenhum módulo**")
             st.markdown("\n".join(f"- {n}" for n in diag["alunos_sem_trilha"]))
+
+        if diag.get("alunos_sem_resposta"):
+            st.markdown("**Alunos que não responderam as prioridades**")
+            st.markdown("\n".join(f"- {n}" for n in diag["alunos_sem_resposta"]))
 
         if diag["alunos_incompletos"]:
             st.markdown("**Alunos com menos de 3 módulos**")

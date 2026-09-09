@@ -16,11 +16,14 @@ from collections import Counter
 _CAMPO_NOME = ("nome", "Nome do matriculado")
 _CAMPO_CURSO = ("curso", "Nome do curso")
 
-# Colunas ranqueadas (formato atual do formulário).
+# Colunas ranqueadas (formato atual do formulário). O rótulo é genérico porque
+# o cabeçalho muda conforme a exportação: “Qual a primeira prioridade?” quando
+# sai do formulário, “Melhoria na fazenda (Prioridade 1) (Leite)” quando sai
+# da propriedade do CRM.
 _COLS_PRIORIDADE = [
-    ("prioridade_texto_1", "Qual a primeira prioridade?"),
-    ("prioridade_texto_2", "Qual a segunda prioridade?"),
-    ("prioridade_texto_3", "Qual a terceira prioridade?"),
+    ("prioridade_texto_1", "1ª prioridade"),
+    ("prioridade_texto_2", "2ª prioridade"),
+    ("prioridade_texto_3", "3ª prioridade"),
 ]
 
 # Campos de contexto: não entram no plano, mas o CS usa para conhecer o aluno.
@@ -39,6 +42,12 @@ _CAMPOS_CONTEXTO = [
 
 def _vazio_para_todos(alunos: list[dict], chave: str) -> bool:
     return not any((a.get(chave) or "").strip() for a in alunos)
+
+
+def _respondeu_prioridades(aluno: dict) -> bool:
+    """O aluno escreveu algo em alguma prioridade (ranqueada ou combinada)."""
+    chaves = [c for c, _ in _COLS_PRIORIDADE] + ["prioridades"]
+    return any((aluno.get(c) or "").strip() for c in chaves)
 
 
 def diagnosticar_arquivo(alunos: list[dict], colunas: dict[str, str]) -> dict:
@@ -60,8 +69,8 @@ def diagnosticar_arquivo(alunos: list[dict], colunas: dict[str, str]) -> dict:
         bloqueios.append(
             "**Nenhuma coluna de prioridade foi encontrada.** O plano é montado a partir "
             "das respostas de 1ª, 2ª e 3ª prioridade — sem elas não há trilha. "
-            "Confira se a exportação incluiu as colunas "
-            "*“Qual a primeira/segunda/terceira prioridade?”*."
+            "Confira se a exportação incluiu as colunas *“Qual a primeira/segunda/terceira "
+            "prioridade?”* ou *“Melhoria na fazenda (Prioridade 1/2/3)”*."
         )
     elif tem_ranqueadas:
         faltando = [rot for c, rot in _COLS_PRIORIDADE if c not in colunas]
@@ -110,7 +119,19 @@ def diagnosticar_arquivo(alunos: list[dict], colunas: dict[str, str]) -> dict:
             "opções recebe um plano com menos módulos — veja a lista no detalhamento abaixo."
         )
 
-    sem_trilha = [a.get("nome") or "(sem nome)" for a in alunos if not a.get("modulos")]
+    # Sem módulo tem duas causas bem diferentes: o aluno não respondeu a
+    # pesquisa (nada a fazer no arquivo) ou respondeu e o texto não casou
+    # (aí é redação divergente, e o CS tem o que corrigir).
+    sem_resposta = [
+        a.get("nome") or "(sem nome)"
+        for a in alunos
+        if not a.get("modulos") and not _respondeu_prioridades(a)
+    ]
+    sem_trilha = [
+        a.get("nome") or "(sem nome)"
+        for a in alunos
+        if not a.get("modulos") and _respondeu_prioridades(a)
+    ]
     incompletos = [
         (a.get("nome") or "(sem nome)", len(a.get("modulos", [])))
         for a in alunos
@@ -119,8 +140,14 @@ def diagnosticar_arquivo(alunos: list[dict], colunas: dict[str, str]) -> dict:
 
     if sem_trilha:
         bloqueios.append(
-            f"**{len(sem_trilha)} de {total} aluno(s) ficaram sem nenhum módulo** — "
-            "para esses, o plano não pode ser gerado."
+            f"**{len(sem_trilha)} de {total} aluno(s) responderam as prioridades, mas nenhuma "
+            "resposta virou módulo** — para esses, o plano não pode ser gerado."
+        )
+    if sem_resposta:
+        bloqueios.append(
+            f"**{len(sem_resposta)} de {total} aluno(s) não responderam a pesquisa** "
+            "(as prioridades vieram em branco no arquivo) — sem resposta não há plano. "
+            "Isso não é problema da exportação: é preciso o aluno responder."
         )
     if incompletos:
         avisos.append(
@@ -134,6 +161,7 @@ def diagnosticar_arquivo(alunos: list[dict], colunas: dict[str, str]) -> dict:
         "info": info,
         "dores_divergentes": divergentes.most_common(),
         "alunos_sem_trilha": sem_trilha,
+        "alunos_sem_resposta": sem_resposta,
         "alunos_incompletos": incompletos,
         "colunas": colunas,
         "total": total,
@@ -148,10 +176,15 @@ def diagnosticar_aluno(aluno: dict) -> tuple[list[str], list[str]]:
         bloqueios.append("Sem **nome do matriculado** — o plano é nominal, não dá para gerar.")
 
     modulos = aluno.get("modulos", [])
-    if not modulos:
+    if not modulos and not _respondeu_prioridades(aluno):
         bloqueios.append(
-            "**Nenhuma prioridade virou módulo.** Ou as respostas vieram vazias, ou o texto "
-            "das opções no HubSpot está diferente do cadastrado no gerador."
+            "**Este aluno não respondeu as prioridades** — vieram em branco no arquivo. "
+            "Sem elas não há trilha para montar."
+        )
+    elif not modulos:
+        bloqueios.append(
+            "**Nenhuma prioridade virou módulo.** O aluno respondeu, mas o texto das opções "
+            "no HubSpot está diferente do cadastrado no gerador."
         )
     elif len(modulos) < 3:
         avisos.append(

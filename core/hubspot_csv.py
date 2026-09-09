@@ -36,15 +36,27 @@ _COLUNAS = [
     ("valer a pena",                "valeu_a_pena"),
     ("daqui a 5 anos",              "meta"),
     ("3 pontos mais importantes",   "prioridades"),   # formato combinado (antigo)
+    # "Melhoria na fazenda (Leite)", sem número, NÃO entra aqui: é resposta
+    # aberta, não a lista de opções. Mapeá-la faria o diagnóstico acreditar
+    # que o arquivo tem prioridades quando não tem.
     ("contact email",              "email"),
 ]
 
 # Formato ranqueado: uma coluna por prioridade, na ordem escolhida pelo aluno.
+# Duas redações de cabeçalho já circularam: a pergunta do formulário
+# (“Qual a primeira prioridade?”) e o nome da propriedade no CRM
+# (“Melhoria na fazenda (Prioridade 1) (Leite)”).
 _COLUNAS_RANQUEADAS = [
     ("primeira prioridade",  "prioridade_texto_1"),
     ("segunda prioridade",   "prioridade_texto_2"),
     ("terceira prioridade",  "prioridade_texto_3"),
+    ("prioridade 1",         "prioridade_texto_1"),
+    ("prioridade 2",         "prioridade_texto_2"),
+    ("prioridade 3",         "prioridade_texto_3"),
 ]
+
+# As três prioridades, na ordem — sem as repetições de _COLUNAS_RANQUEADAS.
+_CHAVES_PRIORIDADE = ("prioridade_texto_1", "prioridade_texto_2", "prioridade_texto_3")
 
 
 def _strip_acentos(texto: str) -> str:
@@ -85,7 +97,10 @@ def _mapear_cabecalho(header: list[str]) -> dict[int, str]:
     idx_para_chave = {}
     for i, col in enumerate(header):
         col_norm = _strip_acentos(col)
-        for chave_busca, chave_interna in _COLUNAS + _COLUNAS_RANQUEADAS:
+        # Ranqueadas primeiro: o rótulo de uma coluna genérica pode ser prefixo
+        # do ranqueado (“Melhoria na fazenda” vs. “Melhoria na fazenda
+        # (Prioridade 1)”), e o específico tem que ser testado antes.
+        for chave_busca, chave_interna in _COLUNAS_RANQUEADAS + _COLUNAS:
             if chave_busca in col_norm and i not in idx_para_chave:
                 # 'matriculado' tem prioridade sobre o "Nome" simples
                 if chave_interna not in idx_para_chave.values():
@@ -117,7 +132,7 @@ def _casar_prioridades(registro: dict) -> tuple[list[dict], list[str]]:
     preenchida, a ordem das colunas (1ª → 3ª) é a ordem dos módulos no plano.
     Sem isso, cai para o campo combinado antigo.
     """
-    textos = [registro.get(chave, "") for _, chave in _COLUNAS_RANQUEADAS]
+    textos = [registro.get(chave, "") for chave in _CHAVES_PRIORIDADE]
     if not any(t.strip() for t in textos):
         return match_dores(registro.get("prioridades", ""))
 
