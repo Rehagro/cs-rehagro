@@ -313,20 +313,25 @@ def aba_complementar():
 
     # ── Etapa 3 — Módulos e sequência ─────────────────────────────────────
     # O gerador não sabe quais módulos foram no plano inicial (o aluno é
-    # digitado, não vem do CSV) — quem confere é o CS, antes de numerar.
+    # digitado, não vem do CSV) — quem confere é o CS, antes de escolher a ordem.
     st.markdown(step_html(3, "Módulos e sequência"), unsafe_allow_html=True)
     st.warning(
-        "**Antes de numerar, confira quais 3 módulos já foram enviados no plano "
+        "**Antes de escolher a ordem, confira quais 3 módulos já foram enviados no plano "
         "inicial deste aluno** e deixe-os de fora: o plano complementar deve trazer "
         "só os módulos que ele ainda não recebeu."
     )
     st.caption(
-        "Numere na coluna **Ordem** os módulos que entram no plano (1 = o primeiro a "
-        "assistir). Módulo sem número fica de fora."
+        "Clique na coluna **Ordem** e escolha a posição de cada módulo que entra no "
+        "plano (1º = o primeiro a assistir). Os que ficam com **—** não entram."
     )
+    # Caixa de seleção em vez de número digitado: o CS só escolhe na lista.
+    # "—" é a opção explícita de "fora do plano", para não depender de apagar
+    # a célula pelo teclado.
+    fora = "—"
+    posicoes = [f"{n}º" for n in range(1, len(DORES) + 1)]
     tabela = pd.DataFrame(
         {
-            "Ordem": pd.array([None] * len(DORES), dtype="Int64"),
+            "Ordem": [fora] * len(DORES),
             "Módulo": [d["modulo"] for d in DORES],
             "Aulas": [d.get("aulas") for d in DORES],
             "Tempo": [d.get("tempo") for d in DORES],
@@ -340,18 +345,20 @@ def aba_complementar():
         num_rows="fixed",
         disabled=["Módulo", "Aulas", "Tempo"],
         column_config={
-            "Ordem": st.column_config.NumberColumn(
-                "Ordem", min_value=1, max_value=len(DORES), step=1, width="small",
-                help="1 = primeiro módulo a assistir. Deixe vazio para não incluir.",
+            "Ordem": st.column_config.SelectboxColumn(
+                "Ordem", options=[fora, *posicoes], required=True, width="small",
+                help="1º = primeiro módulo a assistir. Escolha — para não incluir.",
             ),
             "Módulo": st.column_config.TextColumn(width="large"),
         },
     )
 
     # A tabela segue a ordem de DORES (linhas fixas), então o zip casa cada
-    # número digitado com o módulo da mesma linha.
+    # posição escolhida com o módulo da mesma linha.
     escolhidos = [
-        (int(ordem), d) for ordem, d in zip(editada["Ordem"], DORES) if pd.notna(ordem)
+        (int(ordem.rstrip("º")), d)
+        for ordem, d in zip(editada["Ordem"], DORES)
+        if isinstance(ordem, str) and ordem != fora
     ]
     ordens = [o for o, _ in escolhidos]
     repetidas = sorted({o for o in ordens if ordens.count(o) > 1})
@@ -361,10 +368,10 @@ def aba_complementar():
     if not nome:
         bloqueios.append("Falta o nome do aluno.")
     if not sequencia:
-        bloqueios.append("Nenhum módulo numerado na coluna Ordem.")
+        bloqueios.append("Nenhum módulo com posição escolhida na coluna Ordem.")
     if repetidas:
         bloqueios.append(
-            "Número de ordem repetido: " + ", ".join(str(o) for o in repetidas)
+            "Posição repetida: " + ", ".join(f"{o}º" for o in repetidas)
             + ". Cada módulo precisa de uma posição própria."
         )
     avisos = []
