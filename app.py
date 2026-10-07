@@ -206,7 +206,6 @@ def aba_inicial():
         help="Exporte as respostas da pesquisa de início de curso no HubSpot e suba aqui.",
     )
 
-    st.session_state.alunos_csv = []
     if not arquivo:
         return
 
@@ -219,9 +218,6 @@ def aba_inicial():
     if not alunos:
         st.warning("O CSV foi lido, mas nenhum aluno foi encontrado. Confira o arquivo.")
         return
-
-    # A aba do plano complementar reaproveita os alunos deste arquivo.
-    st.session_state.alunos_csv = alunos
 
     diag = diagnosticar_arquivo(alunos, colunas_reconhecidas(arquivo.getvalue()))
     _mostrar_diagnostico(diag)
@@ -310,63 +306,39 @@ def aba_complementar():
 
     # ── Etapa 2 — Aluno ───────────────────────────────────────────────────
     st.markdown(step_html(2, "Aluno"), unsafe_allow_html=True)
-    alunos = st.session_state.get("alunos_csv") or []
-    idx = None
-    if alunos:
-        idx = st.selectbox(
-            "Puxar do CSV carregado na aba Plano inicial",
-            [None, *range(len(alunos))],
-            format_func=lambda i: (
-                "— digitar o aluno manualmente —" if i is None
-                else f"{i + 1}. {alunos[i].get('nome') or 'Sem nome'}"
-            ),
-            key="comp_aluno_csv",
-        )
-    else:
-        st.caption(
-            "Dica: suba o CSV na aba **Plano inicial** para puxar o aluno de lá — o nome "
-            "vem preenchido e os módulos do primeiro plano aparecem sinalizados abaixo."
-        )
-    aluno = alunos[idx] if idx is not None else {}
-
-    # A chave dos campos muda com o aluno: trocar de aluno recarrega nome,
-    # curso e a tabela, em vez de herdar o que foi digitado para o anterior.
-    chave = f"csv{idx}" if idx is not None else "manual"
-    anteriores = aluno.get("modulos", [])
     c1, c2 = st.columns(2)
-    nome = c1.text_input(
-        "Nome do aluno", value=aluno.get("nome") or "", key=f"comp_nome_{chave}",
-    ).strip()
-    curso = c2.text_input(
-        "Curso", value=aluno.get("curso") or "", key=f"comp_curso_{chave}",
-    ).strip()
+    nome = c1.text_input("Nome do aluno", key="comp_nome").strip()
+    curso = c2.text_input("Curso", key="comp_curso").strip()
     st.divider()
 
     # ── Etapa 3 — Módulos e sequência ─────────────────────────────────────
+    # O gerador não sabe quais módulos foram no plano inicial (o aluno é
+    # digitado, não vem do CSV) — quem confere é o CS, antes de numerar.
     st.markdown(step_html(3, "Módulos e sequência"), unsafe_allow_html=True)
+    st.warning(
+        "**Antes de numerar, confira quais 3 módulos já foram enviados no plano "
+        "inicial deste aluno** e deixe-os de fora: o plano complementar deve trazer "
+        "só os módulos que ele ainda não recebeu."
+    )
     st.caption(
         "Numere na coluna **Ordem** os módulos que entram no plano (1 = o primeiro a "
         "assistir). Módulo sem número fica de fora."
     )
-    ids_anteriores = {d["id"] for d in anteriores}
     tabela = pd.DataFrame(
         {
             "Ordem": pd.array([None] * len(DORES), dtype="Int64"),
             "Módulo": [d["modulo"] for d in DORES],
             "Aulas": [d.get("aulas") for d in DORES],
             "Tempo": [d.get("tempo") for d in DORES],
-            "Plano inicial": [
-                "✔ já indicado" if d["id"] in ids_anteriores else "" for d in DORES
-            ],
         }
     )
     editada = st.data_editor(
         tabela,
-        key=f"comp_tabela_{chave}",
+        key="comp_tabela",
         hide_index=True,
         use_container_width=True,
         num_rows="fixed",
-        disabled=["Módulo", "Aulas", "Tempo", "Plano inicial"],
+        disabled=["Módulo", "Aulas", "Tempo"],
         column_config={
             "Ordem": st.column_config.NumberColumn(
                 "Ordem", min_value=1, max_value=len(DORES), step=1, width="small",
@@ -398,12 +370,6 @@ def aba_complementar():
     avisos = []
     if not curso:
         avisos.append("Curso em branco — a capa do plano sai sem o nome do curso.")
-    ja_no_inicial = [d["modulo"] for d in sequencia if d["id"] in ids_anteriores]
-    if ja_no_inicial:
-        avisos.append(
-            "Já estão no plano inicial: " + "; ".join(ja_no_inicial)
-            + ". Mantenha só se a ideia for o aluno revê-los."
-        )
 
     if sequencia and not repetidas:
         por_linha = 3
@@ -442,17 +408,14 @@ def aba_complementar():
     )
 
     pode_gerar = not bloqueios
-    # "Curso completo" muda o encerramento. Só dá para afirmar quando sabemos o
-    # primeiro plano (aluno veio do CSV) ou quando o CS numerou todos os módulos.
-    cobertos = ids_anteriores | {d["id"] for d in sequencia}
-    curso_completo = len(cobertos) == len(DORES) and (
-        bool(anteriores) or len(sequencia) == len(DORES)
-    )
+    # "Curso completo" muda o encerramento. A orientação do CS é incluir todos
+    # os módulos fora das 3 prioridades; com isso, os dois planos juntos cobrem
+    # o curso inteiro.
+    curso_completo = len(sequencia) >= len(DORES) - 3
     html = render_html(
         montar_dados_complementar(
             nome, curso, sequencia,
             plataforma=plataforma,
-            modulos_anteriores=anteriores,
             curso_completo=curso_completo,
         )
     ) if pode_gerar else ""
