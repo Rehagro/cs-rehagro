@@ -3,22 +3,25 @@ CS Rehagro — Gerador de Plano de Aula a partir do CSV do HubSpot Survey.
 
 Duas telas (uso interno do time CS), no design Rehagro:
     1. Login (senha CS)
-    2. Gerador: plataforma do aluno → upload do CSV → seleção do aluno →
-       geração do plano
-       - PDF automático (Chromium headless) quando disponível;
-       - fallback: download do HTML (o CS salva como PDF pelo navegador).
+    2. Gerador, em duas abas:
+       - Plano inicial: plataforma do aluno → upload do CSV → seleção do
+         aluno → plano com as 3 prioridades;
+       - Plano complementar: plataforma → aluno → o CS escolhe e ordena os
+         demais módulos → plano com a sequência dele.
+       Em ambas o CS baixa o HTML e salva como PDF pelo navegador.
 """
 import os
 import sys
 
+import pandas as pd
 import streamlit as st
 import streamlit.components.v1 as components
 
 sys.path.insert(0, os.path.dirname(__file__))
 from core.hubspot_csv import colunas_reconhecidas, parse_hubspot_csv
-from core.dados_plano import montar_dados
+from core.dados_plano import montar_dados, montar_dados_complementar
 from core.render_plano import render_html
-from core.mapeamento import PLATAFORMAS, get_plataforma, link_boas_vindas
+from core.mapeamento import DORES, PLATAFORMAS, get_plataforma, link_boas_vindas
 from core.styles import (
     BRAND_CSS,
     aviso_plataforma_html,
@@ -94,6 +97,49 @@ def _mostrar_diagnostico(diag: dict) -> None:
 
 
 
+def _como_salvar_pdf(rotulo_botao: str) -> None:
+    """Passo a passo de HTML → PDF (o Cloud não tem Chromium para gerar direto)."""
+    st.markdown(
+        f"""
+        <div style="background:#FBFAF6; border:1px solid #E7E1D3; border-left:4px solid #C49A45;
+             border-radius:12px; padding:14px 18px; margin-top:6px;">
+          <div style="font-family:'Poppins',sans-serif; font-weight:600; font-size:13px;
+               color:#0F4630; margin-bottom:8px;">📄 Como salvar o plano em PDF</div>
+          <ol style="margin:0; padding-left:18px; color:#5A6B61; font-size:13px; line-height:1.75;">
+            <li>Clique em <strong style="color:#0F4630;">{rotulo_botao}</strong>
+                (baixa um arquivo <code>.html</code>).</li>
+            <li>Abra o arquivo baixado — ele abre no seu navegador.</li>
+            <li>Pressione <strong style="color:#0F4630;">Ctrl + P</strong>
+                (no Mac, <strong style="color:#0F4630;">⌘ + P</strong>).</li>
+            <li>Em <em>Destino / Impressora</em>, escolha
+                <strong style="color:#0F4630;">Salvar como PDF</strong>.</li>
+            <li>Clique em <strong style="color:#0F4630;">Salvar</strong>.
+                Esse PDF é o que você envia ao aluno. ✅</li>
+          </ol>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def _escolher_plataforma(key: str) -> str:
+    st.markdown(step_html(1, "Plataforma em que o aluno acessa as aulas"), unsafe_allow_html=True)
+    plataforma = st.radio(
+        "Plataforma",
+        options=[p["id"] for p in PLATAFORMAS],
+        captions=[p["descricao"] for p in PLATAFORMAS],
+        format_func=lambda pid: get_plataforma(pid)["rotulo"],
+        horizontal=True,
+        label_visibility="collapsed",
+        key=key,
+    )
+    st.caption(
+        "Na dúvida, confira no Instructure por qual turma o aluno está matriculado — "
+        "um link da plataforma errada abre uma página sem acesso para ele."
+    )
+    return plataforma
+
+
 # ──────────────────────────────────────────────────────────────────────────
 #  TELA 1 — LOGIN
 # ──────────────────────────────────────────────────────────────────────────
@@ -126,32 +172,31 @@ def tela_login():
 def tela_gerador():
     st.markdown(
         masthead_html(
-            "Escolha a plataforma do aluno, suba o CSV do HubSpot e gere o plano "
-            "no design Rehagro."
+            "Gere o plano inicial (3 prioridades do CSV do HubSpot) ou o plano "
+            "complementar (demais módulos, na ordem que você definir) no design Rehagro."
         ),
         unsafe_allow_html=True,
     )
     st.write("")
 
+    aba_ini, aba_comp = st.tabs(
+        ["🎯  Plano inicial — 3 prioridades", "🧭  Plano complementar — demais módulos"]
+    )
+    # Cada aba é uma função que só *retorna* quando falta algo: um st.stop()
+    # numa aba interromperia a renderização da outra.
+    with aba_ini:
+        aba_inicial()
+    with aba_comp:
+        aba_complementar()
+
+
+def aba_inicial():
     # ── Etapa 1 — Plataforma ──────────────────────────────────────────────
     # Os módulos existem em duas turmas do AVA (ids diferentes). Quem se
     # matriculou antes da republicação só acessa pela Videoteca; quem entrou
     # depois, pelo Studio. O plano precisa sair com os links certos.
-    st.markdown(step_html(1, "Plataforma em que o aluno acessa as aulas"), unsafe_allow_html=True)
-    plataforma = st.radio(
-        "Plataforma",
-        options=[p["id"] for p in PLATAFORMAS],
-        captions=[p["descricao"] for p in PLATAFORMAS],
-        format_func=lambda pid: get_plataforma(pid)["rotulo"],
-        horizontal=True,
-        label_visibility="collapsed",
-        key="plataforma",
-    )
+    plataforma = _escolher_plataforma("plataforma")
     info_plataforma = get_plataforma(plataforma)
-    st.caption(
-        "Na dúvida, confira no Instructure por qual turma o aluno está matriculado — "
-        "um link da plataforma errada abre uma página sem acesso para ele."
-    )
     st.divider()
 
     # ── Etapa 2 — CSV ─────────────────────────────────────────────────────
@@ -161,18 +206,22 @@ def tela_gerador():
         help="Exporte as respostas da pesquisa de início de curso no HubSpot e suba aqui.",
     )
 
+    st.session_state.alunos_csv = []
     if not arquivo:
-        st.stop()
+        return
 
     try:
         alunos = parse_hubspot_csv(arquivo.getvalue())
     except Exception as e:
         st.error(f"Não consegui ler o CSV: {e}")
-        st.stop()
+        return
 
     if not alunos:
         st.warning("O CSV foi lido, mas nenhum aluno foi encontrado. Confira o arquivo.")
-        st.stop()
+        return
+
+    # A aba do plano complementar reaproveita os alunos deste arquivo.
+    st.session_state.alunos_csv = alunos
 
     diag = diagnosticar_arquivo(alunos, colunas_reconhecidas(arquivo.getvalue()))
     _mostrar_diagnostico(diag)
@@ -238,30 +287,190 @@ def tela_gerador():
         use_container_width=True,
         disabled=not pode_gerar,
     )
-    st.markdown(
-        """
-        <div style="background:#FBFAF6; border:1px solid #E7E1D3; border-left:4px solid #C49A45;
-             border-radius:12px; padding:14px 18px; margin-top:6px;">
-          <div style="font-family:'Poppins',sans-serif; font-weight:600; font-size:13px;
-               color:#0F4630; margin-bottom:8px;">📄 Como salvar o plano em PDF</div>
-          <ol style="margin:0; padding-left:18px; color:#5A6B61; font-size:13px; line-height:1.75;">
-            <li>Clique em <strong style="color:#0F4630;">Baixar plano de estudos</strong>
-                (baixa um arquivo <code>.html</code>).</li>
-            <li>Abra o arquivo baixado — ele abre no seu navegador.</li>
-            <li>Pressione <strong style="color:#0F4630;">Ctrl + P</strong>
-                (no Mac, <strong style="color:#0F4630;">⌘ + P</strong>).</li>
-            <li>Em <em>Destino / Impressora</em>, escolha
-                <strong style="color:#0F4630;">Salvar como PDF</strong>.</li>
-            <li>Clique em <strong style="color:#0F4630;">Salvar</strong>.
-                Esse PDF é o que você envia ao aluno. ✅</li>
-          </ol>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    _como_salvar_pdf("Baixar plano de estudos")
 
     if pode_gerar:
         with st.expander("👁  Pré-visualizar o plano"):
+            components.html(html, height=900, scrolling=True)
+
+
+def aba_complementar():
+    """Plano com os módulos que ficaram fora das 3 prioridades, para o aluno que
+    pede o curso completo. O CS escolhe quais entram e em que ordem (calendário
+    das aulas ao vivo ou o que ele conhece da realidade do aluno)."""
+    st.caption(
+        "Para o aluno que pediu o plano completo: escolha os módulos que faltam e a "
+        "ordem em que ele deve assistir. O PDF sai com o mesmo visual do plano inicial."
+    )
+
+    # ── Etapa 1 — Plataforma ──────────────────────────────────────────────
+    plataforma = _escolher_plataforma("plataforma_comp")
+    info_plataforma = get_plataforma(plataforma)
+    st.divider()
+
+    # ── Etapa 2 — Aluno ───────────────────────────────────────────────────
+    st.markdown(step_html(2, "Aluno"), unsafe_allow_html=True)
+    alunos = st.session_state.get("alunos_csv") or []
+    idx = None
+    if alunos:
+        idx = st.selectbox(
+            "Puxar do CSV carregado na aba Plano inicial",
+            [None, *range(len(alunos))],
+            format_func=lambda i: (
+                "— digitar o aluno manualmente —" if i is None
+                else f"{i + 1}. {alunos[i].get('nome') or 'Sem nome'}"
+            ),
+            key="comp_aluno_csv",
+        )
+    else:
+        st.caption(
+            "Dica: suba o CSV na aba **Plano inicial** para puxar o aluno de lá — o nome "
+            "vem preenchido e os módulos do primeiro plano aparecem sinalizados abaixo."
+        )
+    aluno = alunos[idx] if idx is not None else {}
+
+    # A chave dos campos muda com o aluno: trocar de aluno recarrega nome,
+    # curso e a tabela, em vez de herdar o que foi digitado para o anterior.
+    chave = f"csv{idx}" if idx is not None else "manual"
+    anteriores = aluno.get("modulos", [])
+    c1, c2 = st.columns(2)
+    nome = c1.text_input(
+        "Nome do aluno", value=aluno.get("nome") or "", key=f"comp_nome_{chave}",
+    ).strip()
+    curso = c2.text_input(
+        "Curso", value=aluno.get("curso") or "", key=f"comp_curso_{chave}",
+    ).strip()
+    st.divider()
+
+    # ── Etapa 3 — Módulos e sequência ─────────────────────────────────────
+    st.markdown(step_html(3, "Módulos e sequência"), unsafe_allow_html=True)
+    st.caption(
+        "Numere na coluna **Ordem** os módulos que entram no plano (1 = o primeiro a "
+        "assistir). Módulo sem número fica de fora."
+    )
+    ids_anteriores = {d["id"] for d in anteriores}
+    tabela = pd.DataFrame(
+        {
+            "Ordem": pd.array([None] * len(DORES), dtype="Int64"),
+            "Módulo": [d["modulo"] for d in DORES],
+            "Aulas": [d.get("aulas") for d in DORES],
+            "Tempo": [d.get("tempo") for d in DORES],
+            "Plano inicial": [
+                "✔ já indicado" if d["id"] in ids_anteriores else "" for d in DORES
+            ],
+        }
+    )
+    editada = st.data_editor(
+        tabela,
+        key=f"comp_tabela_{chave}",
+        hide_index=True,
+        use_container_width=True,
+        num_rows="fixed",
+        disabled=["Módulo", "Aulas", "Tempo", "Plano inicial"],
+        column_config={
+            "Ordem": st.column_config.NumberColumn(
+                "Ordem", min_value=1, max_value=len(DORES), step=1, width="small",
+                help="1 = primeiro módulo a assistir. Deixe vazio para não incluir.",
+            ),
+            "Módulo": st.column_config.TextColumn(width="large"),
+        },
+    )
+
+    # A tabela segue a ordem de DORES (linhas fixas), então o zip casa cada
+    # número digitado com o módulo da mesma linha.
+    escolhidos = [
+        (int(ordem), d) for ordem, d in zip(editada["Ordem"], DORES) if pd.notna(ordem)
+    ]
+    ordens = [o for o, _ in escolhidos]
+    repetidas = sorted({o for o in ordens if ordens.count(o) > 1})
+    sequencia = [d for _, d in sorted(escolhidos, key=lambda x: x[0])]
+
+    bloqueios = []
+    if not nome:
+        bloqueios.append("Falta o nome do aluno.")
+    if not sequencia:
+        bloqueios.append("Nenhum módulo numerado na coluna Ordem.")
+    if repetidas:
+        bloqueios.append(
+            "Número de ordem repetido: " + ", ".join(str(o) for o in repetidas)
+            + ". Cada módulo precisa de uma posição própria."
+        )
+    avisos = []
+    if not curso:
+        avisos.append("Curso em branco — a capa do plano sai sem o nome do curso.")
+    ja_no_inicial = [d["modulo"] for d in sequencia if d["id"] in ids_anteriores]
+    if ja_no_inicial:
+        avisos.append(
+            "Já estão no plano inicial: " + "; ".join(ja_no_inicial)
+            + ". Mantenha só se a ideia for o aluno revê-los."
+        )
+
+    if sequencia and not repetidas:
+        por_linha = 3
+        for i in range(0, len(sequencia), por_linha):
+            cols = st.columns(por_linha, gap="medium")
+            for c, (n, d) in zip(cols, enumerate(sequencia[i:i + por_linha], start=i + 1)):
+                c.markdown(
+                    card_prioridade_html(
+                        n, d["modulo"], d.get("aulas"), d.get("tempo"),
+                        rotulo=f"{n}º da sequência",
+                    ),
+                    unsafe_allow_html=True,
+                )
+            st.write("")
+
+    if bloqueios:
+        st.error(
+            "**Ainda não dá para gerar o plano:**\n\n"
+            + "\n".join(f"- {b}" for b in bloqueios)
+        )
+    if avisos:
+        st.warning("**Atenção:**\n\n" + "\n".join(f"- {a}" for a in avisos))
+    st.divider()
+
+    # ── Etapa 4 — Baixar e enviar ─────────────────────────────────────────
+    st.markdown(
+        step_html(4, "Baixe o plano complementar e envie ao aluno"), unsafe_allow_html=True
+    )
+    st.markdown(
+        aviso_plataforma_html(
+            info_plataforma["rotulo"],
+            info_plataforma["resumo"],
+            link_boas_vindas(plataforma),
+        ),
+        unsafe_allow_html=True,
+    )
+
+    pode_gerar = not bloqueios
+    # "Curso completo" muda o encerramento. Só dá para afirmar quando sabemos o
+    # primeiro plano (aluno veio do CSV) ou quando o CS numerou todos os módulos.
+    cobertos = ids_anteriores | {d["id"] for d in sequencia}
+    curso_completo = len(cobertos) == len(DORES) and (
+        bool(anteriores) or len(sequencia) == len(DORES)
+    )
+    html = render_html(
+        montar_dados_complementar(
+            nome, curso, sequencia,
+            plataforma=plataforma,
+            modulos_anteriores=anteriores,
+            curso_completo=curso_completo,
+        )
+    ) if pode_gerar else ""
+    nome_base = f"Plano_Complementar_{_slug(nome)}_{_slug(info_plataforma['rotulo'])}"
+
+    st.download_button(
+        "⬇  Baixar plano complementar",
+        data=html.encode("utf-8"),
+        file_name=f"{nome_base}.html",
+        mime="text/html",
+        use_container_width=True,
+        disabled=not pode_gerar,
+        key="comp_download",
+    )
+    _como_salvar_pdf("Baixar plano complementar")
+
+    if pode_gerar:
+        with st.expander("👁  Pré-visualizar o plano complementar"):
             components.html(html, height=900, scrolling=True)
 
 

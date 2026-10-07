@@ -1,9 +1,12 @@
+{# variante: ausente = plano inicial (3 prioridades); 'complementar' = demais
+   módulos na ordem do CS — mesmo visual, textos vindos de `textos`. -#}
+{%- set comp = variante == 'complementar' -%}
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Plano de Estudos — {{ aluno.nome }}</title>
+<title>Plano de Estudos{% if comp %} Complementar{% endif %} — {{ aluno.nome }}</title>
 {# Fontes embutidas (base64) — documento self-contained, sem depender de rede.
    Injetado por core.render_plano.render_html. #}
 {{ font_face_css | safe }}
@@ -52,7 +55,7 @@
         </div>
 
         <div style="position:relative; margin-top:20px;">
-          <div style="font-family:'Poppins',sans-serif; font-size:11px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:#E0C06A;">Plano de Estudos Personalizado</div>
+          <div style="font-family:'Poppins',sans-serif; font-size:11px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:#E0C06A;">{% if comp %}{{ textos.eyebrow }}{% else %}Plano de Estudos Personalizado{% endif %}</div>
           <h1 style="font-family:'Poppins',sans-serif; font-weight:700; font-size:31px; line-height:1.05; color:#fff; margin:7px 0 0; letter-spacing:-.01em;">{{ aluno.nome }}</h1>
           <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px 14px; margin-top:13px; color:rgba(255,255,255,.78); font-size:12.5px; font-weight:500;">
             <span style="display:inline-flex; align-items:center; gap:7px;">
@@ -70,9 +73,39 @@
 
       <!-- ===================== INTRO ===================== -->
       <p style="font-size:13.5px; line-height:1.6; color:#33433A; margin:18px 2px 4px;">
+        {% if comp %}
+        <strong style="color:#0F4630;">{{ aluno.nome }}</strong>, {{ textos.intro }} <strong style="color:#0F4630;">{{ textos.intro_destaque }}</strong>
+        {% else %}
         <strong style="color:#0F4630;">{{ aluno.nome }}</strong>, esse é o seu plano de estudos, personalizado de acordo com os seus principais desafios. <strong style="color:#0F4630;">Recomendamos que seus estudos sigam a sequência de módulos abaixo.</strong> Confira sua recomendação:
+        {% endif %}
       </p>
 
+      {% if comp %}
+      <!-- ===================== ANTES DE SEGUIR (complementar) ===================== -->
+      <div style="display:flex; align-items:center; gap:14px; margin:22px 0 12px;">
+        <h2 style="font-family:'Poppins',sans-serif; font-weight:600; font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:#0F4630; margin:0; white-space:nowrap;">{{ textos.antes_titulo }}</h2>
+        <span style="flex:1; height:2px; background:linear-gradient(90deg,#C49A45 0%, #E7EBE6 100%); border-radius:2px;"></span>
+      </div>
+
+      <div class="welcome-card" style="position:relative; border:1px solid #E2EAE4; border-radius:14px; padding:16px 20px; background:linear-gradient(180deg,#FBFAF4 0%,#FFFFFF 60%);">
+        <div style="display:flex; align-items:flex-start; gap:15px;">
+          <div style="flex:none; width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg,#1E7A45,#0F4630); display:flex; align-items:center; justify-content:center; box-shadow:0 4px 12px rgba(15,70,48,.25);">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+          </div>
+          <div style="flex:1; min-width:0;">
+            <div style="font-family:'Poppins',sans-serif; font-size:10px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:#C49A45;">{{ textos.antes_rotulo }}</div>
+            {% if anteriores %}
+            <div style="display:flex; flex-wrap:wrap; gap:6px; margin:7px 0 9px;">
+              {% for t in anteriores %}
+              <span style="font-family:'Poppins',sans-serif; font-weight:500; font-size:12px; color:#0F4630; background:#F3F7F3; border:1px solid #E2EAE4; padding:4px 10px; border-radius:999px;">{{ loop.index }}. {{ t }}</span>
+              {% endfor %}
+            </div>
+            {% endif %}
+            <p style="font-size:13px; line-height:1.55; color:#445349; margin:{% if anteriores %}0{% else %}5px 0 0{% endif %};">{{ textos.antes_texto }}</p>
+          </div>
+        </div>
+      </div>
+      {% else %}
       <!-- ===================== PARA COMEÇAR ===================== -->
       <div style="display:flex; align-items:center; gap:14px; margin:22px 0 12px;">
         <h2 style="font-family:'Poppins',sans-serif; font-weight:600; font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:#0F4630; margin:0; white-space:nowrap;">Para começar</h2>
@@ -96,12 +129,18 @@
         </div>
       </div>
 
+      {% endif %}
+
       <!-- ===================== TRILHA ===================== -->
       <div style="display:flex; align-items:center; gap:14px; margin:24px 0 6px;">
-        <h2 style="font-family:'Poppins',sans-serif; font-weight:600; font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:#0F4630; margin:0; white-space:nowrap;">Sua trilha personalizada</h2>
+        <h2 style="font-family:'Poppins',sans-serif; font-weight:600; font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:#0F4630; margin:0; white-space:nowrap;">{% if comp %}{{ textos.trilha_titulo }}{% else %}Sua trilha personalizada{% endif %}</h2>
         <span style="flex:1; height:2px; background:linear-gradient(90deg,#C49A45 0%, #E7EBE6 100%); border-radius:2px;"></span>
       </div>
+      {% if comp %}
+      <p style="font-size:14px; line-height:1.5; color:#6A776E; margin:0 2px 14px;">{{ textos.trilha_texto }}</p>
+      {% else %}
       <p style="font-size:14px; line-height:1.5; color:#6A776E; margin:0 2px 14px;">A sua trilha apresenta os 3 módulos principais para sanar suas maiores dores e desafios, <strong style="color:#0F4630;">de acordo com as respostas de sua pesquisa</strong>.</p>
+      {% endif %}
 
       {# ===== LOOP DE MÓDULOS — repete um card por item em `modulos` ===== #}
       {% for m in modulos %}
@@ -111,7 +150,7 @@
             <span style="font-family:'Poppins',sans-serif; font-weight:700; font-size:19px; color:#fff;">{{ loop.index }}</span>
           </div>
           <div style="flex:1; min-width:0;">
-            <span style="display:inline-block; font-family:'Poppins',sans-serif; font-size:9.5px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:#9A7626; background:#FBF3DE; padding:3px 9px; border-radius:999px;">{{ loop.index }}ª Prioridade</span>
+            <span style="display:inline-block; font-family:'Poppins',sans-serif; font-size:9.5px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:#9A7626; background:#FBF3DE; padding:3px 9px; border-radius:999px;">{% if comp %}{{ loop.index }}º da sequência{% else %}{{ loop.index }}ª Prioridade{% endif %}</span>
             <h3 style="font-family:'Poppins',sans-serif; font-weight:600; font-size:17px; color:#0F4630; margin:5px 0 0; line-height:1.2;">{{ m.titulo }}</h3>
           </div>
         </div>

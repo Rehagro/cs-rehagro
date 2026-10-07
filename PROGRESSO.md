@@ -1,6 +1,25 @@
 # Progresso e próximos passos — CS Rehagro
 
-Último marco: **O parser reconhece o cabeçalho da exportação do CRM (“Melhoria na fazenda (Prioridade 1/2/3)”) — 2026-09-09.**
+Último marco: **Plano complementar — segunda aba para o aluno que pede o curso completo — 2026-10-07.**
+
+## 🧭 Plano complementar: os demais módulos, na ordem que o CS define — 2026-10-07
+
+O plano inicial cobre só os **3 módulos das prioridades** que o aluno marcou na pesquisa. Alguns alunos passaram a pedir o **plano completo**, com a ordem em que devem assistir os outros módulos — e o gerador não tinha como produzir isso.
+
+**O que mudou**
+
+- `app.py` — a tela do gerador virou **duas abas**: *Plano inicial — 3 prioridades* (o fluxo de sempre, sem mudança) e *Plano complementar — demais módulos*. Na nova aba: (1) plataforma Studio/Videoteca, igual à primeira; (2) aluno — puxado do CSV que já estiver carregado na primeira aba ou digitado à mão; (3) tabela com os 9 módulos, onde o CS **numera na coluna Ordem** os que entram e a sequência (vazio = fora do plano). Os módulos do plano inicial aparecem marcados como *“✔ já indicado”*; (4) download do HTML → PDF, igual ao inicial.
+  A ordem é decisão do CS (calendário das aulas ao vivo mensais ou o que ele sabe da realidade do aluno), por isso não há sugestão automática.
+  **Bloqueia** sem nome, sem nenhum módulo numerado ou com número de ordem repetido. **Avisa** quando o curso está em branco ou quando entra um módulo que já estava no plano inicial.
+  Os `st.stop()` da primeira aba viraram `return`: numa tela com abas, o `stop` interromperia a renderização da outra.
+- `core/dados_plano.py` — `montar_dados_complementar()`. **Os textos propostos ficam todos em `_COMPLEMENTAR_TEXTOS`**: é ali que se ajusta a redação, não no template. A frase da trilha soma automaticamente aulas e horas dos módulos escolhidos (“São 6 módulos… 138 videoaulas e ~18,5h”). Quando os dois planos juntos cobrem todos os módulos, o encerramento diz que o aluno percorre o curso completo.
+- `templates/plano_de_aula.html.j2` — o **mesmo template** serve aos dois planos (`variante = "complementar"`). No complementar mudam: o selo da capa (*Plano de Estudos Complementar*), o parágrafo de abertura, o bloco *Para começar/Boas-vindas*, que vira *Antes de seguir* com os módulos do primeiro plano, o título da trilha e o selo dos cards (*“1º da sequência”* no lugar de *“1ª Prioridade”*). Link, nº de aulas, tempo, atividades e programação continuam iguais em cada card.
+- `core/styles.py` — `card_prioridade_html()` aceita um rótulo próprio (usado na prévia da sequência).
+- Nome do arquivo: `Plano_Complementar_<Aluno>_<Plataforma>.html`.
+
+**Testado:** o plano inicial renderiza **idêntico** ao anterior (comparação do HTML gerado antes e depois); o complementar sai com os links da plataforma escolhida, a numeração da sequência e o bloco do primeiro plano. Conferido em print A4 pelo Chromium. `streamlit.testing` roda as duas abas sem exceção e mostra os bloqueios. A edição da tabela (coluna Ordem) **não** é coberta pelo `streamlit.testing`, então foi validada só na lógica — vale um teste manual no app publicado.
+
+**Pendente:** revisão dos textos pelo usuário (proposta inicial). Em aberto: se o bloco *Antes de seguir* deve repetir o link do Boas-vindas para o aluno que perdeu o primeiro PDF.
 
 ## 🏷️ O CSV do CRM tem outro cabeçalho — o parser passou a reconhecer os dois — 2026-09-09
 

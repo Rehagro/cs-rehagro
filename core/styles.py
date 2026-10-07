@@ -214,7 +214,8 @@ def step_html(n: int, titulo: str) -> str:
     return f'<div class="step"><span class="n">{n}</span><span class="t">{titulo}</span></div>'
 
 
-def card_prioridade_html(num: int, titulo: str, aulas, tempo: str) -> str:
+def card_prioridade_html(num: int, titulo: str, aulas, tempo: str, rotulo: str | None = None) -> str:
+    rotulo = rotulo or f"{num}ª Prioridade"
     aulas_txt = aulas if aulas not in (None, "") else "?"
     tempo_txt = tempo if tempo else "?"
     return f"""
@@ -227,7 +228,7 @@ def card_prioridade_html(num: int, titulo: str, aulas, tempo: str) -> str:
              box-shadow:0 3px 8px rgba(196,154,69,.3);">{num}</span>
         <span style="font-family:'Poppins';font-size:9.5px;font-weight:600;letter-spacing:.1em;
              text-transform:uppercase;color:#9A7626;background:#FBF3DE;padding:3px 9px;
-             border-radius:999px;">{num}ª Prioridade</span>
+             border-radius:999px;">{rotulo}</span>
       </div>
       <div style="font-family:'Poppins';font-weight:600;font-size:15px;color:#0F4630;
            line-height:1.25;min-height:38px;">{titulo}</div>
