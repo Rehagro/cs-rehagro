@@ -125,18 +125,6 @@ _COMPLEMENTAR_ENCERRAMENTO_COMPLETO = (
 )
 
 
-def _horas(tempo) -> float:
-    """'2,5h' -> 2.5; vazio ou ilegível -> 0."""
-    try:
-        return float(str(tempo or "").strip().lstrip("~").rstrip("h").replace(",", "."))
-    except ValueError:
-        return 0.0
-
-
-def _fmt_horas(h: float) -> str:
-    return f"~{h:g}h".replace(".", ",")
-
-
 def montar_dados_complementar(
     nome: str,
     curso: str,
@@ -158,13 +146,13 @@ def montar_dados_complementar(
     if data_geracao is None:
         data_geracao = datetime.now().strftime("%d/%m/%Y")
 
-    total_aulas = sum(int(d.get("aulas") or 0) for d in modulos)
-    total_horas = sum(_horas(d.get("tempo")) for d in modulos)
+    # Sem o total de aulas e horas: a soma do bloco inteiro assusta o aluno.
+    # No lugar, o benefício de assistir.
     qtd = len(modulos)
     resumo = (
         f"São {qtd} módulo{'s' if qtd != 1 else ''}, na ordem recomendada para você "
-        f"assistir. Juntos, somam {total_aulas} videoaulas e "
-        f"{_fmt_horas(total_horas)} de aula gravada."
+        "assistir. Cada um traz conhecimentos práticos para aplicar no dia a dia "
+        "da sua propriedade e melhorar os resultados da sua fazenda."
     )
 
     encerramento = dict(_ENCERRAMENTO)

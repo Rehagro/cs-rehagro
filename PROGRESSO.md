@@ -1,6 +1,16 @@
 # Progresso e próximos passos — CS Rehagro
 
-Último marco: **Plano complementar — segunda aba para o aluno que pede o curso completo — 2026-10-07.**
+Último marco: **Plano complementar — escolha em 6 posições e frase da trilha sem totais — 2026-10-07.**
+
+## ✏️ Plano complementar: até 6 módulos, escolha editável e sem total de horas — 2026-10-07
+
+Ajustes pedidos pelo usuário depois do primeiro uso:
+
+- **Sem total de aulas e horas.** Somar o bloco inteiro (“206 videoaulas e ~28,5h”) assusta o aluno. A frase da trilha agora fala do benefício: *“São 6 módulos, na ordem recomendada para você assistir. Cada um traz conhecimentos práticos para aplicar no dia a dia da sua propriedade e melhorar os resultados da sua fazenda.”* (`core/dados_plano.py`; os cards continuam mostrando aulas e tempo de cada módulo).
+- **No máximo 6 módulos.** Os 3 do plano inicial já foram para o aluno, então não faz sentido escolher os 9.
+- **Escolha editável.** A tabela com a coluna Ordem (que travava depois de preenchida e não deixava trocar nem apagar) deu lugar a **6 caixas, uma por posição (1º a 6º módulo)**. Para trocar, o CS escolhe outro módulo na caixa; para tirar, volta para **—**; para reordenar, troca os módulos de posição; e o botão **Limpar escolhas** zera tudo. Posição vazia no meio não deixa buraco no PDF. **Bloqueia** se o mesmo módulo aparece em duas posições.
+
+**Testado** com `streamlit.testing` (as caixas de seleção, ao contrário do `data_editor`, são cobertas): 6 escolhidos sem erro, troca de módulo, módulo repetido bloqueia, reordenação, retirada de um e botão de limpar.
 
 ## 🧭 Plano complementar: os demais módulos, na ordem que o CS define — 2026-10-07
 

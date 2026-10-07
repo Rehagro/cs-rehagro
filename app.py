@@ -13,7 +13,6 @@ Duas telas (uso interno do time CS), no design Rehagro:
 import os
 import sys
 
-import pandas as pd
 import streamlit as st
 import streamlit.components.v1 as components
 
@@ -290,6 +289,15 @@ def aba_inicial():
             components.html(html, height=900, scrolling=True)
 
 
+# O plano inicial leva 3 dos 9 módulos; o complementar, no máximo os outros 6.
+_COMP_POSICOES = len(DORES) - 3
+
+
+def _limpar_posicoes_comp():
+    for i in range(_COMP_POSICOES):
+        st.session_state[f"comp_pos_{i}"] = "—"
+
+
 def aba_complementar():
     """Plano com os módulos que ficaram fora das 3 prioridades, para o aluno que
     pede o curso completo. O CS escolhe quais entram e em que ordem (calendário
@@ -321,64 +329,44 @@ def aba_complementar():
         "só os módulos que ele ainda não recebeu."
     )
     st.caption(
-        "Clique na coluna **Ordem** e escolha a posição de cada módulo que entra no "
-        "plano (1º = o primeiro a assistir). Os que ficam com **—** não entram."
+        f"Escolha o módulo de cada posição (1º = o primeiro a assistir), até "
+        f"{_COMP_POSICOES}. Para trocar, escolha outro módulo na posição; para tirar, "
+        "volte para **—**; para reordenar, troque os módulos de posição."
     )
-    # Caixa de seleção em vez de número digitado: o CS só escolhe na lista.
-    # "—" é a opção explícita de "fora do plano", para não depender de apagar
-    # a célula pelo teclado.
+    # Uma caixa por posição, em vez de uma posição por módulo: o plano tem no
+    # máximo 6 (os 9 do curso menos os 3 do plano inicial) e cada caixa pode
+    # ser trocada ou zerada a qualquer momento.
     fora = "—"
-    posicoes = [f"{n}º" for n in range(1, len(DORES) + 1)]
-    tabela = pd.DataFrame(
-        {
-            "Ordem": [fora] * len(DORES),
-            "Módulo": [d["modulo"] for d in DORES],
-            "Aulas": [d.get("aulas") for d in DORES],
-            "Tempo": [d.get("tempo") for d in DORES],
-        }
-    )
-    editada = st.data_editor(
-        tabela,
-        key="comp_tabela",
-        hide_index=True,
-        use_container_width=True,
-        num_rows="fixed",
-        disabled=["Módulo", "Aulas", "Tempo"],
-        column_config={
-            "Ordem": st.column_config.SelectboxColumn(
-                "Ordem", options=[fora, *posicoes], required=True, width="small",
-                help="1º = primeiro módulo a assistir. Escolha — para não incluir.",
-            ),
-            "Módulo": st.column_config.TextColumn(width="large"),
-        },
-    )
-
-    # A tabela segue a ordem de DORES (linhas fixas), então o zip casa cada
-    # posição escolhida com o módulo da mesma linha.
-    escolhidos = [
-        (int(ordem.rstrip("º")), d)
-        for ordem, d in zip(editada["Ordem"], DORES)
-        if isinstance(ordem, str) and ordem != fora
+    por_nome = {d["modulo"]: d for d in DORES}
+    opcoes = [fora, *por_nome]
+    st.button("Limpar escolhas", key="comp_limpar", on_click=_limpar_posicoes_comp)
+    cols = st.columns(3, gap="medium")
+    escolhas = [
+        cols[i % 3].selectbox(f"{i + 1}º módulo", opcoes, key=f"comp_pos_{i}")
+        for i in range(_COMP_POSICOES)
     ]
-    ordens = [o for o, _ in escolhidos]
-    repetidas = sorted({o for o in ordens if ordens.count(o) > 1})
-    sequencia = [d for _, d in sorted(escolhidos, key=lambda x: x[0])]
+
+    nomes = [e for e in escolhas if e != fora]
+    repetidos = sorted({n for n in nomes if nomes.count(n) > 1})
+    # Posição vazia no meio não deixa buraco: a sequência só segue a ordem
+    # das caixas preenchidas.
+    sequencia = [por_nome[n] for n in nomes]
 
     bloqueios = []
     if not nome:
         bloqueios.append("Falta o nome do aluno.")
     if not sequencia:
-        bloqueios.append("Nenhum módulo com posição escolhida na coluna Ordem.")
-    if repetidas:
+        bloqueios.append("Nenhum módulo escolhido.")
+    if repetidos:
         bloqueios.append(
-            "Posição repetida: " + ", ".join(f"{o}º" for o in repetidas)
-            + ". Cada módulo precisa de uma posição própria."
+            "Módulo repetido: " + "; ".join(repetidos)
+            + ". Cada módulo entra em uma posição só."
         )
     avisos = []
     if not curso:
         avisos.append("Curso em branco — a capa do plano sai sem o nome do curso.")
 
-    if sequencia and not repetidas:
+    if sequencia and not repetidos:
         por_linha = 3
         for i in range(0, len(sequencia), por_linha):
             cols = st.columns(por_linha, gap="medium")
@@ -418,7 +406,7 @@ def aba_complementar():
     # "Curso completo" muda o encerramento. A orientação do CS é incluir todos
     # os módulos fora das 3 prioridades; com isso, os dois planos juntos cobrem
     # o curso inteiro.
-    curso_completo = len(sequencia) >= len(DORES) - 3
+    curso_completo = len(sequencia) >= _COMP_POSICOES
     html = render_html(
         montar_dados_complementar(
             nome, curso, sequencia,
